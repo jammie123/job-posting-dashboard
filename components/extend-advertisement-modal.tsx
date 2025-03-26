@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import type { JobPortal } from "@/types/job-posting"
 
 interface ExtendAdvertisementModalProps {
-  portals: JobPortal[]
+  portals?: JobPortal[]
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -24,7 +24,7 @@ const iconMapping = {
 }
 
 export function ExtendAdvertisementModal({
-  portals,
+  portals = [],
   trigger,
   open,
   onOpenChange,
@@ -67,7 +67,8 @@ export function ExtendAdvertisementModal({
     return `${diffDays} dní`
   }
 
-  const renderIcon = (iconName: string) => {
+  const renderIcon = (iconName?: string) => {
+    if (!iconName) return null
     const Icon = iconMapping[iconName as keyof typeof iconMapping]
     return <Icon className="h-7 w-7 text-muted-foreground" />
   }
@@ -93,7 +94,7 @@ export function ExtendAdvertisementModal({
                     checked={selectedPortals.length === portals.length}
                     onCheckedChange={(checked) => {
                       if (checked) {
-                        setSelectedPortals(portals.map((p) => p.url))
+                        setSelectedPortals(portals.filter(p => p.url).map(p => p.url as string))
                       } else {
                         setSelectedPortals([])
                       }
@@ -111,19 +112,23 @@ export function ExtendAdvertisementModal({
             </TableHeader>
             <TableBody>
               {portals.map((portal) => (
-                <TableRow key={portal.url}>
+                <TableRow key={portal.url || 'unknown'}>
                   <TableCell>
                     <Checkbox
-                      checked={selectedPortals.includes(portal.url)}
-                      onCheckedChange={() => togglePortal(portal.url)}
+                      checked={portal.url ? selectedPortals.includes(portal.url) : false}
+                      onCheckedChange={() => portal.url && togglePortal(portal.url)}
                     />
                   </TableCell>
                   <TableCell>{renderIcon(portal.icon)}</TableCell>
                   <TableCell>{portal.name}</TableCell>
                   <TableCell>Aktivní</TableCell>
-                  <TableCell>{formatDate(portal.expiresAt)}</TableCell>
-                  <TableCell>{calculateExtendedDate(portal.expiresAt)}</TableCell>
-                  <TableCell>{calculateDays(portal.expiresAt, calculateExtendedDateRaw(portal.expiresAt))}</TableCell>
+                  <TableCell>{portal.expiresAt ? formatDate(portal.expiresAt) : '-'}</TableCell>
+                  <TableCell>{portal.expiresAt ? calculateExtendedDate(portal.expiresAt) : '-'}</TableCell>
+                  <TableCell>
+                    {portal.expiresAt 
+                      ? calculateDays(portal.expiresAt, calculateExtendedDateRaw(portal.expiresAt))
+                      : '-'}
+                  </TableCell>
                   <TableCell>{portal.price || "1 200 Kč"}</TableCell>
                 </TableRow>
               ))}

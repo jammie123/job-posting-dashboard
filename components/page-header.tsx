@@ -1,5 +1,5 @@
 import { JobViews } from "@/components/job-views"
-import type { JobStatus } from "@/components/job-views"
+import { JobStatus } from "@/types/job-posting"
 import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -8,12 +8,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 interface PageHeaderProps {
   title: string
-  activeView?: JobStatus | "all" | "open"
-  onViewChange?: (value: JobStatus | "all" | "open") => void
+  activeView?: JobStatus | "open"
+  onViewChange?: (value: string) => void
   counts: Record<JobStatus | "open", number>
 }
 
-export function PageHeader({ title, activeView = "all", onViewChange, counts }: PageHeaderProps) {
+export function PageHeader({ title, activeView = "open", onViewChange, counts }: PageHeaderProps) {
   return (
     <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background drop-shadow-sm">
       <TopHeader userName="Jan Novák" companyName="Acme Corporation s.r.o." />

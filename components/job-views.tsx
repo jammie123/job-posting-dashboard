@@ -1,8 +1,7 @@
 "use client"
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-export type JobStatus = "active" | "inactive" | "internal" | "archive" | "draft"
+import { JobStatus } from "@/types/job-posting"
 
 interface JobViewsProps {
   onViewChange?: (value: JobStatus | "open" | string) => void
@@ -11,14 +10,12 @@ interface JobViewsProps {
   isEshop?: boolean
 }
 
-// Update the views array to include the new "draft" status for "Rozpracovaný"
+// Aktualizované pohledy s českými názvy stavů
 const views = [
-  { value: "open", label: "Aktivní" },
-  { value: "active", label: "Zveřejněný" },
-  { value: "inactive", label: "Nezveřejněný" },
-  { value: "internal", label: "Interní" },
-  { value: "draft", label: "Rozpracovaný" },
-  { value: "archive", label: "Archivní" },
+  { value: "open", label: "Všechny" },
+  { value: "Aktivní", label: "Aktivní" },
+  { value: "Rozpracovaný", label: "Rozpracovaný" },
+  { value: "Archivní", label: "Archivní" },
 ]
 
 const eshopViews = [
@@ -31,7 +28,6 @@ export function JobViews({ onViewChange, activeView = "open", counts, isEshop = 
   const currentViews = isEshop ? eshopViews : views
   const defaultValue = isEshop ? "addons" : "open"
 
-  // Update the TabsList to ensure it properly displays the new status
   return (
     <Tabs defaultValue={defaultValue} value={activeView} onValueChange={(value) => onViewChange?.(value)}>
       <TabsList className="w-full justify-start border-b-0 p-0 left-0 bg-background px-5">

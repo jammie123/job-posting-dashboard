@@ -1,0 +1,309 @@
+[
+  {
+    "id": "JOB-001",
+    "status": "Aktivní",
+    "title": "Senior React Developer",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-002",
+        "name": "Petr Novák",
+        "role": "HR Manager"
+      }
+    ],
+    "candidates": {
+      "new": 5,
+      "inProcess": 3,
+      "total": 14
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/123456",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-15",
+          "expiresAt": "2023-11-15",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          }
+        },
+        {
+          "name": "linkedin.com",
+          "url": "https://linkedin.com/jobs/789",
+          "icon": "LinkedInIcon",
+          "publishedAt": "2023-10-15",
+          "expiresAt": "2023-11-15",
+          "performance": {
+            "views": 267,
+            "clicks": 54,
+            "applications": 8
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 699,
+      "clicks": 132,
+      "applications": 20
+    }
+  },
+  {
+    "id": "JOB-002",
+    "status": "Aktivní",
+    "title": "UX/UI Designer",
+    "location": "Brno",
+    "recruiter": {
+      "id": "REC-002",
+      "name": "Martin Horák",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-003",
+        "name": "Martin Horák",
+        "role": "HR Specialist"
+      },
+      {
+        "id": "USR-004",
+        "name": "Jana Veselá",
+        "role": "Design Manager"
+      }
+    ],
+    "candidates": {
+      "new": 3,
+      "inProcess": 5,
+      "total": 10
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/789012",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-09-10",
+          "expiresAt": "2023-10-10",
+          "performance": {
+            "views": 345,
+            "clicks": 62,
+            "applications": 10
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 345,
+      "clicks": 62,
+      "applications": 10
+    }
+  },
+  {
+    "id": "JOB-003",
+    "status": "Rozpracovaný",
+    "title": "Java Backend Developer",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Nevystavený",
+      "portals": []
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-004",
+    "status": "Archivní",
+    "title": "Project Manager",
+    "location": "Ostrava",
+    "recruiter": {
+      "id": "REC-003",
+      "name": "Lucie Svobodová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-005",
+        "name": "Lucie Svobodová",
+        "role": "HR Specialist"
+      },
+      {
+        "id": "USR-006",
+        "name": "Tomáš Novotný",
+        "role": "Department Head"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 2,
+      "total": 20
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/345678",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-08-01",
+          "expiresAt": "2023-09-01",
+          "performance": {
+            "views": 521,
+            "clicks": 95,
+            "applications": 20
+          }
+        },
+        {
+          "name": "linkedin.com",
+          "url": "https://linkedin.com/jobs/012",
+          "icon": "LinkedInIcon",
+          "publishedAt": "2023-08-01",
+          "expiresAt": "2023-09-01",
+          "performance": {
+            "views": 380,
+            "clicks": 75,
+            "applications": 15
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 901,
+      "clicks": 170,
+      "applications": 35
+    }
+  },
+  {
+    "id": "JOB-005",
+    "status": "Aktivní",
+    "title": "DevOps Engineer",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-002",
+      "name": "Martin Horák",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-003",
+        "name": "Martin Horák",
+        "role": "HR Specialist"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 1,
+      "total": 5
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/234567",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-25",
+          "expiresAt": "2023-11-25",
+          "performance": {
+            "views": 245,
+            "clicks": 47,
+            "applications": 5
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 245,
+      "clicks": 47,
+      "applications": 5
+    }
+  },
+  {
+    "id": "JOB-006",
+    "status": "Aktivní",
+    "title": "Frontend Developer",
+    "location": "Brno",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-007",
+        "name": "Michal Dvořák",
+        "role": "Tech Lead"
+      }
+    ],
+    "candidates": {
+      "new": 4,
+      "inProcess": 2,
+      "total": 8
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/567890",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-20",
+          "expiresAt": "2023-11-20",
+          "performance": {
+            "views": 312,
+            "clicks": 58,
+            "applications": 8
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 312,
+      "clicks": 58,
+      "applications": 8
+    }
+  }
+] 

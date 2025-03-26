@@ -7,18 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
+// Aktualizovaný seznam náborářů podle dat v mock-jobs.json
 const recruiters = [
   "Všichni náboráři",
-  "Anna K.",
-  "Martin H.",
-  "Petra N.",
-  "Jan B.",
-  "Eva M.",
-  "Tomáš R.",
-  "Lucie S.",
-  "David P.",
-  "Markéta V.",
-  "Filip K.",
+  "Anna Kovářová",
+  "Martin Horák",
+  "Lucie Svobodová",
 ]
 
 interface RecruiterFilterProps {
@@ -27,24 +21,22 @@ interface RecruiterFilterProps {
 
 export function RecruiterFilter({ onRecruiterChange }: RecruiterFilterProps) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("Anna K.")
+  const [value, setValue] = React.useState("")
 
-  React.useEffect(() => {
-    // Notify parent components of the initial selection
-    onRecruiterChange?.("Anna K.")
-  }, [onRecruiterChange])
+  // Odstraněn useEffect, který automaticky nastavoval počáteční hodnotu
+  // Místo toho začínáme s prázdným filtrem, což odpovídá "Všichni náboráři"
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-          {value === "Anna K." ? (
+          {value ? (
             <div className="flex flex-row items-center justify-between w-full">
-              <span>Anna K.</span>
-              <span className="text-xs text-muted-foreground">Moje nábory</span>
+              <span>{value}</span>
+              {value === "Anna Kovářová" && (
+                <span className="text-xs text-muted-foreground">Moje nábory</span>
+              )}
             </div>
-          ) : value && value !== "Všichni náboráři" ? (
-            recruiters.find((recruiter) => recruiter === value)
           ) : (
             "Všichni náboráři"
           )}
@@ -61,13 +53,25 @@ export function RecruiterFilter({ onRecruiterChange }: RecruiterFilterProps) {
                   key={recruiter}
                   value={recruiter}
                   onSelect={(currentValue) => {
-                    const newValue = currentValue === "Všichni náboráři" ? "" : currentValue
-                    setValue(currentValue === value ? "" : currentValue)
-                    onRecruiterChange?.(newValue)
-                    setOpen(false)
+                    // Logování akce pro debugging
+                    console.log(`Vybrán náborář: ${currentValue}`);
+                    
+                    // Pokud je vybrán "Všichni náboráři", nastavíme prázdnou hodnotu filtru
+                    const newValue = currentValue === "Všichni náboráři" ? "" : currentValue;
+                    
+                    // Nastavení hodnoty pro UI a zpětné volání pro rodiče
+                    setValue(currentValue === "Všichni náboráři" ? "" : currentValue);
+                    
+                    // Informovat rodičovskou komponentu o změně filtru
+                    if (onRecruiterChange) {
+                      console.log(`Informuji rodiče o změně filtru náboráře na: "${newValue}"`);
+                      onRecruiterChange(newValue);
+                    }
+                    
+                    setOpen(false);
                   }}
                 >
-                  <Check className={cn("mr-2 h-4 w-4", value === recruiter ? "opacity-100" : "opacity-0")} />
+                  <Check className={cn("mr-2 h-4 w-4", value === recruiter || (value === "" && recruiter === "Všichni náboráři") ? "opacity-100" : "opacity-0")} />
                   {recruiter}
                 </CommandItem>
               ))}
