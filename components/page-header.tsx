@@ -8,12 +8,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 
 interface PageHeaderProps {
   title: string
-  activeView?: JobStatus | "open"
+  activeView?: string
   onViewChange?: (value: string) => void
-  counts: Record<JobStatus | "open", number>
+  counts: Record<string, number>
 }
 
-export function PageHeader({ title, activeView = "open", onViewChange, counts }: PageHeaderProps) {
+export function PageHeader({ title, activeView = "Aktivní", onViewChange, counts }: PageHeaderProps) {
   return (
     <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background drop-shadow-sm">
       <TopHeader userName="Jan Novák" companyName="Acme Corporation s.r.o." />

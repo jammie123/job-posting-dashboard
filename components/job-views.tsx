@@ -3,30 +3,71 @@
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { JobStatus } from "@/types/job-posting"
 
+export interface JobViewConfig {
+  value: string
+  label: string
+  filters?: {
+    [key: string]: any
+  }
+}
+
 interface JobViewsProps {
-  onViewChange?: (value: JobStatus | "open" | string) => void
-  activeView?: JobStatus | "open" | string
-  counts: Record<JobStatus | "open" | string, number>
+  onViewChange?: (value: string) => void
+  activeView?: string
+  counts: Record<string, number>
   isEshop?: boolean
 }
 
-// Aktualizované pohledy s českými názvy stavů
-const views = [
-  { value: "open", label: "Všechny" },
-  { value: "Aktivní", label: "Aktivní" },
-  { value: "Rozpracovaný", label: "Rozpracovaný" },
-  { value: "Archivní", label: "Archivní" },
+// Aktualizované pohledy podle požadavků v instructions.md
+export const views: JobViewConfig[] = [
+  { 
+    value: "Aktivní", 
+    label: "Aktivní",
+    filters: {
+      status: "Aktivní"
+    } 
+  },
+  { 
+    value: "Zveřejněný", 
+    label: "Zveřejněné",
+    filters: {
+      status: "Aktivní",
+      "advertisement.status": "Vystavený"
+    } 
+  },
+  { 
+    value: "Nezveřejněný", 
+    label: "Nezveřejněné",
+    filters: {
+      status: "Aktivní",
+      "advertisement.status": ["Ukončený", "Nevystavený"]
+    } 
+  },
+  { 
+    value: "Rozpracovaný", 
+    label: "Rozpracované",
+    filters: {
+      status: "Rozpracovaný"
+    } 
+  },
+  { 
+    value: "Archivní", 
+    label: "Archivní",
+    filters: {
+      status: "Archivní"
+    } 
+  },
 ]
 
-const eshopViews = [
+const eshopViews: JobViewConfig[] = [
   { value: "addons", label: "Addony a premium služby" },
   { value: "credits", label: "Kredity a inzerování" },
   { value: "invoices", label: "Vystavené faktury" },
 ]
 
-export function JobViews({ onViewChange, activeView = "open", counts, isEshop = false }: JobViewsProps) {
+export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEshop = false }: JobViewsProps) {
   const currentViews = isEshop ? eshopViews : views
-  const defaultValue = isEshop ? "addons" : "open"
+  const defaultValue = isEshop ? "addons" : "Aktivní"
 
   return (
     <Tabs defaultValue={defaultValue} value={activeView} onValueChange={(value) => onViewChange?.(value)}>

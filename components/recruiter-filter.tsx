@@ -17,15 +17,13 @@ const recruiters = [
 
 interface RecruiterFilterProps {
   onRecruiterChange?: (value: string) => void
+  initialValue?: string
 }
 
-export function RecruiterFilter({ onRecruiterChange }: RecruiterFilterProps) {
+export function RecruiterFilter({ onRecruiterChange, initialValue = "Anna Kovářová" }: RecruiterFilterProps) {
   const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
-
-  // Odstraněn useEffect, který automaticky nastavoval počáteční hodnotu
-  // Místo toho začínáme s prázdným filtrem, což odpovídá "Všichni náboráři"
-
+  const [value, setValue] = React.useState(initialValue)
+  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

@@ -24,6 +24,7 @@ import type { SortOption } from "@/components/sort-menu"
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
 import { Eye } from "lucide-react"
+import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Sample notes
 const sampleNotes = [
@@ -105,45 +106,102 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   }
   
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([])
-  const [activeView, setActiveView] = useState<JobStatus | "open">("open") // Default to "open" view
+  const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([
+    {
+      id: "recruiter",
+      label: "Náborář",
+      value: "Anna Kovářová"
+    },
+    {
+      id: "status",
+      label: "Stav náboru",
+      value: "Aktivní"
+    }
+  ])
+  const [activeView, setActiveView] = useState("Aktivní")
   const [currentSort, setCurrentSort] = useState<SortOption>("created-desc")
   const [bulkActionEnabled, setBulkActionEnabled] = useState(false)
   const [selectedJobs, setSelectedJobs] = useState<string[]>([])
   const [viewType, setViewType] = useState<"cards" | "table">("cards")
-  const [recruiterFilter, setRecruiterFilter] = useState("")
   const [isRepublishModalOpen, setIsRepublishModalOpen] = useState(false)
   const [selectedJobForRepublish, setSelectedJobForRepublish] = useState<JobPosting | null>(null)
+
+  // Helper function to get current recruiter filter value from activeFilters
+  const getRecruiterFilter = (): string => {
+    const recruiterFilter = activeFilters.find(f => f.id === "recruiter");
+    return recruiterFilter?.value as string || "";
+  };
 
   // Nový handler pro změnu pohledu, který nastaví odpovídající filtry
   const handleViewChange = (view: string) => {
     console.log(`=== Změna pohledu na: "${view}" ===`);
     
     // Nejprve nastavíme aktivní pohled pro UI
-    setActiveView(view as JobStatus | "open");
+    setActiveView(view);
     
-    // Pro každý pohled definujeme odpovídající filtry
-    let newFilters: ActiveFilter[] = [...activeFilters];
+    // Získáme konfiguraci pohledu
+    const viewConfig = views.find((v: JobViewConfig) => v.value === view);
     
-    // Odstraníme existující filtry statusu, abychom je mohli nahradit
-    newFilters = newFilters.filter(f => f.id !== "status");
+    if (!viewConfig) {
+      console.warn(`Pohled "${view}" nebyl nalezen v konfiguraci!`);
+      return;
+    }
+    
+    console.log(`Konfigurace pohledu:`, viewConfig.filters);
+    
+    // Při přepnutí na jakýkoliv pohled vyčistíme vyhledávání, ale zachováme filtr náboráře
+    setSearchQuery("");
+    
+    // Vytvoříme nové pole filtrů podle konfigurace pohledu
+    let newFilters: ActiveFilter[] = [];
+    
+    // Zachováme existující filtr náboráře, pokud existuje
+    const existingRecruiterFilter = activeFilters.find(f => f.id === "recruiter");
+    if (existingRecruiterFilter) {
+      newFilters.push(existingRecruiterFilter);
+    }
     
     // Pro každý pohled nastavíme odpovídající filtry
-    if (view !== "open") {
-      // Přidáme filtr podle vybraného pohledu
-      newFilters.push({
-        id: "status",
-        label: "Stav náboru",
-        value: view
-      });
+    if (viewConfig.filters) {
+      // Přidáme filtr statusu, pokud existuje v konfiguraci pohledu
+      if (viewConfig.filters.status) {
+        newFilters.push({
+          id: "status",
+          label: "Stav náboru",
+          value: viewConfig.filters.status as string
+        });
+        console.log(`Nastavuji filtr status: ${viewConfig.filters.status}`);
+      }
       
-      console.log(`Nastavuji filtr status: ${view}`);
+      // Přidáme filtr pro advertisement.status, pokud existuje v konfiguraci pohledu
+      if ("advertisement.status" in viewConfig.filters) {
+        const adStatusValue = viewConfig.filters["advertisement.status"];
+        
+        if (Array.isArray(adStatusValue)) {
+          // Pokud je hodnota pole, přidáme ji přímo
+          newFilters.push({
+            id: "adStatus",
+            label: "Stav inzerátu",
+            value: adStatusValue,
+            isMulti: true
+          });
+          console.log(`Nastavuji filtr stav inzerátu: [${adStatusValue.join(", ")}]`);
+        } else if (adStatusValue) {
+          // Pokud hodnota není pole a není prázdná, přidáme ji jako string
+          newFilters.push({
+            id: "adStatus",
+            label: "Stav inzerátu",
+            value: adStatusValue as string
+          });
+          console.log(`Nastavuji filtr stav inzerátu: ${adStatusValue}`);
+        }
+      }
     } else {
       console.log("Odstraňuji filtry stavu - zobrazuji všechny pozice");
     }
     
     // Aktualizujeme filtry
-    handleFilterChange(newFilters);
+    setActiveFilters(newFilters);
   };
 
   // Handler pro změnu filtrů s logováním
@@ -152,28 +210,34 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     if (filters.length === 0) {
       console.log("Žádné aktivní filtry");
       
-      // Když nejsou žádné filtry, nastavíme pohled na "open"
-      if (activeView !== "open") {
-        setActiveView("open");
-        console.log("Změna pohledu na: 'open' (žádné filtry)");
+      // Když nejsou žádné filtry, nastavíme pohled na "Aktivní"
+      if (activeView !== "Aktivní") {
+        setActiveView("Aktivní");
+        console.log("Změna pohledu na: 'Aktivní' (žádné filtry)");
       }
     } else {
       filters.forEach((filter, index) => {
-        console.log(`Filtr #${index + 1}: ${filter.id} = ${filter.value}`);
+        const valueStr = Array.isArray(filter.value) 
+          ? `[${filter.value.join(", ")}]` 
+          : filter.value;
+        console.log(`Filtr #${index + 1}: ${filter.id} = ${valueStr}`);
       });
       
       // Kontrola, zda je mezi filtry status, a pokud ano, aktualizujeme pohled
       const statusFilter = filters.find(f => f.id === "status");
       if (statusFilter && statusFilter.value) {
-        const matchingStatus = statusFilter.value as JobStatus;
-        if (activeView !== matchingStatus) {
-          setActiveView(matchingStatus);
-          console.log(`Synchronizuji pohled s filtrem status: ${matchingStatus}`);
+        // Pro status filtr očekáváme vždy string, ne pole
+        if (!Array.isArray(statusFilter.value)) {
+          const matchingStatus = statusFilter.value;
+          if (activeView !== matchingStatus) {
+            setActiveView(matchingStatus);
+            console.log(`Synchronizuji pohled s filtrem status: ${matchingStatus}`);
+          }
         }
-      } else if (activeView !== "open") {
-        // Pokud není nastaven žádný filtr statusu, nastavíme pohled na "open"
-        setActiveView("open");
-        console.log("Změna pohledu na: 'open' (žádný filtr statusu)");
+      } else if (activeView !== "Aktivní") {
+        // Pokud není nastaven žádný filtr statusu, nastavíme pohled na "Aktivní"
+        setActiveView("Aktivní");
+        console.log("Změna pohledu na: 'Aktivní' (žádný filtr statusu)");
       }
     }
     console.log("=== Souhrn filtrů ===");
@@ -183,7 +247,15 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         filterGroups[filter.id] = [];
       }
       if (filter.value) {
-        filterGroups[filter.id].push(filter.value);
+        if (Array.isArray(filter.value)) {
+          // Pokud je hodnota pole, přidáme všechny jeho hodnoty
+          filter.value.forEach(val => {
+            filterGroups[filter.id].push(val);
+          });
+        } else {
+          // Jinak přidáme jednu hodnotu
+          filterGroups[filter.id].push(filter.value);
+        }
       }
     });
     console.log(filterGroups);
@@ -198,11 +270,53 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     setSearchQuery(query);
   };
 
-  // Handler pro změnu filtru náboráře s logováním
+  // Handler pro změnu náboráře s logováním
   const handleRecruiterChange = (recruiter: string) => {
     console.log(`=== Filtrování podle náboráře: "${recruiter}" ===`);
-    setRecruiterFilter(recruiter);
+    
+    // Když se změní náborář, aktualizujeme aktivní filtry
+    let newFilters = [...activeFilters];
+    
+    // Najdeme, jestli už existuje filtr recruiter
+    const recruiterFilterIndex = newFilters.findIndex(f => f.id === "recruiter");
+    
+    if (recruiter) {
+      // Pokud je vybrán náborář, přidáme nebo aktualizujeme filtr
+      if (recruiterFilterIndex >= 0) {
+        // Aktualizovat existující filtr
+        newFilters[recruiterFilterIndex] = {
+          ...newFilters[recruiterFilterIndex],
+          value: recruiter
+        };
+      } else {
+        // Přidat nový filtr
+        newFilters.push({
+          id: "recruiter",
+          label: "Náborář",
+          value: recruiter
+        });
+      }
+    } else {
+      // Pokud není vybrán náborář, odstraníme filtr, pokud existuje
+      if (recruiterFilterIndex >= 0) {
+        newFilters = newFilters.filter(f => f.id !== "recruiter");
+      }
+    }
+    
+    // Nastavíme aktualizované filtry
+    setActiveFilters(newFilters);
   };
+
+  // Helper funkce pro určení stavu inzerátu
+  const getAdvertisementStatus = (job: JobPosting): string => {
+    if (job.advertisement.active) {
+      return "Vystavený";
+    } else if (job.advertisement.portals.length > 0) {
+      return "Ukončený";
+    } else {
+      return "Nevystavený";
+    }
+  }
 
   const filteredJobs = jobPostings.filter((job) => {
     // Nejdříve zalogujeme, jaké filtry budou aplikovány na tento job
@@ -219,13 +333,8 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
       if (!matchesQuery) return false;
     }
 
-    // Aplikovat filtr náboráře
-    if (recruiterFilter) {
-      const matchesRecruiter = job.recruiter.name === recruiterFilter;
-      console.log(`- Filtr náboráře: '${recruiterFilter}' - ${matchesRecruiter ? 'odpovídá' : 'neodpovídá'}`);
-      if (!matchesRecruiter) return false;
-    }
-
+    // Odebírám separátní kontrolu recruiterFilter, protože nyní je součástí activeFilters
+    
     // Aplikovat všechny aktivní filtry
     const passesAllFilters = activeFilters.every((filter) => {
       if (!filter.value) {
@@ -252,15 +361,15 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           break;
           
         case "adStatus":
-          if (filter.value === "Vystavený") {
-            passes = job.advertisement.active;
-            console.log(`- Filtr 'adStatus': 'Vystavený' - ${passes ? 'odpovídá' : 'neodpovídá'} (inzerát ${job.advertisement.active ? 'je' : 'není'} aktivní)`);
-          } else if (filter.value === "Ukončený") {
-            passes = !job.advertisement.active && job.advertisement.portals.length > 0;
-            console.log(`- Filtr 'adStatus': 'Ukončený' - ${passes ? 'odpovídá' : 'neodpovídá'} (inzerát ${!job.advertisement.active && job.advertisement.portals.length > 0 ? 'je ukončený' : 'není ukončený'})`);
-          } else if (filter.value === "Nevystavený") {
-            passes = !job.advertisement.active && job.advertisement.portals.length === 0;
-            console.log(`- Filtr 'adStatus': 'Nevystavený' - ${passes ? 'odpovídá' : 'neodpovídá'} (inzerát ${!job.advertisement.active && job.advertisement.portals.length === 0 ? 'není vystavený' : 'je vystavený'})`);
+          const adStatus = getAdvertisementStatus(job);
+          if (Array.isArray(filter.value)) {
+            // Pokud je hodnota filtru pole, kontrolujeme, zda adStatus je v tomto poli
+            passes = filter.value.includes(adStatus);
+            console.log(`- Filtr 'adStatus': [${filter.value.join(", ")}] - ${passes ? 'odpovídá' : 'neodpovídá'} stavu inzerátu '${adStatus}'`);
+          } else {
+            // Jinak kontrolujeme přesnou shodu
+            passes = adStatus === filter.value;
+            console.log(`- Filtr 'adStatus': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} stavu inzerátu '${adStatus}'`);
           }
           break;
           
@@ -341,10 +450,12 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     }
   }
 
-  // Calculate counts for each status category
+  // Calculate counts for each view category
   const statusCounts = {
-    open: jobPostings.length,
     "Aktivní": jobPostings.filter((job) => job.status === "Aktivní").length,
+    "Zveřejněný": jobPostings.filter((job) => job.status === "Aktivní" && getAdvertisementStatus(job) === "Vystavený").length,
+    "Nezveřejněný": jobPostings.filter((job) => job.status === "Aktivní" && 
+      (getAdvertisementStatus(job) === "Ukončený" || getAdvertisementStatus(job) === "Nevystavený")).length,
     "Rozpracovaný": jobPostings.filter((job) => job.status === "Rozpracovaný").length,
     "Archivní": jobPostings.filter((job) => job.status === "Archivní").length,
   }
@@ -475,7 +586,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                           </div>
                                         </DialogTrigger>
                                       </TooltipTrigger>
-                                      <TooltipContent>Zobrazit náboráže a kolegy</TooltipContent>
+                                      <TooltipContent>Zobrazit náboráře a kolegy</TooltipContent>
                                     </Tooltip>
                                     <DialogContent className="sm:max-w-[425px]">
                                       <DialogHeader>

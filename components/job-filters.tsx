@@ -51,7 +51,8 @@ export const filterOptions: FilterOption[] = [
 export type ActiveFilter = {
   id: string
   label: string
-  value: string
+  value: string | string[]
+  isMulti?: boolean
 }
 
 interface JobFiltersProps {
@@ -82,18 +83,81 @@ export function JobFilters({
 
   const handleFilterSelect = (filter: ActiveFilter, value: string) => {
     console.log(`Vybírám hodnotu pro filtr: ${filter.id} = ${value}`);
-    // Vytvoření nové kolekce filtrů s aktualizovanou hodnotou
-    const updatedFilters = activeFilters.map((f) => 
-      f.id === filter.id ? { ...f, value } : f
-    );
-    onFilterChange(updatedFilters);
+    
+    // Pro filtr adStatus podporujeme vícenásobný výběr
+    if (filter.id === "adStatus" && filter.isMulti) {
+      // Pokud je již hodnota polem, přidáme nebo odebereme hodnotu
+      if (Array.isArray(filter.value)) {
+        let newValues: string[];
+        
+        // Pokud již hodnota existuje, odebereme ji, jinak přidáme
+        if (filter.value.includes(value)) {
+          newValues = filter.value.filter(v => v !== value);
+        } else {
+          newValues = [...filter.value, value];
+        }
+        
+        // Pokud je výsledné pole prázdné, odstraníme celý filtr
+        if (newValues.length === 0) {
+          const updatedFilters = activeFilters.filter((f) => f.id !== filter.id);
+          onFilterChange(updatedFilters);
+          return;
+        }
+        
+        // Aktualizujeme filtr s novým polem hodnot
+        const updatedFilters = activeFilters.map((f) => 
+          f.id === filter.id ? { ...f, value: newValues } : f
+        );
+        onFilterChange(updatedFilters);
+      } else {
+        // Pokud hodnota není pole, vytvoříme nové pole s aktuální a novou hodnotou
+        const newValues = filter.value ? [filter.value, value] : [value];
+        const updatedFilters = activeFilters.map((f) => 
+          f.id === filter.id ? { ...f, value: newValues } : f
+        );
+        onFilterChange(updatedFilters);
+      }
+    } else {
+      // Pro ostatní filtry pouze aktualizujeme hodnotu
+      const updatedFilters = activeFilters.map((f) => 
+        f.id === filter.id ? { ...f, value } : f
+      );
+      onFilterChange(updatedFilters);
+    }
   }
 
-  const removeFilter = (filterId: string, value: string) => {
+  const removeFilter = (filterId: string, value?: string) => {
+    if (value === undefined) {
+      console.log(`Odstraňuji celý filtr: ${filterId}`);
+      // Pokud hodnota není specifikována, odstraníme celý filtr
+      const updatedFilters = activeFilters.filter((f) => f.id !== filterId);
+      onFilterChange(updatedFilters);
+      return;
+    }
+    
     console.log(`Odstraňuji filtr: ${filterId} = ${value}`);
-    // Vytvoření nové kolekce filtrů bez odstraněného filtru
-    const updatedFilters = activeFilters.filter((f) => !(f.id === filterId && f.value === value));
-    onFilterChange(updatedFilters);
+    
+    // Pro filtr typu MultiSelect, odebereme pouze konkrétní hodnotu z pole
+    const filter = activeFilters.find(f => f.id === filterId);
+    if (filter && Array.isArray(filter.value) && filter.isMulti) {
+      const newValues = filter.value.filter(v => v !== value);
+      
+      // Pokud je pole prázdné, odstraníme celý filtr
+      if (newValues.length === 0) {
+        const updatedFilters = activeFilters.filter((f) => f.id !== filterId);
+        onFilterChange(updatedFilters);
+      } else {
+        // Jinak aktualizujeme pole hodnot
+        const updatedFilters = activeFilters.map((f) => 
+          f.id === filterId ? { ...f, value: newValues } : f
+        );
+        onFilterChange(updatedFilters);
+      }
+    } else {
+      // Pro běžné filtry odstraníme celý filtr
+      const updatedFilters = activeFilters.filter((f) => !(f.id === filterId && f.value === value));
+      onFilterChange(updatedFilters);
+    }
   }
 
   const handleSaveView = (viewName: string) => {
@@ -116,22 +180,53 @@ export function JobFilters({
       let newFilters = [...activeFilters];
       
       if (existingFilterIndex >= 0) {
-        // Aktualizace existujícího filtru
-        newFilters[existingFilterIndex] = { 
-          ...newFilters[existingFilterIndex], 
-          value: option 
-        };
+        // Pro adStatus nastavíme isMulti=true a zachováme současnou hodnotu
+        if (filterOption.id === "adStatus") {
+          if (Array.isArray(newFilters[existingFilterIndex].value)) {
+            // Pokud již je hodnota pole a obsahuje vybranou hodnotu, neděláme nic
+            if (!newFilters[existingFilterIndex].value.includes(option)) {
+              newFilters[existingFilterIndex] = { 
+                ...newFilters[existingFilterIndex], 
+                value: [...newFilters[existingFilterIndex].value as string[], option],
+                isMulti: true
+              };
+            }
+          } else {
+            // Pokud hodnota není pole, převedeme ji na pole s novou hodnotou
+            const currentValue = newFilters[existingFilterIndex].value as string;
+            newFilters[existingFilterIndex] = { 
+              ...newFilters[existingFilterIndex], 
+              value: currentValue ? [currentValue, option] : [option],
+              isMulti: true
+            };
+          }
+        } else {
+          // Aktualizace existujícího filtru pro ostatní typy
+          newFilters[existingFilterIndex] = { 
+            ...newFilters[existingFilterIndex], 
+            value: option 
+          };
+        }
       } else {
-        // Přidání nového filtru
+        // Přidání nového filtru, pro adStatus s isMulti=true
         newFilters.push({ 
           id: filterOption.id, 
           label: category, 
-          value: option 
+          value: filterOption.id === "adStatus" ? [option] : option,
+          isMulti: filterOption.id === "adStatus"
         });
       }
       
       onFilterChange(newFilters);
     }
+  }
+
+  // Helper pro zobrazení hodnoty filtru
+  const renderFilterValue = (filter: ActiveFilter) => {
+    if (Array.isArray(filter.value)) {
+      return filter.value.join(", ");
+    }
+    return filter.value;
   }
 
   return (
@@ -154,7 +249,8 @@ export function JobFilters({
           onRecruiterChange={(value) => {
             console.log(`Filtr náboráře: "${value}"`);
             if (onRecruiterChange) onRecruiterChange(value);
-          }} 
+          }}
+          initialValue={activeFilters.find(f => f.id === "recruiter")?.value as string || ""}
         />
         
         <FilterDialog
@@ -193,19 +289,69 @@ export function JobFilters({
         <div className="flex flex-wrap gap-2">
           {activeFilters.map((filter, index) => (
             <div key={`${filter.id}-${index}`} className="relative">
-              <Badge variant="secondary" className="rounded-full px-3 py-1">
+              <Badge 
+                variant="secondary" 
+                className="rounded-full px-3 py-1 cursor-pointer"
+                onClick={() => {
+                  // Pokud je to filtr adStatus, zobrazíme/skryjeme dropdown s možnostmi
+                  if (filter.id === "adStatus") {
+                    const filterElement = document.getElementById(`filter-${filter.id}-${index}`);
+                    if (filterElement) {
+                      filterElement.classList.toggle("hidden");
+                    }
+                  }
+                }}
+              >
                 {filter.label}
-                {filter.value && `: ${filter.value}`}
+                {filter.value && `: ${renderFilterValue(filter)}`}
                 <Button
                   variant="ghost"
                   size="sm"
                   className="h-4 w-4 p-0 ml-2 hover:bg-transparent"
-                  onClick={() => removeFilter(filter.id, filter.value)}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Zastavíme propagaci události, aby se nespustilo zobrazení/skrytí dropdownu
+                    removeFilter(filter.id);
+                  }}
                 >
                   <X className="h-3 w-3" />
                 </Button>
               </Badge>
-              {!filter.value && (
+              
+              {/* Pro filtr adStatus vždy zobrazíme možnosti, které budou skryté dokud uživatel neklikne na badge */}
+              {filter.id === "adStatus" && (
+                <div 
+                  id={`filter-${filter.id}-${index}`}
+                  className="absolute left-0 top-full mt-1 w-48 p-2 rounded-md border bg-popover shadow-md z-10 hidden"
+                >
+                  <div className="grid gap-1">
+                    {dynamicFilterOptions
+                      .find((f) => f.id === filter.id)
+                      ?.options.map((option) => {
+                        // Pro vícenásobný výběr zobrazíme, které hodnoty jsou již vybrané
+                        const isSelected = Array.isArray(filter.value) ? 
+                          filter.value.includes(option) : 
+                          filter.value === option;
+                            
+                        return (
+                          <Button
+                            key={option}
+                            variant={isSelected ? "default" : "ghost"}
+                            className={`justify-start px-2 h-8 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleFilterSelect(filter, option);
+                            }}
+                          >
+                            {option}
+                          </Button>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+              
+              {/* Pro ostatní filtry zachováme původní logiku - dropdown jen když hodnota je prázdná */}
+              {!filter.value && filter.id !== "adStatus" && (
                 <div className="absolute left-0 top-full mt-1 w-48 p-2 rounded-md border bg-popover shadow-md z-10">
                   <div className="grid gap-1">
                     {dynamicFilterOptions
