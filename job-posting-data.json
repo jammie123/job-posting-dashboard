@@ -1,0 +1,53 @@
+{
+  "jobPostings": [
+    {
+      "id": "1",
+      "status": "active",
+      "title": "Senior Frontend Developer",
+      "recruiter": {
+        "name": "Anna K.",
+        "image": "/placeholder.svg",
+        "additionalRecruiters": 4,
+        "assignedUsers": [
+          {
+            "id": "au1",
+            "name": "Anna Kovářová",
+            "image": "/placeholder.svg",
+            "role": "Náborář",
+            "email": "anna.kovarova@company.cz",
+            "department": "HR",
+            "dateAssigned": "2024-01-15"
+          },
+          {
+            "id": "au2",
+            "name": "Martin Novotný",
+            "image": "/placeholder.svg",
+            "role": "Liniový manažer",
+            "email": "martin.novotny@company.cz",
+            "department": "Engineering",
+            "dateAssigned": "2024-01-15"
+          }
+        ]
+      },
+      "location": "Prague",
+      "candidates": {
+        "unreviewed": 12,
+        "inProgress": 5,
+        "total": 25
+      },
+      "advertisement": {
+        "activePortals": [
+          {
+            "name": "LinkedIn",
+            "icon": "LinkedinIcon",
+            "url": "#",
+            "publishedAt": "2024-02-01",
+            "expiresAt": "2024-03-01"
+          }
+        ],
+        "expiredPortals": []
+      }
+    }
+  ]
+}
+
