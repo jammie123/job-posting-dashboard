@@ -266,7 +266,7 @@ export function JobFilters({
           <>
             <Button 
               variant="ghost" 
-              className="gap-2 text-destructive" 
+              className="gap-2 text-primary" 
               onClick={clearAllFilters}
             >
               <X className="h-4 w-4" />
