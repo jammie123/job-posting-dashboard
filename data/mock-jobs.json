@@ -69,7 +69,7 @@
     "location": "Brno",
     "recruiter": {
       "id": "REC-002",
-      "name": "Martin Horák",
+      "name": "Anna Kovářová",
       "role": "HR Specialist"
     },
     "assignedUsers": [
@@ -153,7 +153,7 @@
     "location": "Ostrava",
     "recruiter": {
       "id": "REC-003",
-      "name": "Lucie Svobodová",
+      "name": "Anna Kovářová",
       "role": "HR Specialist"
     },
     "assignedUsers": [
@@ -216,7 +216,7 @@
     "location": "Praha",
     "recruiter": {
       "id": "REC-002",
-      "name": "Martin Horák",
+      "name": "Anna Kovářová",
       "role": "HR Specialist"
     },
     "assignedUsers": [
@@ -604,5 +604,197 @@
       "clicks": 53,
       "applications": 9
     }
+  },
+  {
+    "id": "JOB-008",
+    "status": "Ukončený",
+    "title": "Frontend Developer",
+    "location": "Brno",
+    "recruiter": {
+      "id": "REC-002",
+      "name": "Tomáš Novák",
+      "role": "Technical Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-002",
+        "name": "Tomáš Novák",
+        "role": "Technical Recruiter"
+      },
+      {
+        "id": "USR-004",
+        "name": "Lucie Malá",
+        "role": "Engineering Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 15
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Archivovaný",
+      "portals": [
+        {
+          "name": "startupjobs.cz",
+          "url": "https://startupjobs.cz/job/frontend-dev",
+          "icon": "StartupJobsIcon",
+          "publishedAt": "2023-08-01",
+          "expiresAt": "2023-09-01",
+          "performance": {
+            "views": 250,
+            "clicks": 90,
+            "applications": 10
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 250,
+      "clicks": 90,
+      "applications": 10
+    }
+  },
+  {
+    "id": "JOB-009",
+    "status": "Ukončený",
+    "title": "Marketing Specialist",
+    "location": "Remote",
+    "recruiter": {
+      "id": "REC-003",
+      "name": "Eva Štěpánková",
+      "role": "Recruitment Consultant"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-003",
+        "name": "Eva Štěpánková",
+        "role": "Recruitment Consultant"
+      },
+      {
+        "id": "USR-007",
+        "name": "David Černý",
+        "role": "Marketing Director"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 8
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Archivovaný",
+      "portals": [
+        {
+          "name": "prace.cz",
+          "url": "https://prace.cz/job/marketing-specialist",
+          "icon": "PraceIcon",
+          "publishedAt": "2023-07-10",
+          "expiresAt": "2023-08-10",
+          "performance": {
+            "views": 180,
+            "clicks": 45,
+            "applications": 6
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 180,
+      "clicks": 45,
+      "applications": 6
+    }
+  },
+  {
+    "id": "JOB-010",
+    "status": "Ukončený",
+    "title": "HR Generalist",
+    "location": "Ostrava",
+    "recruiter": {
+      "id": "REC-004",
+      "name": "Michaela Dvořáková",
+      "role": "HR Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-004",
+        "name": "Michaela Dvořáková",
+        "role": "HR Recruiter"
+      },
+      {
+        "id": "USR-009",
+        "name": "Radek Sýkora",
+        "role": "HR Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 5
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Neaktivní",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/987654",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-06-01",
+          "expiresAt": "2023-07-01",
+          "performance": {
+            "views": 120,
+            "clicks": 30,
+            "applications": 5
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 120,
+      "clicks": 30,
+      "applications": 5
+    }
+  },
+  {
+    "id": "JOB-011",
+    "status": "Aktivní",
+    "title": "IT Support Specialist",
+    "location": "Olomouc",
+    "recruiter": {
+      "id": "REC-005",
+      "name": "Petr Král",
+      "role": "IT Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-005",
+        "name": "Petr Král",
+        "role": "IT Recruiter"
+      },
+      {
+        "id": "USR-010",
+        "name": "Martin Jelínek",
+        "role": "IT Manager"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 3,
+      "total": 6
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Archivovaný",
+      "portals": []
+    },
+    "performance": {
+      "views": 95,
+      "clicks": 20,
+      "applications": 6
+    }
   }
+  
 ] 

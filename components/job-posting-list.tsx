@@ -25,12 +25,15 @@ import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
 import { Eye } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
+import { TopHeader } from "@/components/top-header"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Plus } from "lucide-react"
 
 // Sample notes
 const sampleNotes = [
-  "Kandidát má dobré zkušenosti s React a TypeScript. Hledáme někoho, kdo může nastoupit co nejdříve.",
-  "Potřebujeme najít někoho s lepšími znalostmi Javy. Tento kandidát by mohl být vhodný pro seniorní pozici.",
-  "Pozice vyžaduje cestování, což může být problém pro některé kandidáty. Kandidát požaduje vyšší plat, než můžeme nabídnout.",
+  "Náhrada za Jan Fuxa, urgentní nábor",
+  "Další prodloužení už nechceme, oblastní manažer",
+  "Kandidáty posílejte na email: jana.novakova@example.com",
 ]
 
 // Ikony pro portály
@@ -476,12 +479,34 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   return (
     <TooltipProvider>
       <div className="flex flex-col w-full">
-        <PageHeader
-          title="Nábory"
-          activeView={activeView}
-          onViewChange={handleViewChange}
-          counts={statusCounts}
-        />
+        <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background drop-shadow-sm">
+          <TopHeader userName="Jan Novák" companyName="Acme Corporation s.r.o." />
+          <div className="flex items-center justify-between px-6 pt-6">
+            <h1 className="text-2xl font-semibold tracking-tight">Nábory</h1>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button>
+                  <Plus className="mr-2 h-4 w-4" />
+                  Nový nábor
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/new-position">Varianta 1 - Krokový průvodce</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/new-position-simple">Varianta 2 - Jednoduchý formulář</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+          <JobViews 
+            activeView={activeView} 
+            onViewChange={handleViewChange} 
+            counts={statusCounts}
+            activeFilters={activeFilters}
+          />
+        </header>
         <div className="container mx-auto px-4">
           <JobFilters
             searchValue={searchQuery}

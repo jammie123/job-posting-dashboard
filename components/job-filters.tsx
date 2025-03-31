@@ -46,6 +46,11 @@ export const filterOptions: FilterOption[] = [
     label: "Místo vystavení",
     options: ["jobs.cz", "linkedin.com", "práce.cz"],
   },
+  {
+    id: "title",
+    label: "Název pozice",
+    options: [],
+  },
 ]
 
 export type ActiveFilter = {
@@ -229,6 +234,42 @@ export function JobFilters({
     return filter.value;
   }
 
+  // Funkce pro aktualizaci vyhledávacího filtru
+  const handleSearchChange = (value: string) => {
+    console.log(`Vyhledávací dotaz: "${value}"`);
+    
+    // Pokud je vyhledávací dotaz prázdný, odstraníme filtr title
+    if (!value.trim()) {
+      const updatedFilters = activeFilters.filter(f => f.id !== "title");
+      onFilterChange(updatedFilters);
+      onSearchChange(value); // Předáme prázdnou hodnotu pro rodičovskou komponentu
+      return;
+    }
+    
+    // Kontrola, zda již filtr title existuje
+    const existingTitleFilterIndex = activeFilters.findIndex(f => f.id === "title");
+    
+    let newFilters = [...activeFilters];
+    
+    if (existingTitleFilterIndex >= 0) {
+      // Aktualizace existujícího filtru title
+      newFilters[existingTitleFilterIndex] = { 
+        ...newFilters[existingTitleFilterIndex], 
+        value: value 
+      };
+    } else {
+      // Přidání nového filtru title
+      newFilters.push({ 
+        id: "title", 
+        label: "Název pozice", 
+        value: value
+      });
+    }
+    
+    onFilterChange(newFilters);
+    onSearchChange(value); // Předáme hodnotu pro rodičovskou komponentu
+  }
+
   return (
     <div className="flex flex-col gap-4 pb-6">
       <div className="flex items-center gap-4 flex-wrap">
@@ -239,8 +280,7 @@ export function JobFilters({
             className="pl-9"
             value={searchValue}
             onChange={(e) => {
-              console.log(`Vyhledávací dotaz: "${e.target.value}"`);
-              onSearchChange(e.target.value);
+              handleSearchChange(e.target.value);
             }}
           />
         </div>
@@ -261,32 +301,10 @@ export function JobFilters({
             Přidat filtr
           </Button>
         </FilterDialog>
-        
-        {activeFilters.length > 0 && (
-          <>
-            <Button 
-              variant="ghost" 
-              className="gap-2 text-primary" 
-              onClick={clearAllFilters}
-            >
-              <X className="h-4 w-4" />
-              Vymazat filtry
-            </Button>
-            
-            <Button 
-              variant="link" 
-              className="gap-2 text-primary" 
-              onClick={() => setCreateViewOpen(true)}
-            >
-              <Save className="h-4 w-4" />
-              Uložit pohled
-            </Button>
-          </>
-        )}
       </div>
       
       {activeFilters.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex items-center flex-wrap gap-2">
           {activeFilters.map((filter, index) => (
             <div key={`${filter.id}-${index}`} className="relative">
               <Badge 
@@ -371,6 +389,18 @@ export function JobFilters({
               )}
             </div>
           ))}
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="gap-2 text-xs bg-accent text-primary" 
+            onClick={() => setCreateViewOpen(true)}
+          >
+            Uložit pohled
+          </Button>
+          <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={clearAllFilters}>
+            Vymazat vše
+          </Button>
+
         </div>
       )}
 
