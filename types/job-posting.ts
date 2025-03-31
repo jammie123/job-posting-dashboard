@@ -1,4 +1,4 @@
-export type JobStatus = "Aktivní" | "Rozpracovaný" | "Archivní"
+export type JobStatus = "Aktivní" | "Rozpracovaný" | "Archivní" | "Ukončený" | string
 
 export interface JobPortal {
   name: string
@@ -52,6 +52,7 @@ export const statusMapping: Record<string, JobStatus> = {
   "Aktivní": "Aktivní",
   "Rozpracovaný": "Rozpracovaný",
   "Archivní": "Archivní",
+  "Ukončený": "Ukončený",
 }
 
 export const getStatusColor = (status: JobStatus) => {
@@ -62,6 +63,8 @@ export const getStatusColor = (status: JobStatus) => {
       return "bg-yellow-500"
     case "Archivní":
       return "bg-red-500"
+    case "Ukončený":
+      return "bg-gray-500"
     default:
       return "bg-gray-500"
   }

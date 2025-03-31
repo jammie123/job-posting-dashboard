@@ -295,114 +295,22 @@ export function JobFilters({
         
         <FilterDialog
           onFilterSelect={handleAddFilter}
+          activeFilters={activeFilters}
+          onRemoveFilter={removeFilter}
+          onCreateViewClick={() => setCreateViewOpen(true)}
         >
-          <Button variant="outline" className="gap-0">
-            <Plus className="h-4 w-4 mr-2" />
-            Přidat filtr
+          <Button variant="outline" className="gap-2">
+            Filtry
+            {activeFilters.length > 0 && (
+              <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-accent text-primary">
+                {activeFilters.length}
+              </span>
+            )}
           </Button>
         </FilterDialog>
       </div>
       
-      {activeFilters.length > 0 && (
-        <div className="flex items-center flex-wrap gap-2">
-          {activeFilters.map((filter, index) => (
-            <div key={`${filter.id}-${index}`} className="relative">
-              <Badge 
-                variant="secondary" 
-                className="rounded-full px-3 py-1 cursor-pointer"
-                onClick={() => {
-                  // Pokud je to filtr adStatus, zobrazíme/skryjeme dropdown s možnostmi
-                  if (filter.id === "adStatus") {
-                    const filterElement = document.getElementById(`filter-${filter.id}-${index}`);
-                    if (filterElement) {
-                      filterElement.classList.toggle("hidden");
-                    }
-                  }
-                }}
-              >
-                {filter.label}
-                {filter.value && `: ${renderFilterValue(filter)}`}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-4 w-4 p-0 ml-2 hover:bg-transparent"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Zastavíme propagaci události, aby se nespustilo zobrazení/skrytí dropdownu
-                    removeFilter(filter.id);
-                  }}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </Badge>
-              
-              {/* Pro filtr adStatus vždy zobrazíme možnosti, které budou skryté dokud uživatel neklikne na badge */}
-              {filter.id === "adStatus" && (
-                <div 
-                  id={`filter-${filter.id}-${index}`}
-                  className="absolute left-0 top-full mt-1 w-48 p-2 rounded-md border bg-popover shadow-md z-10 hidden"
-                >
-                  <div className="grid gap-1">
-                    {dynamicFilterOptions
-                      .find((f) => f.id === filter.id)
-                      ?.options.map((option) => {
-                        // Pro vícenásobný výběr zobrazíme, které hodnoty jsou již vybrané
-                        const isSelected = Array.isArray(filter.value) ? 
-                          filter.value.includes(option) : 
-                          filter.value === option;
-                            
-                        return (
-                          <Button
-                            key={option}
-                            variant={isSelected ? "default" : "ghost"}
-                            className={`justify-start px-2 h-8 ${isSelected ? 'bg-primary text-primary-foreground' : ''}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleFilterSelect(filter, option);
-                            }}
-                          >
-                            {option}
-                          </Button>
-                        );
-                      })}
-                  </div>
-                </div>
-              )}
-              
-              {/* Pro ostatní filtry zachováme původní logiku - dropdown jen když hodnota je prázdná */}
-              {!filter.value && filter.id !== "adStatus" && (
-                <div className="absolute left-0 top-full mt-1 w-48 p-2 rounded-md border bg-popover shadow-md z-10">
-                  <div className="grid gap-1">
-                    {dynamicFilterOptions
-                      .find((f) => f.id === filter.id)
-                      ?.options.map((option) => (
-                        <Button
-                          key={option}
-                          variant="ghost"
-                          className="justify-start px-2 h-8"
-                          onClick={() => handleFilterSelect(filter, option)}
-                        >
-                          {option}
-                        </Button>
-                      ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-          <Button 
-            variant="ghost" 
-            size="sm"
-            className="gap-2 text-xs bg-accent text-primary" 
-            onClick={() => setCreateViewOpen(true)}
-          >
-            Uložit pohled
-          </Button>
-          <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={clearAllFilters}>
-            Vymazat vše
-          </Button>
 
-        </div>
-      )}
 
       <CreateViewDialog
         open={createViewOpen}
