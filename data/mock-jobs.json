@@ -305,5 +305,304 @@
       "clicks": 58,
       "applications": 8
     }
+  },
+  {
+    "id": "JOB-007",
+    "status": "Aktivní",
+    "title": "Senior Data Scientist",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-008",
+        "name": "Jan Procházka",
+        "role": "Data Science Lead"
+      }
+    ],
+    "candidates": {
+      "new": 6,
+      "inProcess": 4,
+      "total": 12
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/654321",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-18",
+          "expiresAt": "2023-11-18",
+          "performance": {
+            "views": 385,
+            "clicks": 85,
+            "applications": 12
+          }
+        },
+        {
+          "name": "linkedin.com",
+          "url": "https://linkedin.com/jobs/456",
+          "icon": "LinkedInIcon",
+          "publishedAt": "2023-10-18",
+          "expiresAt": "2023-11-18",
+          "performance": {
+            "views": 310,
+            "clicks": 65,
+            "applications": 8
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 695,
+      "clicks": 150,
+      "applications": 20
+    }
+  },
+  {
+    "id": "JOB-008",
+    "status": "Rozpracovaný",
+    "title": "Product Manager",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-009",
+        "name": "Tereza Černá",
+        "role": "Product Director"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Nevystavený",
+      "portals": []
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-009",
+    "status": "Archivní",
+    "title": "Business Analyst",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-010",
+        "name": "Lukáš Kučera",
+        "role": "Business Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 15
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/741258",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 478,
+            "clicks": 89,
+            "applications": 15
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 478,
+      "clicks": 89,
+      "applications": 15
+    }
+  },
+  {
+    "id": "JOB-010",
+    "status": "Aktivní",
+    "title": "Mobile Developer (iOS/Android)",
+    "location": "Remote",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-011",
+        "name": "Pavel Svoboda",
+        "role": "Mobile Development Lead"
+      }
+    ],
+    "candidates": {
+      "new": 3,
+      "inProcess": 2,
+      "total": 7
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/963258",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-28",
+          "expiresAt": "2023-11-28",
+          "performance": {
+            "views": 156,
+            "clicks": 42,
+            "applications": 7
+          }
+        },
+        {
+          "name": "práce.cz",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "PraceIcon",
+          "publishedAt": "2023-10-28",
+          "expiresAt": "2023-11-28",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 254,
+      "clicks": 69,
+      "applications": 11
+    }
+  },
+  {
+    "id": "JOB-011",
+    "status": "Rozpracovaný",
+    "title": "IT Security Specialist",
+    "location": "Praha",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Nevystavený",
+      "portals": []
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-012",
+    "status": "Aktivní",
+    "title": "Senior QA Engineer",
+    "location": "Brno",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-012",
+        "name": "Monika Horáková",
+        "role": "QA Team Lead"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 4,
+      "total": 9
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/852147",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-10-12",
+          "expiresAt": "2023-11-12",
+          "performance": {
+            "views": 289,
+            "clicks": 53,
+            "applications": 9
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 289,
+      "clicks": 53,
+      "applications": 9
+    }
   }
 ] 
