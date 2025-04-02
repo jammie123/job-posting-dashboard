@@ -541,25 +541,34 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                               <JobMenuAction job={job} />
                             )}
                             <div className="min-w-[320px] space-y-1">
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold leading-none tracking-tight">
+                              <div className="flex items-baseline gap-2 ">
+                              <Tooltip>
+                                  <TooltipTrigger>
+                                    <div
+                                      className={`ml-1 h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                    />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {job.status === "Aktivní" 
+                                      ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                      : job.status
+                                    }
+                                  </TooltipContent>
+                                </Tooltip>
+                                <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
                                   <Link
                                     href={`/job/${job.id}`}
                                     className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
                                   >
                                     {job.title}
                                   </Link>
+                                  {job.department && (
+                                    <div className="text-primary text-sm mt-1">
+                                      ({job.department})
+                                    </div>
+                                  )}
                                 </h3>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <div
-                                      className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`}
-                                    />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {job.status}
-                                  </TooltipContent>
-                                </Tooltip>
+
                               </div>
                               <div className="flex gap-4 items-center">
                                 <div className="flex items-center gap-4">

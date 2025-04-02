@@ -25,6 +25,7 @@ export interface JobPosting {
   status: JobStatus
   title: string
   location: string
+  department?: string
   recruiter: UserInfo
   assignedUsers: UserInfo[]
   candidates: {
@@ -55,10 +56,12 @@ export const statusMapping: Record<string, JobStatus> = {
   "Ukončený": "Ukončený",
 }
 
-export const getStatusColor = (status: JobStatus) => {
+export const getStatusColor = (status: JobStatus, advertisement?: { active: boolean }) => {
+  if (status === "Aktivní") {
+    return advertisement?.active ? "bg-green-500" : "bg-yellow-500"
+  }
+  
   switch (status) {
-    case "Aktivní":
-      return "bg-green-500"
     case "Rozpracovaný":
       return "bg-yellow-500"
     case "Archivní":
