@@ -545,7 +545,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                 <h3 className="font-semibold leading-none tracking-tight">
                                   <Link
                                     href={`/job/${job.id}`}
-                                    className="hover:text-primary hover:underline cursor-pointer"
+                                    className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
                                   >
                                     {job.title}
                                   </Link>

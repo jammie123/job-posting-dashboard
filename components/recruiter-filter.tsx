@@ -27,9 +27,9 @@ export function RecruiterFilter({ onRecruiterChange, initialValue = "Anna Ková�
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="flex gap-2 justify-between">
           {value ? (
-            <div className="flex flex-row items-center justify-between w-full">
+            <div className="flex flex-row gap-2 items-center justify-between w-full">
               <span>{value}</span>
               {value === "Anna Kovářová" && (
                 <span className="text-xs text-muted-foreground">Moje nábory</span>
@@ -40,7 +40,7 @@ export function RecruiterFilter({ onRecruiterChange, initialValue = "Anna Ková�
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-2">
         <Command>
           <CommandInput placeholder="Hledat náboráře..." />
           <CommandList>

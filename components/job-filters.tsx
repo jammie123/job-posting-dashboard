@@ -299,13 +299,13 @@ export function JobFilters({
           onRemoveFilter={removeFilter}
           onCreateViewClick={() => setCreateViewOpen(true)}
         >
-          <Button variant="outline" className="gap-2">
-            Pokročilé hledání
-            {activeFilters.length > 0 && (
+          <Button variant="secondary" className="gap-2 rounded-lg">
+            Další filtry
+            {/* {activeFilters.length > 0 && (
               <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-accent text-primary">
                 {activeFilters.length}
               </span>
-            )}
+            )} */}
           </Button>
         </FilterDialog>
       </div>
