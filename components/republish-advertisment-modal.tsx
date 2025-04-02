@@ -47,7 +47,7 @@ export function RepublishAdvertsimentModal({
   const renderIcon = (iconName?: string) => {
     if (!iconName) return null
     const Icon = iconMapping[iconName as keyof typeof iconMapping]
-    return <Icon className="h-7 w-7 text-muted-foreground" />
+    return Icon ? <Icon className="h-7 w-7 text-muted-foreground" /> : null
   }
 
   const handleConfirm = () => {
