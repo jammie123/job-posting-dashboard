@@ -55,7 +55,7 @@ export function JobStatusesModal({ job, trigger, onStatusChange, open, onOpenCha
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="flex items-center gap-2">
             <ListChecks className="h-5 w-5" />
-            Změnit stav náboru
+            Archivovat nábor
           </DialogTitle>
         </DialogHeader>
 

@@ -4,8 +4,12 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { JobMenuAction } from "@/components/job-menu-action"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { User, Eye } from "lucide-react"
 
 import type { JobPosting, JobPortal } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
@@ -88,9 +92,8 @@ export function JobPostingTable({
 
   return (
     <div>
-      <TooltipProvider>
+      <>
         <div className="relative overflow-x-auto">
-          <div className="absolute right-0 top-0 bottom-0 w-16 pointer-events-none z-10 bg-gradient-to-l from-white to-transparent"></div>
           <Table>
             <TableHeader>
               <TableRow className="bg-gray-50/80 hover:bg-gray-50/80">
@@ -136,8 +139,18 @@ export function JobPostingTable({
                   {visibleColumns.includes("status") && (
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <div className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`} />
-                        <span className="capitalize">{getStatusName(job.status)}</span>
+                        <div className={cn("ml-6")}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div
+                                className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              {getStatusName(job.status)}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
                       </div>
                     </TableCell>
                   )}
@@ -198,19 +211,78 @@ export function JobPostingTable({
                             <TooltipTrigger>
                               <div className="flex items-center gap-3 w-[270px]">
                                 <span className="text-sm text-muted-foreground">
-                                  Aktivní od {formatDateWithoutYear(job.advertisement.activePortals[0].publishedAt)} -{" "}
-                                  {formatDateWithoutYear(job.advertisement.activePortals[0].expiresAt)}
+                                  <HoverCard>
+                                    <HoverCardTrigger asChild>
+                                      <span className="cursor-pointer hover:text-foreground transition-colors">
+                                        Aktivní od {formatDateWithoutYear(job.advertisement.activePortals[0].publishedAt)} -{" "}
+                                        {formatDateWithoutYear(job.advertisement.activePortals[0].expiresAt)}
+                                      </span>
+                                    </HoverCardTrigger>
+                                    <HoverCardContent className="w-[280px] p-0 z-[9999]">
+                                      <div className="p-2 border-b">
+                                        <h4 className="font-medium text-sm">
+                                          Aktivní portály ({job.advertisement.activePortals.length})
+                                        </h4>
+                                      </div>
+                                      <div className="max-h-[200px] overflow-y-auto">
+                                        <table className="w-full">
+                                          <thead className="sticky top-0 bg-white">
+                                            <tr className="border-b">
+                                              <th className="p-2 text-left text-xs font-medium">Portál</th>
+                                              <th className="p-2 text-left text-xs font-medium">Vystaveno</th>
+                                              <th className="p-2 text-left text-xs font-medium">Vyprší</th>
+                                              <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {job.advertisement.activePortals.map((portal) => (
+                                              <tr key={portal.url} className="border-b last:border-0">
+                                                <td className="p-2 text-xs">
+                                                  <div className="flex items-center gap-2">
+                                                    <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
+                                                    {portal.name}
+                                                  </div>
+                                                </td>
+                                                <td className="p-2 text-xs">{formatDateWithoutYear(portal.publishedAt)}</td>
+                                                <td className="p-2 text-xs">{formatDateWithoutYear(portal.expiresAt)}</td>
+                                                <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                      <div className="border-t p-2">
+                                        <Button 
+                                          className="w-full" 
+                                          size="sm"
+                                        >
+                                          Spravovat inzerci
+                                        </Button>
+                                      </div>
+                                    </HoverCardContent>
+                                  </HoverCard>
                                 </span>
                                 <div className="flex -space-x-1">
                                   {job.advertisement.activePortals.map((portal) => (
-                                    <a
-                                      key={portal.url}
-                                      href={portal.url}
-                                      className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
-                                      title={portal.name}
-                                    >
-                                      {renderPortalIcon(portal)}
-                                    </a>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <a
+                                          href={portal.url}
+                                          className="relative flex h-6 w-6 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
+                                          title={portal.name}
+                                        >
+                                          {renderPortalIcon(portal)}
+                                        </a>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <div className="flex flex-col gap-1">
+                                          <span className="font-medium">{portal.name}</span>
+                                          <span className="text-xs text-muted-foreground">
+                                            {formatDateWithoutYear(portal.publishedAt)} - {formatDateWithoutYear(portal.expiresAt)}
+                                          </span>
+                                        </div>
+                                      </TooltipContent>
+                                    </Tooltip>
                                   ))}
                                 </div>
                               </div>
@@ -226,9 +298,34 @@ export function JobPostingTable({
                           <div className="flex flex-col gap-1 mt-2">
                             {job.advertisement.expiredPortals.map((portal) => (
                               <div key={portal.url} className="flex items-center justify-start gap-2">
-                                <span className="text-sm text-[#9B0000]">Ukončeno {formatDate(portal.expiresAt)}</span>
+                                <span className="text-sm text-[#9B0000]">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <span className="cursor-pointer hover:opacity-80 transition-opacity">
+                                        Ukončeno {formatDate(portal.expiresAt)}
+                                      </span>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <span>Zobrazit podrobnosti o ukončené inzerci</span>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </span>
                                 <div className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0">
-                                  {renderPortalIcon(portal)}
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div className="flex h-full w-full items-center justify-center">
+                                        {renderPortalIcon(portal)}
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <div className="flex flex-col gap-1">
+                                        <span className="font-medium">{portal.name}</span>
+                                        <span className="text-xs text-muted-foreground">
+                                          Ukončeno {formatDateWithoutYear(portal.expiresAt)}
+                                        </span>
+                                      </div>
+                                    </TooltipContent>
+                                  </Tooltip>
                                 </div>
                               </div>
                             ))}
@@ -320,7 +417,7 @@ export function JobPostingTable({
             </TableBody>
           </Table>
         </div>
-      </TooltipProvider>
+      </>
     </div>
   )
 }
