@@ -3,10 +3,11 @@
 import { useState } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Save } from "lucide-react"
+import { Save, Info } from "lucide-react"
 import { JobStatus } from "@/types/job-posting"
 import { CreateViewDialog } from "./create-view-dialog"
 import { ActiveFilter } from "./job-filters"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 
 export interface JobViewConfig {
   value: string
@@ -76,6 +77,24 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
   const defaultValue = isEshop ? "addons" : "Aktivní"
   const [createViewOpen, setCreateViewOpen] = useState(false)
   
+  // Funkce pro získání popisu záložky podle hodnoty
+  const getTabDescription = (value: string): string => {
+    switch(value) {
+      case "Zveřejněný":
+        return "Aktivní nábory s vystavenou inzercí";
+      case "Nezveřejněný":
+        return "Aktivní nábory s ukončenou inzercí";
+      case "Aktivní":
+        return "Aktivní nábory kde je jak vytavená, tak ukončená inzerce";
+      case "Rozpracovaný":
+        return "Nábory ve stavu rozpracovaný";
+      case "Archivní":
+        return "Nábory ve stavu archivní";
+      default:
+        return "";
+    }
+  };
+
   const handleSaveView = (viewName: string) => {
     console.log("Ukládám pohled:", viewName, "s filtry:", activeFilters);
     // Zde byste typicky uložili pohled do backendu nebo local storage
@@ -94,11 +113,21 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               >
                 <div className="flex items-center gap-2">
                   {view.label}
-                  <span className="inline-flex items-center justify-center w-6 h-5 text-xs font-medium rounded-full bg-gray-100 text-gray-600">
-                    {counts && counts[view.value as keyof typeof counts] !== undefined
-                      ? counts[view.value as keyof typeof counts]
-                      : 0}
-                  </span>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="inline-flex items-center justify-center w-6 h-5 text-xs font-medium rounded-full bg-gray-100 text-gray-600 relative group cursor-help">
+                        <span className="group-hover:opacity-0 transition-opacity absolute inset-0 flex items-center justify-center">
+                          {counts && counts[view.value as keyof typeof counts] !== undefined
+                            ? counts[view.value as keyof typeof counts]
+                            : 0}
+                        </span>
+                        <Info className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} />
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="z-[100]">
+                      <p>{getTabDescription(view.value)}</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
               </TabsTrigger>
             ))}

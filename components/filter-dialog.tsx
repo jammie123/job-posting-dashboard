@@ -16,7 +16,7 @@ interface FilterDialogProps {
   children: React.ReactNode
   onFilterSelect?: (category: string, option: string) => void
   activeFilters: ActiveFilter[]
-  onRemoveFilter?: (filterId: string) => void
+  onRemoveFilter?: (filter: ActiveFilter) => void
   onCreateViewClick?: () => void
 }
 
@@ -57,9 +57,9 @@ export function FilterDialog({
     return activeFilters.map(filter => filter.id)
   }
 
-  // Filtrované možnosti - skryjeme "Název pozice" a "Náborář"
+  // Filtrované možnosti - skryjeme "Název pozice", "Náborář" a "Stav náboru"
   const filteredOptions = filterOptions.filter(
-    option => option.id !== "title" && option.id !== "recruiter"
+    option => option.id !== "title" && option.id !== "recruiter" && option.id !== "status"
   )
 
   // Získání aktuálně vybrané hodnoty pro filtr
@@ -141,34 +141,6 @@ export function FilterDialog({
                 </div>
               )
             })}
-            
-            {/* Aktivní filtry */}
-            {activeFilters.length > 0 && (
-              <div className="pt-2 flex gap-2">
-                <h4 className="text-xs font-medium mb-1 w-1/3">Aktivní filtry</h4>
-                <div className="flex flex-wrap flex-1 gap-1">
-                  {activeFilters.map((filter) => (
-                    <Badge 
-                      key={filter.id}
-                      variant="secondary"
-                      className="pl-1.5 pr-0.5 py-1 flex items-center gap-0.5 text-xs"
-                    >
-                      <span className="font-medium">{filter.label}</span>
-                      <span className="text-muted-foreground">:</span>
-                      <span>{renderFilterValue(filter)}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-3.5 w-3.5 p-0 ml-0.5 hover:bg-transparent rounded-full"
-                        onClick={() => onRemoveFilter?.(filter.id)}
-                      >
-                        <X className="h-2.5 w-2.5" />
-                      </Button>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
           
           <div className="mt-4 flex justify-between">
