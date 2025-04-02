@@ -80,7 +80,7 @@ export function PostingActions({
               {selectedCount > 0 && (
                 <div className="flex gap-2 ml-4">
                   <Button size="sm" variant="outline">
-                    Změnit stav náboru
+                    Archivovat nábor
                   </Button>
                   <Button size="sm" variant="outline">
                     Ukončit inzeráty

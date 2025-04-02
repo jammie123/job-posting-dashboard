@@ -53,28 +53,10 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
       <DropdownMenuContent side="right" align="start" className="w-[320px]">
         <div className="px-2 py-2 flex items-center justify-between">
           <span className="font-semibold">Nábor</span>
-          {job.status === "active" ? (
-            <div className="flex gap-1 items-center">
-              <div className="h-2 w-2 rounded-full bg-green-500" />
-              <span className="text-xs text-muted-foreground">Zveřejněný</span>
-            </div>
-          ) : (
-            <div className="flex gap-1 items-center">
-              <div className="h-2 w-2 rounded-full bg-yellow-500" />
-              <span className="text-xs text-muted-foreground">Nezveřejněný</span>
-            </div>
-          )}
+         
         </div>
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault()
-              setIsStatusModalOpen(true)
-            }}
-          >
-            <StopCircle className="mr-2 h-4 w-4" />
-            <span>Změnit stav náboru</span>
-          </DropdownMenuItem>
+
           <DropdownMenuItem onClick={() => onAction?.("edit")}>
             <Edit className="mr-2 h-4 w-4" />
             <span>Upravit nábor</span>
@@ -90,6 +72,15 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
           <DropdownMenuItem onClick={() => onAction?.("transfer")}>
             <Share2 className="mr-2 h-4 w-4" />
             <span>Předat nábor</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.preventDefault()
+              setIsStatusModalOpen(true)
+            }}
+          >
+            <StopCircle className="mr-2 h-4 w-4" />
+            <span>Archivovat nábor</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

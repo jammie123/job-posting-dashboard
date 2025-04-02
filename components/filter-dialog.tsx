@@ -78,21 +78,17 @@ export function FilterDialog({
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[400px] max-h-[80vh] overflow-y-auto">
-        <div className="p-3">
-          <div className="mb-4 flex items-center">
-            <Filter className="h-4 w-4 mr-2" />
-            <h3 className="text-lg font-medium">Filtry vyhledávání</h3>
-          </div>
-          
-          <div className="space-y-4">
+        <div className="p-2">
+
+          <div className="space-y-1.5">
             {/* Formulářové filtry */}
             {filteredOptions.map((category) => {
               // Zjistíme, zda je tento filtr aktivní a jeho hodnotu
               const activeFilterValue = getActiveFilterValue(category.id)
               
               return (
-                <div key={category.id} className="flex items-center gap-3">
-                  <Label htmlFor={category.id} className="w-1/3 text-sm">{category.label}</Label>
+                <div key={category.id} className="flex items-center gap-2">
+                  <Label htmlFor={category.id} className="w-1/3 text-xs">{category.label}</Label>
                   <div className="flex-1">
                     {category.options.length > 0 ? (
                       <Select
@@ -105,19 +101,19 @@ export function FilterDialog({
                           applyFilter(category.id, value)
                         }}
                       >
-                        <SelectTrigger id={category.id} className="w-full">
+                        <SelectTrigger id={category.id} className="w-full h-8 text-xs">
                           <SelectValue placeholder={activeFilterValue || "Vyberte..."} />
                         </SelectTrigger>
                         <SelectContent>
                           {category.options.map(option => (
-                            <SelectItem key={option} value={option}>
+                            <SelectItem key={option} value={option} className="text-xs">
                               {option}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     ) : (
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-1">
                         <Input 
                           id={category.id}
                           value={formState[category.id] || ""}
@@ -128,11 +124,12 @@ export function FilterDialog({
                             }))
                           }}
                           placeholder={activeFilterValue || "Zadejte hodnotu..."}
-                          className="w-full"
+                          className="w-full h-8 text-xs"
                         />
                         <Button 
                           variant="outline" 
                           size="sm"
+                          className="h-8 text-xs px-2"
                           onClick={() => applyFilter(category.id, formState[category.id] || "")}
                           disabled={!formState[category.id]}
                         >
@@ -147,14 +144,14 @@ export function FilterDialog({
             
             {/* Aktivní filtry */}
             {activeFilters.length > 0 && (
-              <div className="mt-4">
-                <h4 className="text-sm font-medium mb-2">Aktivní filtry</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className="pt-2 flex gap-2">
+                <h4 className="text-xs font-medium mb-1 w-1/3">Aktivní filtry</h4>
+                <div className="flex flex-wrap flex-1 gap-1">
                   {activeFilters.map((filter) => (
                     <Badge 
                       key={filter.id}
                       variant="secondary"
-                      className="pl-2 pr-1 py-1.5 flex items-center gap-1 text-xs"
+                      className="pl-1.5 pr-0.5 py-1 flex items-center gap-0.5 text-xs"
                     >
                       <span className="font-medium">{filter.label}</span>
                       <span className="text-muted-foreground">:</span>
@@ -162,10 +159,10 @@ export function FilterDialog({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-4 w-4 p-0 ml-1 hover:bg-transparent rounded-full"
+                        className="h-3.5 w-3.5 p-0 ml-0.5 hover:bg-transparent rounded-full"
                         onClick={() => onRemoveFilter?.(filter.id)}
                       >
-                        <X className="h-3 w-3" />
+                        <X className="h-2.5 w-2.5" />
                       </Button>
                     </Badge>
                   ))}
@@ -174,22 +171,24 @@ export function FilterDialog({
             )}
           </div>
           
-          <div className="mt-6 flex justify-between">
+          <div className="mt-4 flex justify-between">
             <Button 
               variant="outline" 
               size="sm"
+              className="text-xs h-7 px-2"
               onClick={() => {
                 setOpen(false);
                 onCreateViewClick?.();
               }}
             >
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="h-3 w-3 mr-1" />
               Vytvořit nový pohled
             </Button>
             
             <Button 
               variant="default"
               size="sm"
+              className="text-xs h-7 px-2"
               onClick={() => setOpen(false)}
             >
               Použít filtry

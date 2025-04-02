@@ -300,7 +300,7 @@ export function JobFilters({
           onCreateViewClick={() => setCreateViewOpen(true)}
         >
           <Button variant="outline" className="gap-2">
-            Filtry
+            Pokročilé hledání
             {activeFilters.length > 0 && (
               <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-accent text-primary">
                 {activeFilters.length}

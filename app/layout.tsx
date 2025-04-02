@@ -1,5 +1,12 @@
 import type React from "react"
 import { TableVisibilityProvider } from "@/contexts/table-visibility-context"
+import { TooltipProvider } from "@/components/ui/tooltip"
+
+import './globals.css'
+
+export const metadata = {
+  generator: 'v0.dev'
+};
 
 export default function RootLayout({
   children,
@@ -9,18 +16,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#F5F6FA]">
-        <TableVisibilityProvider>
-          <main className="pl-[60px]">{children}</main>
-        </TableVisibilityProvider>
+        <TooltipProvider>
+          <TableVisibilityProvider>
+            <main className="pl-[60px]">{children}</main>
+          </TableVisibilityProvider>
+        </TooltipProvider>
       </body>
     </html>
   )
 }
 
 
-
-import './globals.css'
-
-export const metadata = {
-      generator: 'v0.dev'
-    };
