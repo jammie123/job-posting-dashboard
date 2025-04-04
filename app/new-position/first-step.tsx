@@ -116,6 +116,7 @@ export function FirstStep() {
   const [isRemote, setIsRemote] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [autoFilledInfo, setAutoFilledInfo] = useState<{field: string, professions: string[]} | null>(null)
+  const [showFieldsForm, setShowFieldsForm] = useState(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -133,6 +134,12 @@ export function FirstStep() {
   // Funkce pro reset autoFilledInfo
   const resetAutoFilledInfo = () => {
     setAutoFilledInfo(null);
+    setShowFieldsForm(true); // Zobrazí pole po skrytí zprávy
+  };
+  
+  // Funkce pro zobrazení polí oboru a profese
+  const showFieldsFormHandler = () => {
+    setShowFieldsForm(true);
   };
 
   // Funkce pro zpracování blur eventu na poli "název pozice"
@@ -151,6 +158,7 @@ export function FirstStep() {
     
     setIsLoading(true);
     setAutoFilledInfo(null);
+    setShowFieldsForm(false); // Skryjeme pole formuláře během načítání
     
     try {
       const result = await suggestFieldAndProfession(positionName);
@@ -179,10 +187,14 @@ export function FirstStep() {
           professions: validProfessions
         });
         toast.success("Obor a profese byly automaticky vyplněny");
+      } else {
+        // Pokud se nepodařilo nic vyplnit, zobrazíme formulářová pole
+        setShowFieldsForm(true);
       }
     } catch (error) {
       console.error("Error suggesting fields:", error);
       toast.error("Nepodařilo se automaticky vyplnit obor a profesi");
+      setShowFieldsForm(true); // Zobrazíme pole v případě chyby
     } finally {
       setIsLoading(false);
     }
@@ -208,28 +220,37 @@ export function FirstStep() {
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader className="py-3 pb-1">
               <div className="flex items-center gap-2">
-                <Info size={18} className="text-blue-500" />
-                <CardTitle className="text-sm font-medium text-blue-700">Předvyplnili jsme za Vás obory a profese</CardTitle>
+                <Info size={18} className="text-foreground" />
+                <CardTitle className="text-sm font-medium text-foreground">Předvyplnili jsme za Vás obory a profese</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="py-2">
-              <div className="text-sm text-blue-600">
+              <div className="text-sm text-muted-foreground mb-2">
                 {autoFilledInfo.field && (
-                  <p>Obor: <span className="font-medium">{autoFilledInfo.field}</span></p>
+                  <p>
+                    <span className="font-medium">
+                      {autoFilledInfo.field}{autoFilledInfo.professions.length > 0 && ' - '}{autoFilledInfo.professions.join(", ")}
+                    </span>
+                  </p>
                 )}
-                {autoFilledInfo.professions.length > 0 && (
-                  <p>Profese: <span className="font-medium">{autoFilledInfo.professions.join(", ")}</span></p>
-                )}
-                <div className="mt-2">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="h-7 text-blue-700 hover:text-blue-800 hover:bg-blue-100 p-0"
-                    onClick={resetAutoFilledInfo}
-                  >
-                    Skrýt tuto zprávu
-                  </Button>
-                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-muted-foreground hover:text-foreground"
+                  onClick={showFieldsFormHandler}
+                >
+                  Změnit obor a profesi
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-7 text-muted-foreground hover:text-foreground"
+                  onClick={resetAutoFilledInfo}
+                >
+                  Skrýt zprávu
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -273,56 +294,59 @@ export function FirstStep() {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-2">
-            <Label>Obor</Label>
-            <div className="relative">
-              <Select 
-                onValueChange={(value) => form.setValue("field", value)}
-                value={form.watch("field")}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Vyberte obor" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fields.map((field) => (
-                    <SelectItem key={field} value={field}>
-                      {field}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {isLoading && (
-                <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                </div>
+        {/* Sekce s oborem a profesí - skrytá ve výchozím stavu */}
+        {showFieldsForm && (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label>Obor</Label>
+              <div className="relative">
+                <Select 
+                  onValueChange={(value) => form.setValue("field", value)}
+                  value={form.watch("field")}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Vyberte obor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fields.map((field) => (
+                      <SelectItem key={field} value={field}>
+                        {field}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {isLoading && (
+                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              {form.formState.errors.field && (
+                <p className="text-sm text-destructive">{form.formState.errors.field.message}</p>
               )}
             </div>
-            {form.formState.errors.field && (
-              <p className="text-sm text-destructive">{form.formState.errors.field.message}</p>
-            )}
-          </div>
 
-          <div className="grid gap-2">
-            <Label>Profese</Label>
-            <div className="relative">
-              <MultiSelect
-                options={professions}
-                selected={form.watch("profession")}
-                onChange={(value) => form.setValue("profession", value)}
-                placeholder="Vyberte profese"
-              />
-              {isLoading && (
-                <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                </div>
+            <div className="grid gap-2">
+              <Label>Profese</Label>
+              <div className="relative">
+                <MultiSelect
+                  options={professions}
+                  selected={form.watch("profession")}
+                  onChange={(value) => form.setValue("profession", value)}
+                  placeholder="Vyberte profese"
+                />
+                {isLoading && (
+                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
+                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+              </div>
+              {form.formState.errors.profession && (
+                <p className="text-sm text-destructive">{form.formState.errors.profession.message}</p>
               )}
             </div>
-            {form.formState.errors.profession && (
-              <p className="text-sm text-destructive">{form.formState.errors.profession.message}</p>
-            )}
           </div>
-        </div>
+        )}
 
         <div className="grid gap-2">
           <Label htmlFor="description">Popis pozice</Label>

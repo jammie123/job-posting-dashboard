@@ -13,7 +13,7 @@ interface SalaryInputProps {
 
 export function SalaryInput({ onFromChange, onToChange, onCurrencyChange, onPeriodChange }: SalaryInputProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-1">
       <Label>Mzda</Label>
       <div className="flex flex-wrap gap-4">
         <div className="flex items-center gap-2">
