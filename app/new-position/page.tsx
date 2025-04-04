@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CollaborationStep } from "./components/collaboration-step"
 import { AdvertiseStep } from "./components/advertise-step"
 import { SummaryOrder } from "@/components/summary-order"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 const steps = [
   {
@@ -148,11 +151,19 @@ export default function NewPosition() {
 
   return (
     <div className="container py-6">
+
       <div className="flex gap-6">
         {/* Left column - Vertical stepper */}
         <div className="w-64 shrink-0">
           <Tabs value={currentStep} onValueChange={setCurrentStep} orientation="vertical" className="fixed">
-            <h1 className="text-2xl font-semibold mb-6">Nový nábor</h1>
+          <div className="my-4 mx-1">
+        <Button variant="ghost" asChild className="gap-2">
+          <Link href="/">
+            <ArrowLeft size={16} />
+            Zpět na výpis
+          </Link>
+        </Button>
+      </div>
             <TabsList className="flex flex-col h-auto w-full bg-transparent gap-2">
               {steps.map((step, index) => (
                 <TabsTrigger
