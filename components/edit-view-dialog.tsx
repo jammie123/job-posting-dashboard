@@ -323,11 +323,15 @@ export function EditViewDialog({
           )}
         </div>
         
-        <DialogFooter className="flex justify-between items-center gap-2">
-          <Button variant="destructive" onClick={handleDelete}>
+        <DialogFooter className="flex flex-row-reverse justify-between items-center gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleDelete}
+            className="text-red-600 border-red-200 rounded-full hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+          >
             Smazat pohled
           </Button>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-row-reverse">
             <div className="text-xs text-muted-foreground">
               Počet náborů: <span className="text-xs font-normal">{getJobCountForCurrentFilters()}</span>
             </div>
