@@ -117,6 +117,17 @@ export function FirstStep() {
   const [isLoading, setIsLoading] = useState(false)
   const [autoFilledInfo, setAutoFilledInfo] = useState<{field: string, professions: string[]} | null>(null)
   const [showFieldsForm, setShowFieldsForm] = useState(false)
+  
+  // Stav pro sledování načítání pro jednotlivá pole
+  const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({
+    title: false,
+    field: false,
+    profession: false,
+    description: false,
+    education: false,
+    benefits: false,
+    type: false,
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -143,60 +154,78 @@ export function FirstStep() {
   };
 
   // Funkce pro zpracování blur eventu na poli "název pozice"
-  const handlePositionBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const positionName = e.target.value.trim();
-    
-    // Pokud je pole prázdné, neděláme nic
-    if (!positionName) return;
-    
-    // Již máme vyplněný obor a profesi, nepřepisujeme
-    const currentField = form.watch("field");
-    const currentProfessions = form.watch("profession");
-    if (currentField || (currentProfessions && currentProfessions.length > 0)) {
+  const handlePositionBlur = async (positionName: string) => {
+    if (!positionName || positionName.trim() === "") {
       return;
     }
-    
-    setIsLoading(true);
-    setAutoFilledInfo(null);
-    setShowFieldsForm(false); // Skryjeme pole formuláře během načítání
-    
+
     try {
-      const result = await suggestFieldAndProfession(positionName);
-      
-      // Nastavení oboru
-      if (result.field && fields.includes(result.field)) {
-        form.setValue("field", result.field);
+      setIsLoading(true);
+      const response = await fetch("/api/suggest-fields", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: positionName }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch suggested fields");
       }
+
+      const data = await response.json();
       
-      // Nastavení profesí
-      const validProfessions: string[] = [];
-      if (result.professions && Array.isArray(result.professions)) {
-        const filtered = result.professions.filter(
-          (p: string) => professions.includes(p)
-        );
-        if (filtered.length > 0) {
-          form.setValue("profession", filtered);
-          validProfessions.push(...filtered);
-        }
-      }
-      
-      // Pokud jsme úspěšně předvyplnili obor nebo profese, zobrazíme info
-      if (result.field || validProfessions.length > 0) {
+      if (data.field && data.professions) {
+        // Pokud máme úspěšnou odpověď, nastavíme data do formuláře
+        form.setValue("field", data.field);
+        form.setValue("profession", data.professions);
+        
+        // Nastavíme autoFilledInfo pro zobrazení zprávy
         setAutoFilledInfo({
-          field: result.field || "",
-          professions: validProfessions
+          field: data.field,
+          professions: data.professions,
         });
-        toast.success("Obor a profese byly automaticky vyplněny");
+        
+        // Skryjeme formulář s poli pro obor a profesi
+        setShowFieldsForm(false);
+        
+        toast.success("Na základě názvu jsme předvyplnili obor a profese.");
       } else {
-        // Pokud se nepodařilo nic vyplnit, zobrazíme formulářová pole
+        // Pokud nemáme data, zobrazíme formulář s poli
         setShowFieldsForm(true);
       }
     } catch (error) {
-      console.error("Error suggesting fields:", error);
-      toast.error("Nepodařilo se automaticky vyplnit obor a profesi");
-      setShowFieldsForm(true); // Zobrazíme pole v případě chyby
+      console.error("Error fetching suggested fields:", error);
+      toast.error("Nepodařilo se načíst doporučená data pro obor a profese.");
+      
+      // V případě chyby zobrazíme formulář s poli
+      setShowFieldsForm(true);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // Generická funkce pro zpracování blur událostí
+  const handleInputBlur = async (fieldId: string, value: any, processFn?: (value: any) => Promise<any>) => {
+    if (!value) return;
+
+    // Nastavit načítání pro dané pole
+    setLoadingFields(prev => ({ ...prev, [fieldId]: true }));
+    
+    try {
+      // Pokud je poskytnuta processFn, použít ji pro zpracování hodnoty
+      if (processFn) {
+        await processFn(value);
+      } else {
+        // Simulace zpracování pro ostatní pole (pouze pro demonstraci)
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    } catch (error) {
+      console.error(`Error processing ${fieldId}:`, error);
+      toast.error(`Chyba při zpracování pole ${fieldId}`);
+    } finally {
+      // Ukončit načítání pro dané pole
+      setLoadingFields(prev => ({ ...prev, [fieldId]: false }));
     }
   };
 
@@ -205,11 +234,19 @@ export function FirstStep() {
       <div className="grid gap-6">
         <div className="grid gap-2">
           <Label htmlFor="title">Název pozice</Label>
-          <Input 
-            id="title" 
-            {...form.register("title")} 
-            onBlur={handlePositionBlur}
-          />
+          <div className="relative">
+            <Input 
+              id="title" 
+              {...form.register("title")} 
+              onBlur={(e) => handleInputBlur("title", e.target.value.trim(), handlePositionBlur)}
+            />
+            {loadingFields.title && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
           {form.formState.errors.title && (
             <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>
           )}
@@ -276,14 +313,25 @@ export function FirstStep() {
               />
             </div>
           </div>
-          <MultiSelect
-            options={[...localities.headquarters, ...localities.branches, ...localities.others]}
-            selected={form.watch("locality")}
-            onChange={(value) => form.setValue("locality", value)}
-            placeholder="Vyberte lokality"
-            isRemote={isRemote}
-            headquartersAddress={localities.headquarters[0]}
-          />
+          <div className="relative">
+            <MultiSelect
+              options={[...localities.headquarters, ...localities.branches, ...localities.others]}
+              selected={form.watch("locality")}
+              onChange={(value) => {
+                form.setValue("locality", value)
+                handleInputBlur("locality", value)
+              }}
+              placeholder="Vyberte lokality"
+              isRemote={isRemote}
+              headquartersAddress={localities.headquarters[0]}
+            />
+            {loadingFields.locality && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
           {form.formState.errors.locality && (
             <p className="text-sm text-destructive">{form.formState.errors.locality.message}</p>
           )}
@@ -301,7 +349,10 @@ export function FirstStep() {
               <Label>Obor</Label>
               <div className="relative">
                 <Select 
-                  onValueChange={(value) => form.setValue("field", value)}
+                  onValueChange={(value) => {
+                    form.setValue("field", value)
+                    handleInputBlur("field", value)
+                  }}
                   value={form.watch("field")}
                 >
                   <SelectTrigger>
@@ -315,9 +366,10 @@ export function FirstStep() {
                     ))}
                   </SelectContent>
                 </Select>
-                {isLoading && (
-                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                {loadingFields.field && (
+                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">načítám...</span>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -332,12 +384,16 @@ export function FirstStep() {
                 <MultiSelect
                   options={professions}
                   selected={form.watch("profession")}
-                  onChange={(value) => form.setValue("profession", value)}
+                  onChange={(value) => {
+                    form.setValue("profession", value)
+                    handleInputBlur("profession", value)
+                  }}
                   placeholder="Vyberte profese"
                 />
-                {isLoading && (
-                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2">
-                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                {loadingFields.profession && (
+                  <div className="absolute right-10 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">načítám...</span>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -350,11 +406,22 @@ export function FirstStep() {
 
         <div className="grid gap-2">
           <Label htmlFor="description">Popis pozice</Label>
-          <RichTextEditor
-            value={form.watch("description") || ""}
-            onChange={(value) => form.setValue("description", value)}
-            className="min-h-[200px]"
-          />
+          <div className="relative">
+            <RichTextEditor
+              value={form.watch("description") || ""}
+              onChange={(value) => {
+                form.setValue("description", value)
+                handleInputBlur("description", value)
+              }}
+              className="min-h-[200px]"
+            />
+            {loadingFields.description && (
+              <div className="absolute right-3 top-3 flex items-center gap-1.5 bg-white/90 px-2 py-1 rounded-md z-10">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
           {form.formState.errors.description && (
             <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
           )}
@@ -364,18 +431,32 @@ export function FirstStep() {
 
         <div className="grid gap-2">
           <Label>Vzdělání</Label>
-          <Select onValueChange={(value) => form.setValue("education", value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Vyberte požadované vzdělání" />
-            </SelectTrigger>
-            <SelectContent>
-              {educationLevels.map((level) => (
-                <SelectItem key={level} value={level}>
-                  {level}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Select 
+              onValueChange={(value) => {
+                form.setValue("education", value)
+                handleInputBlur("education", value)
+              }}
+              value={form.watch("education")}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Vyberte minimální vzdělání" />
+              </SelectTrigger>
+              <SelectContent>
+                {educationLevels.map((level) => (
+                  <SelectItem key={level} value={level}>
+                    {level}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {loadingFields.education && (
+              <div className="absolute right-10 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
           {form.formState.errors.education && (
             <p className="text-sm text-destructive">{form.formState.errors.education.message}</p>
           )}
@@ -388,26 +469,55 @@ export function FirstStep() {
 
         <div className="grid gap-2">
           <Label>Benefity</Label>
-          <MultiSelect
-            options={benefits}
-            selected={form.watch("benefits")}
-            onChange={(value) => form.setValue("benefits", value)}
-            placeholder="Vyberte benefity"
-          />
+          <div className="relative">
+            <MultiSelect
+              options={benefits}
+              selected={form.watch("benefits")}
+              onChange={(value) => {
+                form.setValue("benefits", value)
+                handleInputBlur("benefits", value)
+              }}
+              placeholder="Vyberte benefity"
+            />
+            {loadingFields.benefits && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
+          {form.formState.errors.benefits && (
+            <p className="text-sm text-destructive">{form.formState.errors.benefits.message}</p>
+          )}
         </div>
 
         <div className="grid gap-2">
           <Label>Typ úvazku</Label>
-          <RadioGroup onValueChange={(value) => form.setValue("type", value as "full" | "part")} className="flex gap-4">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="full" id="full" />
-              <Label htmlFor="full">Hlavní pracovní poměr</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="part" id="part" />
-              <Label htmlFor="part">Zkrácený úvazek</Label>
-            </div>
-          </RadioGroup>
+          <div className="relative">
+            <RadioGroup 
+              value={form.watch("type")} 
+              onValueChange={(value) => {
+                form.setValue("type", value as "full" | "part")
+                handleInputBlur("type", value)
+              }}
+              className="flex flex-col space-y-1"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="full" id="full" />
+                <Label htmlFor="full" className="font-normal">Hlavní pracovní poměr</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="part" id="part" />
+                <Label htmlFor="part" className="font-normal">Zkrácený úvazek</Label>
+              </div>
+            </RadioGroup>
+            {loadingFields.type && (
+              <div className="absolute right-3 top-3 flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground">načítám...</span>
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+          </div>
           {form.formState.errors.type && (
             <p className="text-sm text-destructive">{form.formState.errors.type.message}</p>
           )}
