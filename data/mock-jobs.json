@@ -4,6 +4,7 @@
     "status": "Aktivní",
     "title": "Senior React Developer",
     "location": "Praha",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -67,6 +68,7 @@
     "status": "Aktivní",
     "title": "UX/UI Designer",
     "location": "Brno",
+    "department": "Sales",
     "recruiter": {
       "id": "REC-002",
       "name": "Anna Kovářová",
@@ -118,6 +120,7 @@
     "status": "Rozpracovaný",
     "title": "Java Backend Developer",
     "location": "Praha",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -151,6 +154,7 @@
     "status": "Archivní",
     "title": "Project Manager",
     "location": "Ostrava",
+    "department": "Servis",
     "recruiter": {
       "id": "REC-003",
       "name": "Anna Kovářová",
@@ -214,6 +218,7 @@
     "status": "Aktivní",
     "title": "DevOps Engineer",
     "location": "Praha",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-002",
       "name": "Anna Kovářová",
@@ -260,6 +265,7 @@
     "status": "Aktivní",
     "title": "Frontend Developer",
     "location": "Brno",
+    "department": "Sales",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -311,6 +317,7 @@
     "status": "Aktivní",
     "title": "Senior Data Scientist",
     "location": "Praha",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -374,6 +381,7 @@
     "status": "Rozpracovaný",
     "title": "Product Manager",
     "location": "Praha",
+    "department": "Sales",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -412,6 +420,7 @@
     "status": "Archivní",
     "title": "Business Analyst",
     "location": "Praha",
+    "department": "Servis",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -463,6 +472,7 @@
     "status": "Aktivní",
     "title": "Mobile Developer (iOS/Android)",
     "location": "Remote",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -526,6 +536,7 @@
     "status": "Rozpracovaný",
     "title": "IT Security Specialist",
     "location": "Praha",
+    "department": "Servis",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -559,6 +570,7 @@
     "status": "Aktivní",
     "title": "Senior QA Engineer",
     "location": "Brno",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -610,6 +622,7 @@
     "status": "Ukončený",
     "title": "Frontend Developer",
     "location": "Brno",
+    "department": "Sales",
     "recruiter": {
       "id": "REC-002",
       "name": "Tomáš Novák",
@@ -661,6 +674,7 @@
     "status": "Ukončený",
     "title": "Marketing Specialist",
     "location": "Remote",
+    "department": "Sales",
     "recruiter": {
       "id": "REC-003",
       "name": "Eva Štěpánková",
@@ -712,6 +726,7 @@
     "status": "Ukončený",
     "title": "HR Generalist",
     "location": "Ostrava",
+    "department": "Centrála",
     "recruiter": {
       "id": "REC-004",
       "name": "Michaela Dvořáková",
@@ -763,6 +778,7 @@
     "status": "Aktivní",
     "title": "IT Support Specialist",
     "location": "Olomouc",
+    "department": "Servis",
     "recruiter": {
       "id": "REC-005",
       "name": "Petr Král",

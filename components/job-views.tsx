@@ -255,7 +255,7 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               <TabsTrigger
                 key={view.value}
                 value={view.value}
-                className="min-w-[100px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
+                className="min-w-[50px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
               >
                 <div className="flex items-center gap-2">
                   {view.label}
@@ -288,7 +288,7 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               <TabsTrigger
                 key={view.value}
                 value={view.value}
-                className="min-w-[100px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
+                className="min-w-[50px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
               >
                 <div className="flex items-center gap-2">
                   {view.label}
@@ -303,7 +303,7 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
                             ? counts[view.value as keyof typeof counts]
                             : 0}
                         </span>
-                        <Edit className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} />
+                        <Edit className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} /> 
                       </span>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="z-[100]">
@@ -311,17 +311,7 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
                     </TooltipContent>
                   </Tooltip>
                   
-                  {/* Tlačítko pro odstranění vlastního pohledu */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Zabraňuje aktivaci tabu
-                      removeCustomView(view.value);
-                    }}
-                    className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-gray-700"
-                    aria-label={`Odstranit pohled ${view.label}`}
-                  >
-                    <X size={14} />
-                  </button>
+
                 </div>
               </TabsTrigger>
             ))}

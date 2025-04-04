@@ -30,6 +30,9 @@ const levels = ["Junior", "Mid-level", "Senior", "Lead", "Principal"]
 
 const locations = ["Prague", "Brno", "Ostrava", "Remote", "Plzeň", "Olomouc", "Liberec", "Hradec Králové"]
 
+// Definice hodnot pro oddělení
+const departments = ["Centrála", "Servis", "Sales"]
+
 const recruiterNames = [
   "Anna K.",
   "Martin H.",
@@ -154,6 +157,7 @@ export function generateMockJobPostings(count: number): JobPosting[] {
         assignedUsers,
       },
       location,
+      department: departments[Math.floor(Math.random() * departments.length)],
       candidates: {
         unreviewed: Math.floor(Math.random() * 15),
         inProgress: Math.floor(Math.random() * 10),
@@ -266,6 +270,7 @@ export function generateMockJobPostings(count: number): JobPosting[] {
         assignedUsers,
       },
       location,
+      department: departments[Math.floor(Math.random() * departments.length)],
       candidates: {
         unreviewed: status === "active" ? Math.floor(Math.random() * 15) : 0,
         inProgress: ["active", "internal"].includes(status) ? Math.floor(Math.random() * 10) : 0,

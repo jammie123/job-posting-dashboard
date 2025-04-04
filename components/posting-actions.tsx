@@ -63,9 +63,9 @@ export function PostingActions({
   }
 
   return (
-    <div className="flex flex-row justify-between flex-wrap transition-all duration-500 ease-in-out transform">
+    <div className="flex flex-row px-4 justify-between flex-wrap transition-all duration-500 ease-in-out transform">
       {bulkActionEnabled ? (
-        <div className="flex items-center justify-between bg-white rounded-md shadow-md px-4 mb-4 py-2 w-full transition-all duration-500 ease-in-out transform translate-x-0">
+        <div className="flex items-center justify-between bg-white rounded-md shadow-md  mb-4 py-2 w-full transition-all duration-500 ease-in-out transform translate-x-0">
           <div className="flex items-center w-full justify-between">
             <div className="text-sm text-primary font-medium flex gap-4 items-center">
               <Checkbox
@@ -106,7 +106,7 @@ export function PostingActions({
           </div>
         </div>
       ) : (
-        <div className="flex items-center justify-between px-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="text-sm text-muted-foreground">
               {visibleCount} {getViewLabel()}
