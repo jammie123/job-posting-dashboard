@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Check } from "lucide-react"
+import { Check, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
@@ -24,23 +24,40 @@ export function RecruiterFilter({ onRecruiterChange, initialValue = "Anna Ková�
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState(initialValue)
   
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setValue("");
+    if (onRecruiterChange) {
+      onRecruiterChange("");
+    }
+  }
+  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
-          {value ? (
-            <div className="flex flex-row items-center justify-between w-full">
-              <span>{value}</span>
-              {value === "Anna Kovářová" && (
-                <span className="text-xs text-muted-foreground">Moje nábory</span>
-              )}
-            </div>
-          ) : (
-            "Všichni náboráři"
-          )}
+        <Button variant="outline" role="combobox" aria-expanded={open} className="flex gap-2 px-3 justify-between min-w-[220px]">
+          <span className="text-muted-foreground text-sm">Náborář:</span>
+          <div className="flex flex-row gap-2 items-center justify-between flex-1">
+            {value ? (
+              <div className="flex items-center justify-between w-full font-normal">
+                <span>{value}</span>
+                {/* {value === "Anna Kovářová" && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs text-muted-foreground">Moje nábory</span>
+                    <X 
+                      className="h-3.5 w-3.5 opacity-70 hover:opacity-100 cursor-pointer" 
+                      onClick={handleClear}
+                    />
+                  </div>
+                )} */}
+              </div>
+            ) : (
+              <span className="text-muted-foreground">Všichni náboráři</span>
+            )}
+          </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="p-2">
         <Command>
           <CommandInput placeholder="Hledat náboráře..." />
           <CommandList>

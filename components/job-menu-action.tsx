@@ -20,6 +20,9 @@ import {
   UserPlus,
   Zap,
   Clock,
+  SquarePen,
+  Timer,
+  MonitorSmartphone,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -29,6 +32,7 @@ import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-
 import { ExtendAdvertisementModal } from "@/components/extend-advertisement-modal"
 import type { JobPosting } from "@/types/job-posting"
 import { AdvertisementForm } from "@/components/advertisement-form"
+import Link from "next/link"
 
 interface JobMenuActionProps {
   onAction?: (action: string) => void
@@ -44,7 +48,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild side="right" align="start">
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Otevřít menu</span>
@@ -84,18 +88,29 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        {job.status === "active" ? (
+        {job.status === "Aktivní" && job.advertisement.status !== "Nezveřejněný" ? (
           <>
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault()
-                  setIsExtendModalOpen(true)
-                }}
-              >
-                <Clock className="mr-2 h-4 w-4" />
-                <span>Prodloužit a znovuvystavit</span>
-              </DropdownMenuItem>
+              {!job.advertisement.active && job.advertisement.portals.length > 0 && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setIsRepublishModalOpen(true)
+                  }}
+                >
+                  <SquarePen className="mr-2 h-4 w-4" />
+                  <span>Znovu vystavit inzerát</span>
+                </DropdownMenuItem>
+              )}
+              {job.advertisement.active && job.advertisement.portals.length > 0 && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setIsExtendModalOpen(true)
+                  }}
+                >
+                  <Timer className="mr-2 h-4 w-4" />
+                  <span>Prodloužit inzerát</span>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => onAction?.("top")}>
                 <TrendingUp className="mr-2 h-4 w-4" />
                 <span>Topovat inzerát</span>
@@ -124,15 +139,23 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         ) : (
           <>
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault()
-                  window.location.href = "/advertisement-page"
-                }}
-              >
-                <Zap className="mr-2 h-4 w-4" />
-                <span>Vystavit inzeráty</span>
+              <DropdownMenuItem asChild>
+                <Link href={`/job/${job.id}/inzerce`}>
+                  <MonitorSmartphone className="mr-2 h-4 w-4" />
+                  <span>Spravovat inzerci</span>
+                </Link>
               </DropdownMenuItem>
+
+              {job.advertisement.portals.length === 0 && (
+                <DropdownMenuItem
+                  onClick={() => {
+                    setIsAdvertisementFormOpen(true)
+                  }}
+                >
+                  <Zap className="mr-2 h-4 w-4" />
+                  <span>Zahájit inzerci</span>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuGroup>
           </>
         )}
@@ -147,7 +170,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         }}
       />
       <CancelAdvertismentDialog
-        portals={job.advertisement.activePortals}
+        portals={job.advertisement.active ? job.advertisement.portals : []}
         open={isAdvertismentModalOpen}
         onOpenChange={setIsAdvertismentModalOpen}
         onConfirm={() => {
@@ -156,7 +179,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         }}
       />
       <RepublishAdvertsimentModal
-        portals={job.advertisement.expiredPortals}
+        portals={!job.advertisement.active && job.advertisement.portals.length > 0 ? job.advertisement.portals : []}
         open={isRepublishModalOpen}
         onOpenChange={setIsRepublishModalOpen}
         onConfirm={(selectedPortals) => {
@@ -165,7 +188,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         }}
       />
       <ExtendAdvertisementModal
-        portals={job.advertisement.activePortals}
+        portals={job.advertisement.active ? job.advertisement.portals : []}
         open={isExtendModalOpen}
         onOpenChange={setIsExtendModalOpen}
         onConfirm={(selectedPortals) => {

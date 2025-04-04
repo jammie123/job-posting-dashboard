@@ -140,8 +140,20 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     // Nejprve nastavíme aktivní pohled pro UI
     setActiveView(view);
     
-    // Získáme konfiguraci pohledu
-    const viewConfig = views.find((v: JobViewConfig) => v.value === view);
+    // Načtení vlastních pohledů
+    let customViews: JobViewConfig[] = [];
+    try {
+      const savedViews = localStorage.getItem('jobDashboard_customViews');
+      if (savedViews) {
+        customViews = JSON.parse(savedViews);
+      }
+    } catch (error) {
+      console.error('Chyba při načítání vlastních pohledů:', error);
+    }
+    
+    // Získáme konfiguraci pohledu - nejprve hledáme mezi výchozími pohledy, poté mezi vlastními
+    const viewConfig = views.find((v: JobViewConfig) => v.value === view) || 
+                      customViews.find((v: JobViewConfig) => v.value === view);
     
     if (!viewConfig) {
       console.warn(`Pohled "${view}" nebyl nalezen v konfiguraci!`);
@@ -164,39 +176,61 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     
     // Pro každý pohled nastavíme odpovídající filtry
     if (viewConfig.filters) {
-      // Přidáme filtr statusu, pokud existuje v konfiguraci pohledu
-      if (viewConfig.filters.status) {
-        newFilters.push({
-          id: "status",
-          label: "Stav náboru",
-          value: viewConfig.filters.status as string
-        });
-        console.log(`Nastavuji filtr status: ${viewConfig.filters.status}`);
-      }
-      
-      // Přidáme filtr pro advertisement.status, pokud existuje v konfiguraci pohledu
-      if ("advertisement.status" in viewConfig.filters) {
-        const adStatusValue = viewConfig.filters["advertisement.status"];
-        
-        if (Array.isArray(adStatusValue)) {
-          // Pokud je hodnota pole, přidáme ji přímo
+      // Procházíme všechny filtry definované v konfiguraci pohledu
+      Object.entries(viewConfig.filters).forEach(([key, value]) => {
+        if (key === "status" && value) {
           newFilters.push({
-            id: "adStatus",
-            label: "Stav inzerátu",
-            value: adStatusValue,
-            isMulti: true
+            id: "status",
+            label: "Stav náboru",
+            value: value as string
           });
-          console.log(`Nastavuji filtr stav inzerátu: [${adStatusValue.join(", ")}]`);
-        } else if (adStatusValue) {
-          // Pokud hodnota není pole a není prázdná, přidáme ji jako string
-          newFilters.push({
-            id: "adStatus",
-            label: "Stav inzerátu",
-            value: adStatusValue as string
-          });
-          console.log(`Nastavuji filtr stav inzerátu: ${adStatusValue}`);
+          console.log(`Nastavuji filtr status: ${value}`);
+        } 
+        else if (key === "advertisement.status" && value) {
+          if (Array.isArray(value)) {
+            newFilters.push({
+              id: "adStatus",
+              label: "Stav inzerátu",
+              value: value,
+              isMulti: true
+            });
+            console.log(`Nastavuji filtr stav inzerátu: [${value.join(", ")}]`);
+          } else {
+            newFilters.push({
+              id: "adStatus",
+              label: "Stav inzerátu",
+              value: value as string
+            });
+            console.log(`Nastavuji filtr stav inzerátu: ${value}`);
+          }
         }
-      }
+        else if (key === "location" && value) {
+          newFilters.push({
+            id: "location",
+            label: "Lokalita",
+            value: value as string
+          });
+          console.log(`Nastavuji filtr lokalita: ${value}`);
+        }
+        else if (key === "department" && value) {
+          newFilters.push({
+            id: "department",
+            label: "Oddělení",
+            value: value as string
+          });
+          console.log(`Nastavuji filtr oddělení: ${value}`);
+        }
+        else if (key === "title" && value) {
+          newFilters.push({
+            id: "title",
+            label: "Název pozice", 
+            value: value as string
+          });
+          console.log(`Nastavuji filtr názvu: ${value}`);
+          // Také nastavíme vyhledávací dotaz pro title
+          setSearchQuery(value as string);
+        }
+      });
     } else {
       console.log("Odstraňuji filtry stavu - zobrazuji všechny pozice");
     }
@@ -344,7 +378,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
       }
 
       let passes = false;
-      
+
       switch (filter.id) {
         case "status":
           passes = job.status === filter.value;
@@ -482,6 +516,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           activeView={activeView}
           onViewChange={handleViewChange}
           counts={statusCounts}
+          activeFilters={activeFilters}
         />
         <div className="container mx-auto px-4">
           <JobFilters
@@ -541,25 +576,34 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                               <JobMenuAction job={job} />
                             )}
                             <div className="min-w-[320px] space-y-1">
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold leading-none tracking-tight">
-                                  <Link
-                                    href={`/job/${job.id}`}
-                                    className="hover:text-primary hover:underline cursor-pointer"
-                                  >
-                                    {job.title}
-                                  </Link>
-                                </h3>
+                              <div className="flex items-baseline gap-2 ">
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <div
-                                      className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`}
+                                      className={`ml-1 h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
                                     />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    {job.status}
+                                    {job.status === "Aktivní" 
+                                      ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                      : job.status
+                                    }
                                   </TooltipContent>
                                 </Tooltip>
+                                <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
+                                  <Link
+                                    href={`/job/${job.id}`}
+                                    className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
+                                  >
+                                    {job.title}
+                                  </Link>
+                                  {job.department && (
+                                    <div className="text-primary text-sm mt-1">
+                                      ({job.department})
+                                    </div>
+                                  )}
+                                </h3>
+
                               </div>
                               <div className="flex gap-4 items-center">
                                 <div className="flex items-center gap-4">
@@ -625,27 +669,27 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                           <div className="flex items-center gap-2"></div>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                          <div
-                            className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
-                          >
-                            {getRandomNewCandidates(job.id) && (
-                              <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
-                                +{getRandomNewCandidates(job.id)}
-                              </div>
-                            )}
+                          <div className="flex items-center gap-6">
+                            <div
+                              className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                            >
+                              {getRandomNewCandidates(job.id) && (
+                                <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
+                                  +{getRandomNewCandidates(job.id)}
+                                </div>
+                              )}
                             <span className="text-lg font-semibold"> {job.candidates.new}</span>
                             <span className="text-xs text-muted-foreground">Nový</span>
-                          </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
                             <span className="text-lg font-semibold "> {job.candidates.inProcess}</span>
-                            <span className="text-xs ">Ve hře</span>
+                              <span className="text-xs ">Ve hře</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                              <span className="text-lg font-semibold"> {job.candidates.total}</span>
+                              <span className="text-xs text-muted-foreground">Celkem</span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold"> {job.candidates.total}</span>
-                            <span className="text-xs text-muted-foreground">Celkem</span>
-                          </div>
-                        </div>
                         <div className="w-60 shrink-0">
                           <PositionNote
                             recruiterName={job.recruiter.name}
@@ -656,23 +700,23 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                         </div>
                       </div>
                     </div>
-                    <div className="pt-2 flex items-center gap-6 px-[48px]">
+                      <div className="pt-2 flex items-center gap-6 px-[48px]">
                       {getActivePortals(job).length > 0 && (
-                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3">
                           <span className="text-sm text-muted-foreground">
                             {formatDate(getActivePortals(job)[0].publishedAt)} - {formatDate(getActivePortals(job)[0].expiresAt)}
                           </span>
-                          <div className="flex items-center gap-4">
-                            <div className="flex -space-x-1">
+                            <div className="flex items-center gap-4">
+                              <div className="flex -space-x-1">
                               {getActivePortals(job).map((portal) => (
                                 <Tooltip key={portal.url}>
                                   <TooltipTrigger asChild>
-                                    <a
-                                      href={portal.url}
-                                      className="relative flex h-7 w-7 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
-                                    >
-                                      {renderPortalIcon(portal)}
-                                    </a>
+                                  <a
+                                    href={portal.url}
+                                    className="relative flex h-7 w-7 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
+                                  >
+                                    {renderPortalIcon(portal)}
+                                  </a>
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <div className="flex flex-col gap-1">
@@ -683,171 +727,171 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     </div>
                                   </TooltipContent>
                                 </Tooltip>
-                              ))}
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <Tooltip>
-                                <TooltipTrigger>
-                                  <div className="flex items-center gap-1.5">
-                                    <Eye className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm text-muted-foreground">
+                                ))}
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <div className="flex items-center gap-1.5">
+                                      <Eye className="h-4 w-4 text-muted-foreground" />
+                                      <span className="text-sm text-muted-foreground">
                                       {job.performance.views}
-                                    </span>
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent>Celkem shlédnutí</TooltipContent>
-                              </Tooltip>
+                                      </span>
+                                    </div>
+                                  </TooltipTrigger>
+                                  <TooltipContent>Celkem shlédnutí</TooltipContent>
+                                </Tooltip>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
                       {getActivePortals(job).filter((portal) => isExpiringSoon(portal.expiresAt)).length > 0 && (
-                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-3">
                           <HoverCard>
-                            <HoverCardTrigger>
-                              <div className="flex items-center gap-2 rounded-full bg-amber-100 px-2 py-0.5">
-                                <span className="text-xs font-medium text-amber-800">
+                              <HoverCardTrigger>
+                                <div className="flex items-center gap-2 rounded-full bg-amber-100 px-2 py-0.5">
+                                  <span className="text-xs font-medium text-amber-800">
                                   {`Zkončí za ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "")} ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "") === 1 ? "den" : "dny"}`}
-                                </span>
-                                <div className="flex -space-x-1">
+                                  </span>
+                                  <div className="flex -space-x-1">
                                   {getActivePortals(job)
-                                    .filter((portal) => isExpiringSoon(portal.expiresAt))
-                                    .map((portal) => (
+                                      .filter((portal) => isExpiringSoon(portal.expiresAt))
+                                      .map((portal) => (
+                                        <div
+                                          key={portal.url}
+                                          className="relative flex h-7 w-7 items-center justify-center rounded-full border border-amber-300 bg-white"
+                                          title={portal.name}
+                                        >
+                                          {renderPortalIcon(portal)}
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-[240px] p-0 z-[9999]">
+                                <table className="w-full">
+                                  <thead>
+                                    <tr className="border-b">
+                                      <th className="p-2 text-left text-xs font-medium">Portál</th>
+                                      <th className="p-2 text-left text-xs font-medium">Končí</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  {getActivePortals(job)
+                                      .filter((portal) => isExpiringSoon(portal.expiresAt))
+                                      .map((portal) => (
+                                        <tr key={portal.url} className="border-b last:border-0">
+                                          <td className="p-2 text-xs">{portal.name}</td>
+                                          <td className="p-2 text-xs">{formatDateWithYear(portal.expiresAt)}</td>
+                                        </tr>
+                                      ))}
+                                  </tbody>
+                                </table>
+                                <div className="border-t p-2">
+                                  <Button className="w-full" size="sm">
+                                    Prodloužit inzerci
+                                  </Button>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
+                          </div>
+                        )}
+                      {getExpiredPortals(job).length > 0 && (
+                          <div className="flex items-center gap-3">
+                          <HoverCard>
+                              <HoverCardTrigger>
+                                <div className="flex items-center gap-2 rounded-full bg-[#FFECEC] px-2 py-0.5">
+                                  <span className="text-xs font-medium text-[#9B0000]">
+                                    {(() => {
+                                    const expiryDates = getExpiredPortals(job).map((p) => p.expiresAt)
+                                      const allSameDate = expiryDates.every((date) => date === expiryDates[0])
+
+                                      if (allSameDate && expiryDates.length > 0) {
+                                        return `Ukončený od ${formatDate(expiryDates[0])}`
+                                      }
+
+                                    return `${getExpiredPortals(job).length} ukončený ${
+                                      getExpiredPortals(job).length === 1 ? "inzerát" : "inzeráty"
+                                      }`
+                                    })()}
+                                  </span>
+                                  <div className="flex -space-x-1">
+                                  {getExpiredPortals(job).slice(0, 3).map((portal) => (
                                       <div
                                         key={portal.url}
-                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-amber-300 bg-white"
+                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white"
                                         title={portal.name}
                                       >
                                         {renderPortalIcon(portal)}
                                       </div>
                                     ))}
-                                </div>
-                              </div>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="w-[240px] p-0 z-[9999]">
-                              <table className="w-full">
-                                <thead>
-                                  <tr className="border-b">
-                                    <th className="p-2 text-left text-xs font-medium">Portál</th>
-                                    <th className="p-2 text-left text-xs font-medium">Končí</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {getActivePortals(job)
-                                    .filter((portal) => isExpiringSoon(portal.expiresAt))
-                                    .map((portal) => (
-                                      <tr key={portal.url} className="border-b last:border-0">
-                                        <td className="p-2 text-xs">{portal.name}</td>
-                                        <td className="p-2 text-xs">{formatDateWithYear(portal.expiresAt)}</td>
-                                      </tr>
-                                    ))}
-                                </tbody>
-                              </table>
-                              <div className="border-t p-2">
-                                <Button className="w-full" size="sm">
-                                  Prodloužit inzerci
-                                </Button>
-                              </div>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </div>
-                      )}
-                      {getExpiredPortals(job).length > 0 && (
-                        <div className="flex items-center gap-3">
-                          <HoverCard>
-                            <HoverCardTrigger>
-                              <div className="flex items-center gap-2 rounded-full bg-[#FFECEC] px-2 py-0.5">
-                                <span className="text-xs font-medium text-[#9B0000]">
-                                  {(() => {
-                                    const expiryDates = getExpiredPortals(job).map((p) => p.expiresAt)
-                                    const allSameDate = expiryDates.every((date) => date === expiryDates[0])
-
-                                    if (allSameDate && expiryDates.length > 0) {
-                                      return `Ukončený od ${formatDate(expiryDates[0])}`
-                                    }
-
-                                    return `${getExpiredPortals(job).length} ukončený ${
-                                      getExpiredPortals(job).length === 1 ? "inzerát" : "inzeráty"
-                                    }`
-                                  })()}
-                                </span>
-                                <div className="flex -space-x-1">
-                                  {getExpiredPortals(job).slice(0, 3).map((portal) => (
-                                    <div
-                                      key={portal.url}
-                                      className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white"
-                                      title={portal.name}
-                                    >
-                                      {renderPortalIcon(portal)}
-                                    </div>
-                                  ))}
                                   {getExpiredPortals(job).length > 3 && (
-                                    <div
-                                      className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
-                                      title="More portals"
-                                    >
+                                      <div
+                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
+                                        title="More portals"
+                                      >
                                       +{getExpiredPortals(job).length - 3}
-                                    </div>
-                                  )}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
-                            </HoverCardTrigger>
-                            <HoverCardContent className="w-[280px] p-0">
-                              <div className="p-2 border-b">
-                                <h4 className="font-medium text-sm">
+                              </HoverCardTrigger>
+                              <HoverCardContent className="w-[280px] p-0">
+                                <div className="p-2 border-b">
+                                  <h4 className="font-medium text-sm">
                                   Ukončené portály ({getExpiredPortals(job).length})
-                                </h4>
-                              </div>
-                              <div className="max-h-[200px] overflow-y-auto">
-                                <table className="w-full">
-                                  <thead className="sticky top-0 bg-white">
-                                    <tr className="border-b">
-                                      <th className="p-2 text-left text-xs font-medium">Portál</th>
-                                      <th className="p-2 text-left text-xs font-medium">Ukončeno</th>
-                                      <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {getExpiredPortals(job).map((portal) => (
-                                      <tr key={portal.url} className="border-b last:border-0">
-                                        <td className="p-2 text-xs">
-                                          <div className="flex items-center gap-2">
-                                            <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
-                                            {portal.name}
-                                          </div>
-                                        </td>
-                                        <td className="p-2 text-xs">{formatDate(portal.expiresAt)}</td>
-                                        <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
+                                  </h4>
+                                </div>
+                                <div className="max-h-[200px] overflow-y-auto">
+                                  <table className="w-full">
+                                    <thead className="sticky top-0 bg-white">
+                                      <tr className="border-b">
+                                        <th className="p-2 text-left text-xs font-medium">Portál</th>
+                                        <th className="p-2 text-left text-xs font-medium">Ukončeno</th>
+                                        <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
                                       </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                              <div className="border-t p-2">
-                                <Button
-                                  className="w-full"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedJobForRepublish(job)
-                                    setIsRepublishModalOpen(true)
-                                  }}
-                                >
-                                  Znovu vystavit inzerát
-                                </Button>
-                              </div>
-                            </HoverCardContent>
-                          </HoverCard>
-                        </div>
-                      )}
-                      {job.advertisement.portals.length === 0 && (
-                        <div className="flex items-center">
-                          <div className="rounded-full bg-gray-100 px-3 py-1">
-                            <span className="text-sm text-gray-500">Zatím nevystavený žádný inzerát</span>
+                                    </thead>
+                                    <tbody>
+                                    {getExpiredPortals(job).map((portal) => (
+                                        <tr key={portal.url} className="border-b last:border-0">
+                                          <td className="p-2 text-xs">
+                                            <div className="flex items-center gap-2">
+                                              <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
+                                              {portal.name}
+                                            </div>
+                                          </td>
+                                          <td className="p-2 text-xs">{formatDate(portal.expiresAt)}</td>
+                                          <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                                <div className="border-t p-2">
+                                  <Button
+                                    className="w-full"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedJobForRepublish(job)
+                                      setIsRepublishModalOpen(true)
+                                    }}
+                                  >
+                                    Znovu vystavit inzerát
+                                  </Button>
+                                </div>
+                              </HoverCardContent>
+                            </HoverCard>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      {job.advertisement.portals.length === 0 && (
+                            <div className="flex items-center">
+                              <div className="rounded-full bg-gray-100 px-3 py-1">
+                                <span className="text-sm text-gray-500">Zatím nevystavený žádný inzerát</span>
+                              </div>
+                            </div>
+                          )}
+                      </div>
                   </CardContent>
                 </Card>
               ))}

@@ -16,7 +16,7 @@ interface FilterDialogProps {
   children: React.ReactNode
   onFilterSelect?: (category: string, option: string) => void
   activeFilters: ActiveFilter[]
-  onRemoveFilter?: (filterId: string) => void
+  onRemoveFilter?: (filter: ActiveFilter) => void
   onCreateViewClick?: () => void
 }
 
@@ -57,9 +57,9 @@ export function FilterDialog({
     return activeFilters.map(filter => filter.id)
   }
 
-  // Filtrované možnosti - skryjeme "Název pozice" a "Náborář"
+  // Filtrované možnosti - skryjeme "Název pozice", "Náborář" a "Stav náboru"
   const filteredOptions = filterOptions.filter(
-    option => option.id !== "title" && option.id !== "recruiter"
+    option => option.id !== "title" && option.id !== "recruiter" && option.id !== "status"
   )
 
   // Získání aktuálně vybrané hodnoty pro filtr
@@ -77,8 +77,8 @@ export function FilterDialog({
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[400px] max-h-[80vh] overflow-y-auto">
-        <div className="p-2">
+      <DropdownMenuContent align="end" className="w-[460px] max-h-[80vh] overflow-y-auto">
+        <div className="p-3">
 
           <div className="space-y-1.5">
             {/* Formulářové filtry */}
@@ -129,7 +129,7 @@ export function FilterDialog({
                         <Button 
                           variant="outline" 
                           size="sm"
-                          className="h-8 text-xs px-2"
+                          className="h-8 text-xs px-2 "
                           onClick={() => applyFilter(category.id, formState[category.id] || "")}
                           disabled={!formState[category.id]}
                         >
@@ -141,58 +141,49 @@ export function FilterDialog({
                 </div>
               )
             })}
-            
-            {/* Aktivní filtry */}
-            {activeFilters.length > 0 && (
-              <div className="pt-2 flex gap-2">
-                <h4 className="text-xs font-medium mb-1 w-1/3">Aktivní filtry</h4>
-                <div className="flex flex-wrap flex-1 gap-1">
-                  {activeFilters.map((filter) => (
-                    <Badge 
-                      key={filter.id}
-                      variant="secondary"
-                      className="pl-1.5 pr-0.5 py-1 flex items-center gap-0.5 text-xs"
-                    >
-                      <span className="font-medium">{filter.label}</span>
-                      <span className="text-muted-foreground">:</span>
-                      <span>{renderFilterValue(filter)}</span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-3.5 w-3.5 p-0 ml-0.5 hover:bg-transparent rounded-full"
-                        onClick={() => onRemoveFilter?.(filter.id)}
-                      >
-                        <X className="h-2.5 w-2.5" />
-                      </Button>
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
           
-          <div className="mt-4 flex justify-between">
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="text-xs h-7 px-2"
-              onClick={() => {
-                setOpen(false);
-                onCreateViewClick?.();
-              }}
-            >
-              <Plus className="h-3 w-3 mr-1" />
-              Vytvořit nový pohled
-            </Button>
+          <div className="mt-4 flex justify-end">
+          {/* <Button 
+                variant="secondary" 
+                size="sm"
+                className="text-xs h-7 px-2 rounded-full"
+                onClick={() => {
+                  setOpen(false);
+                  onCreateViewClick?.();
+                }}
+              >
+                <Plus className="h-3 w-3 mr-1" />
+                Vytvořit nový pohled
+              </Button> */}
             
-            <Button 
-              variant="default"
-              size="sm"
-              className="text-xs h-7 px-2"
-              onClick={() => setOpen(false)}
-            >
-              Použít filtry
-            </Button>
+            
+            <div className="flex gap-2">
+            {activeFilters.filter(f => f.id !== "recruiter" && f.id !== "status").length > 0 ? (
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-xs h-7 px-2 rounded-full"
+                  onClick={() => {
+                    // Přidáme handler pro vymazání všech filtrů
+                    activeFilters.forEach(filter => {
+                      onRemoveFilter?.(filter);
+                    });
+                  }}
+                >
+                  Vymazat filtry
+                </Button>
+              ) : null}
+              
+              <Button 
+                variant="default"
+                size="sm"
+                className="text-xs h-7 px-3 rounded-full"
+                onClick={() => setOpen(false)}
+              >
+                Použít filtry
+              </Button>
+            </div>
           </div>
         </div>
       </DropdownMenuContent>

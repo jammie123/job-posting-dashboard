@@ -6,8 +6,9 @@ import { Search, X, Plus, Save, Filter } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { FilterDialog } from "@/components/filter-dialog"
 import { RecruiterFilter } from "@/components/recruiter-filter"
-import { CreateViewDialog } from "./create-view-dialog"
+import { CreateViewDialog } from "@/components/create-view-dialog"
 import { JobStatus } from "@/types/job-posting"
+import { JobViewConfig, views } from "@/components/job-views"
 
 export type FilterOption = {
   id: string
@@ -131,7 +132,18 @@ export function JobFilters({
     }
   }
 
-  const removeFilter = (filterId: string, value?: string) => {
+  const removeFilter = (filter: ActiveFilter | string, value?: string) => {
+    // Pokud přijímáme objekt filtru (z FilterDialog)
+    if (typeof filter === 'object') {
+      const filterId = filter.id;
+      // Pokud má filtr přímo hodnotu, použijeme ji
+      removeFilter(filterId, Array.isArray(filter.value) ? undefined : filter.value);
+      return;
+    }
+
+    // Původní implementace, kde filter je string (filterId)
+    const filterId = filter;
+    
     if (value === undefined) {
       console.log(`Odstraňuji celý filtr: ${filterId}`);
       // Pokud hodnota není specifikována, odstraníme celý filtr
@@ -143,9 +155,9 @@ export function JobFilters({
     console.log(`Odstraňuji filtr: ${filterId} = ${value}`);
     
     // Pro filtr typu MultiSelect, odebereme pouze konkrétní hodnotu z pole
-    const filter = activeFilters.find(f => f.id === filterId);
-    if (filter && Array.isArray(filter.value) && filter.isMulti) {
-      const newValues = filter.value.filter(v => v !== value);
+    const filterObj = activeFilters.find(f => f.id === filterId);
+    if (filterObj && Array.isArray(filterObj.value) && filterObj.isMulti) {
+      const newValues = filterObj.value.filter(v => v !== value);
       
       // Pokud je pole prázdné, odstraníme celý filtr
       if (newValues.length === 0) {
@@ -167,7 +179,9 @@ export function JobFilters({
 
   const handleSaveView = (viewName: string) => {
     console.log("Ukládám pohled:", viewName, "s filtry:", activeFilters);
-    // Zde byste typicky uložili pohled do backendu nebo local storage
+    // Funkce je nyní implementována v JobViews komponentě
+    // Tato funkce bude volána z CreateViewDialog, který dostává funkci onSave
+    setCreateViewOpen(false);
   }
 
   const clearAllFilters = () => {
@@ -299,11 +313,11 @@ export function JobFilters({
           onRemoveFilter={removeFilter}
           onCreateViewClick={() => setCreateViewOpen(true)}
         >
-          <Button variant="outline" className="gap-2">
-            Pokročilé hledání
-            {activeFilters.length > 0 && (
+          <Button variant="secondary" className="gap-2 rounded-lg">
+            Další filtry
+            {activeFilters.filter(f => f.id !== "recruiter" && f.id !== "status").length > 0 && (
               <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-accent text-primary">
-                {activeFilters.length}
+                {activeFilters.filter(f => f.id !== "recruiter" && f.id !== "status").length}
               </span>
             )}
           </Button>

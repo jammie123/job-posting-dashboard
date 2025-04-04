@@ -15,31 +15,107 @@ import { ActiveFilter, filterOptions } from "./job-filters"
 import { Badge } from "@/components/ui/badge"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { JobViewConfig } from "./job-views"
 
-interface CreateViewDialogProps {
+interface EditViewDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  activeFilters: ActiveFilter[]
-  onSave: (viewName: string) => void
-  jobCount?: number // Počet nabídek odpovídajících filtrům
+  view: JobViewConfig | null
+  onSave: (viewId: string, viewName: string, filters: ActiveFilter[]) => void
+  onDelete: (viewId: string) => void
+  jobCount?: number
 }
 
-export function CreateViewDialog({ open, onOpenChange, activeFilters, onSave, jobCount = 0 }: CreateViewDialogProps) {
+export function EditViewDialog({ 
+  open, 
+  onOpenChange, 
+  view, 
+  onSave, 
+  onDelete,
+  jobCount = 0 
+}: EditViewDialogProps) {
   const [viewName, setViewName] = useState("")
   const [formState, setFormState] = useState<Record<string, string>>({})
   const [localFilters, setLocalFilters] = useState<ActiveFilter[]>([])
 
   // Reset stavu při otevření dialogu
   useEffect(() => {
-    if (open) {
-      setLocalFilters(activeFilters)
+    if (open && view) {
+      setViewName(view.label)
+      
+      // Konvertujeme filtry z objektu view na pole ActiveFilter objektů
+      const filtersFromView: ActiveFilter[] = [];
+      
+      if (view.filters) {
+        Object.entries(view.filters).forEach(([key, value]) => {
+          if (key === "status" && value) {
+            filtersFromView.push({
+              id: "status",
+              label: "Stav náboru",
+              value: value as string
+            });
+          } 
+          else if (key === "advertisement.status" && value) {
+            if (Array.isArray(value)) {
+              filtersFromView.push({
+                id: "adStatus",
+                label: "Stav inzerátu",
+                value: value,
+                isMulti: true
+              });
+            } else {
+              filtersFromView.push({
+                id: "adStatus",
+                label: "Stav inzerátu",
+                value: value as string
+              });
+            }
+          }
+          else if (key === "location" && value) {
+            filtersFromView.push({
+              id: "location",
+              label: "Lokalita",
+              value: value as string
+            });
+          }
+          else if (key === "department" && value) {
+            filtersFromView.push({
+              id: "department",
+              label: "Oddělení",
+              value: value as string
+            });
+          }
+          else if (key === "title" && value) {
+            filtersFromView.push({
+              id: "title",
+              label: "Název pozice", 
+              value: value as string
+            });
+          }
+          else if (key === "recruiter" && value) {
+            filtersFromView.push({
+              id: "recruiter",
+              label: "Náborář", 
+              value: value as string
+            });
+          }
+        });
+      }
+      
+      setLocalFilters(filtersFromView);
     }
-  }, [open, activeFilters])
+  }, [open, view])
 
   const handleSave = () => {
-    if (viewName.trim()) {
-      onSave(viewName)
-      setViewName("")
+    if (viewName.trim() && view) {
+      onSave(view.value, viewName, localFilters)
+      onOpenChange(false)
+    }
+  }
+
+  const handleDelete = () => {
+    if (view) {
+      onDelete(view.value)
       onOpenChange(false)
     }
   }
@@ -109,22 +185,23 @@ export function CreateViewDialog({ open, onOpenChange, activeFilters, onSave, jo
     return jobCount || Math.floor(Math.random() * 100) + 5;
   }
 
+  if (!view) return null;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Vytvořit nový pohled</DialogTitle>
-          <DialogDescription>Pojmenujte si svůj pohled a upravte nastavení filtrů</DialogDescription>
+          <DialogTitle>Upravit nastavení pohledu</DialogTitle>
+          <DialogDescription>Změňte název nebo upravte nastavení filtrů</DialogDescription>
         </DialogHeader>
         <div className="grid gap-6">
           <div className="w-full items-start gap-4">
-            {/* <Label htmlFor="viewName" className="text-sm">Název pohledu</Label> */}
             <Input
               id="viewName"
               value={viewName}
               onChange={(e) => setViewName(e.target.value)}
               className="w-full !text-sm"
-              placeholder="Můj pohled"
+              placeholder="Název pohledu"
               autoFocus
             />
           </div>
@@ -246,16 +323,24 @@ export function CreateViewDialog({ open, onOpenChange, activeFilters, onSave, jo
           )}
         </div>
         
-        <DialogFooter className="flex justify-between items-center gap-2">
-          <div className="text-xs text-muted-foreground">
-            Počet náborů: <span className="text-xs font-normal">{getJobCountForCurrentFilters()}</span>
-          </div>
-          <Button type="submit" onClick={handleSave}>
-            Uložit pohled
+        <DialogFooter className="flex flex-row-reverse justify-between items-center gap-2">
+          <Button 
+            variant="outline" 
+            onClick={handleDelete}
+            className="text-red-600 border-red-200 rounded-full hover:bg-red-50 hover:text-red-700 hover:border-red-300"
+          >
+            Smazat pohled
           </Button>
+          <div className="flex items-center gap-2 flex-row-reverse">
+            <div className="text-xs text-muted-foreground">
+              Počet náborů: <span className="text-xs font-normal">{getJobCountForCurrentFilters()}</span>
+            </div>
+            <Button type="submit" onClick={handleSave}>
+              Uložit pohled
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
-}
-
+} 
