@@ -9,12 +9,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CollaborationStep } from "./components/collaboration-step"
 import { AdvertiseStep } from "./components/advertise-step"
 import { SummaryOrder } from "@/components/summary-order"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { AdditionalInfoStep } from "./components/additional-info-step"
 
 const steps = [
   {
     value: "position",
     label: "Údaje o pozici",
     component: FirstStep,
+  },
+  {
+    value: "additional-info",
+    label: "Doplňující informace",
+    component: AdditionalInfoStep,
   },
   {
     value: "questionnaire",
@@ -142,17 +151,88 @@ export default function NewPosition() {
       )
     }
 
-    const CurrentStepComponent = steps.find((step) => step.value === currentStep)?.component || FirstStep
-    return <CurrentStepComponent />
+    // Funkce pro přechod na další krok
+    const goToNextStep = () => {
+      const currentIndex = steps.findIndex(step => step.value === currentStep);
+      console.log("Aktuální krok:", currentStep, "index:", currentIndex);
+      if (currentIndex >= 0 && currentIndex < steps.length - 1) {
+        // Nastavit další krok
+        const nextStep = steps[currentIndex + 1].value;
+        console.log("Přecházím na další krok:", nextStep);
+        setCurrentStep(nextStep);
+      } else {
+        console.log("Nelze přejít na další krok - již jsme na posledním kroku nebo krok nebyl nalezen");
+      }
+    };
+
+    // Funkce pro přechod na předchozí krok
+    const goToPrevStep = () => {
+      const currentIndex = steps.findIndex(step => step.value === currentStep);
+      console.log("Aktuální krok:", currentStep, "index:", currentIndex);
+      if (currentIndex > 0) {
+        // Nastavit předchozí krok
+        const prevStep = steps[currentIndex - 1].value;
+        console.log("Přecházím na předchozí krok:", prevStep);
+        setCurrentStep(prevStep);
+      } else {
+        console.log("Nelze přejít na předchozí krok - již jsme na prvním kroku");
+      }
+    };
+
+    // Funkce pro přímou navigaci na konkrétní krok
+    const navigateToStep = (stepValue: string) => {
+      console.log("Přímá navigace na krok:", stepValue);
+      if (steps.some(step => step.value === stepValue)) {
+        setCurrentStep(stepValue);
+      } else {
+        console.error("Neplatný krok pro navigaci:", stepValue);
+      }
+    };
+
+    // Pro testovací účely vytiskneme všechny dostupné kroky
+    console.log("Dostupné kroky:", steps.map(step => step.value));
+
+    // Předat správné props pro každý krok
+    switch(currentStep) {
+      case "position":
+        console.log("Renderuji FirstStep komponentu s onNextStep callbackem");
+        return (
+          <FirstStep 
+            onNextStep={goToNextStep} 
+          />
+        );
+      case "additional-info":
+        console.log("Renderuji AdditionalInfoStep komponentu s navigačními callbacky");
+        return <AdditionalInfoStep onNextStep={goToNextStep} onPrevStep={goToPrevStep} />;
+      case "questionnaire":
+        console.log("Renderuji ApplicationForm komponentu");
+        return <ApplicationForm />;
+      case "collaboration":
+        console.log("Renderuji CollaborationStep komponentu");
+        return <CollaborationStep />;
+      default:
+        // Fallback k první komponentě, pokud nenajdeme odpovídající hodnotu
+        console.log("Použití fallbacku pro krok:", currentStep);
+        const CurrentStepComponent = steps.find((step) => step.value === currentStep)?.component || FirstStep;
+        return <CurrentStepComponent />;
+    }
   }
 
   return (
-    <div className="container py-6">
+    <div className="container mt-8">
+
       <div className="flex gap-6">
         {/* Left column - Vertical stepper */}
         <div className="w-64 shrink-0">
           <Tabs value={currentStep} onValueChange={setCurrentStep} orientation="vertical" className="fixed">
-            <h1 className="text-2xl font-semibold mb-6">Nový nábor</h1>
+          <div className="my-4 mx-1">
+        <Button variant="ghost" asChild className="gap-2">
+          <Link href="/">
+            <ArrowLeft size={16} />
+            Zpět na výpis
+          </Link>
+        </Button>
+      </div>
             <TabsList className="flex flex-col h-auto w-full bg-transparent gap-2">
               {steps.map((step, index) => (
                 <TabsTrigger
@@ -180,7 +260,7 @@ export default function NewPosition() {
 
         {/* Right column - Form content */}
         <div className="flex-1 flex">
-          <Card className={`p-6 ${currentStep === "advertising" ? "w-full" : "w-[900px]"}`}>
+          <Card className={`p-6 ${currentStep === "advertising" ? "w-full" : "w-[850px]"}`}>
             <div className="flex justify-between items-center mb-6 relative">
               <h2 className="text-xl font-semibold">{steps.find((step) => step.value === currentStep)?.label}</h2>
               {currentStep === "questionnaire" && (

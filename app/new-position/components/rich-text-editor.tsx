@@ -5,6 +5,7 @@ import StarterKit from "@tiptap/starter-kit"
 import { Toggle } from "@/components/ui/toggle"
 import { Bold, Italic, List, Heading2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useEffect } from "react"
 
 interface RichTextEditorProps {
   value: string
@@ -20,6 +21,21 @@ export function RichTextEditor({ value, onChange, className }: RichTextEditorPro
       onChange(editor.getHTML())
     },
   })
+  
+  // Efekt pro aktualizaci obsahu editoru, když se změní vstupní hodnota
+  useEffect(() => {
+    if (editor) {
+      console.log('RichTextEditor: Current value prop:', value);
+      console.log('RichTextEditor: Current editor HTML:', editor.getHTML());
+      
+      if (value !== editor.getHTML()) {
+        console.log('RichTextEditor: Updating editor content with:', value);
+        // Nastavit obsah pouze pokud se liší od současného obsahu
+        editor.commands.setContent(value, false);
+        console.log('RichTextEditor: Editor HTML after update:', editor.getHTML());
+      }
+    }
+  }, [editor, value]);
 
   if (!editor) {
     return null
