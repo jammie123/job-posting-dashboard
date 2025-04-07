@@ -53,41 +53,19 @@ const professions = [
   "Skladník",
 ]
 
-const benefits = [
-  "13. plat",
-  "5 týdnů dovolené",
-  "Stravenky",
-  "MultiSport karta",
-  "Flexibilní pracovní doba",
-  "Home office",
-  "Sick days",
-  "Příspěvek na dopravu",
-  "Příspěvek na penzijní připojištění",
-  "Firemní notebook",
-  "Firemní telefon",
-]
-
-const educationLevels = [
-  "Základní",
-  "Středoškolské",
-  "Středoškolské s maturitou",
-  "Vyšší odborné",
-  "Vysokoškolské bakalářské",
-  "Vysokoškolské magisterské",
-  "Vysokoškolské doktorské",
-]
-
 const FormSchema = z.object({
   title: z.string().min(1, "Název pozice je povinný"),
   locality: z.array(z.string()).min(1, "Vyberte alespoň jednu lokalitu"),
   field: z.string().min(1, "Vyberte obor"),
   profession: z.array(z.string()).min(1, "Vyberte alespoň jednu profesi"),
   description: z.string().min(1, "Popis pozice je povinný"),
-  education: z.string().min(1, "Vyberte požadované vzdělání"),
-  benefits: z.array(z.string()),
   type: z.enum(["full", "part"], {
     required_error: "Vyberte typ úvazku",
   }),
+  salary: z.object({
+    from: z.number().min(0),
+    to: z.number().min(0),
+  }).optional(),
 })
 
 // Funkce pro volání OpenAI API
@@ -115,8 +93,15 @@ async function suggestFieldAndProfession(position: string) {
 export function FirstStep() {
   const [isRemote, setIsRemote] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [autoFilledInfo, setAutoFilledInfo] = useState<{field: string, professions: string[]} | null>(null)
+  const [autoFilledInfo, setAutoFilledInfo] = useState<{
+    field: string, 
+    professions: string[], 
+    description?: string,
+    salary?: { from: number, to: number }
+  } | null>(null)
   const [showFieldsForm, setShowFieldsForm] = useState(false)
+  // Stav pro kontrolu zobrazování chyb
+  const [showValidationErrors, setShowValidationErrors] = useState(false)
   
   // Stav pro sledování načítání pro jednotlivá pole
   const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({
@@ -124,9 +109,9 @@ export function FirstStep() {
     field: false,
     profession: false,
     description: false,
-    education: false,
-    benefits: false,
     type: false,
+    locality: false,
+    salary: false
   })
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -134,23 +119,40 @@ export function FirstStep() {
     defaultValues: {
       locality: [],
       profession: [],
-      benefits: [],
     },
+    // Změna režimu validace, aby se spouštěla pouze při odeslání formuláře
+    mode: "onSubmit"
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data)
+    // Když odesíláme formulář, zapneme zobrazení chyb
+    setShowValidationErrors(true)
   }
 
   // Funkce pro reset autoFilledInfo
   const resetAutoFilledInfo = () => {
     setAutoFilledInfo(null);
-    setShowFieldsForm(true); // Zobrazí pole po skrytí zprávy
+    
+    // Zobrazíme formulář s poli
+    setShowFieldsForm(true);
+    
+    // Vypneme zobrazování chyb při přepnutí do režimu úprav
+    setShowValidationErrors(false);
+    
+    // Vynulování chyb pro pole obor a profese
+    form.clearErrors(["field", "profession"]);
   };
   
   // Funkce pro zobrazení polí oboru a profese
   const showFieldsFormHandler = () => {
     setShowFieldsForm(true);
+    
+    // Vypneme zobrazování chyb při přepnutí do režimu úprav
+    setShowValidationErrors(false);
+    
+    // Vynulování chyb pro pole obor a profese
+    form.clearErrors(["field", "profession"]);
   };
 
   // Funkce pro zpracování blur eventu na poli "název pozice"
@@ -159,14 +161,25 @@ export function FirstStep() {
       return;
     }
 
+    console.log('Processing position blur for:', positionName);
+
     try {
       setIsLoading(true);
+      // Nastavíme loading stav pro všechna relevantní pole
+      setLoadingFields(prev => ({
+        ...prev,
+        title: true,
+        field: true,
+        profession: true,
+        description: true,
+        salary: true
+      }));
       const response = await fetch("/api/suggest-fields", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ title: positionName }),
+        body: JSON.stringify({ position: positionName }),
       });
 
       if (!response.ok) {
@@ -174,35 +187,91 @@ export function FirstStep() {
       }
 
       const data = await response.json();
+      console.log('API response data:', data);
       
       if (data.field && data.professions) {
         // Pokud máme úspěšnou odpověď, nastavíme data do formuláře
         form.setValue("field", data.field);
         form.setValue("profession", data.professions);
         
+        // Pokud API vrátilo i popis, nastavíme ho
+        if (data.description) {
+          console.log('Description from API:', data.description);
+          
+          // Převedeme prostý text na HTML formát pro RichTextEditor
+          const htmlDescription = convertTextToHtml(data.description);
+          console.log('Setting description to form:', htmlDescription);
+          
+          form.setValue("description", htmlDescription);
+          
+          // Zkontrolujeme hodnotu po nastavení
+          setTimeout(() => {
+            console.log('Description value in form after timeout:', form.getValues("description"));
+          }, 100);
+        }
+        
+        // Pokud API vrátilo i mzdové rozmezí, nastavíme ho
+        if (data.salary && data.salary.from > 0 && data.salary.to > 0) {
+          console.log('Salary from API:', data.salary);
+          form.setValue("salary", data.salary);
+        }
+        
         // Nastavíme autoFilledInfo pro zobrazení zprávy
         setAutoFilledInfo({
           field: data.field,
           professions: data.professions,
+          description: data.description,
+          salary: data.salary && data.salary.from > 0 ? data.salary : undefined
         });
         
         // Skryjeme formulář s poli pro obor a profesi
         setShowFieldsForm(false);
         
-        toast.success("Na základě názvu jsme předvyplnili obor a profese.");
+        toast.success("Na základě názvu jsme předvyplnili obor, profese a další údaje.");
       } else {
         // Pokud nemáme data, zobrazíme formulář s poli
         setShowFieldsForm(true);
       }
     } catch (error) {
       console.error("Error fetching suggested fields:", error);
-      toast.error("Nepodařilo se načíst doporučená data pro obor a profese.");
+      toast.error("Nepodařilo se načíst doporučená data.");
       
       // V případě chyby zobrazíme formulář s poli
       setShowFieldsForm(true);
     } finally {
       setIsLoading(false);
+      // Ukončíme načítání pro všechna pole
+      setLoadingFields(prev => ({
+        ...prev,
+        title: false,
+        field: false,
+        profession: false,
+        description: false,
+        salary: false
+      }));
     }
+  };
+
+  // Funkce pro převod obyčejného textu na HTML
+  const convertTextToHtml = (text: string): string => {
+    if (!text) return '';
+    
+    // Upravit text - odstranit nadbytečné mezery a oštřit
+    const cleanText = text.trim();
+    
+    // Rozdělíme text na odstavce podle nových řádků
+    const paragraphs = cleanText.split(/\n+/);
+    
+    // Převedeme každý odstavec na HTML paragraf
+    const html = paragraphs
+      .map(paragraph => paragraph.trim())
+      .filter(paragraph => paragraph.length > 0)
+      .map(paragraph => `<p>${paragraph}</p>`)
+      .join('');
+    
+    // Výsledný HTML obsah
+    console.log('Converted HTML content:', html);
+    return html || '<p></p>'; // Zajistíme, že nikdy nevrátíme prázdný řetězec
   };
 
   // Generická funkce pro zpracování blur událostí
@@ -247,33 +316,50 @@ export function FirstStep() {
               </div>
             )}
           </div>
-          {form.formState.errors.title && (
+          {showValidationErrors && form.formState.errors.title && (
             <p className="text-sm text-destructive">{form.formState.errors.title.message}</p>
           )}
         </div>
 
         {/* Zobrazení informační zprávy po automatickém vyplnění */}
         {autoFilledInfo && (
-          <Card className="bg-blue-50 border-blue-200">
-            <CardHeader className="py-3 pb-1">
+          <Card className="bg-blue-50 border-blue-200 shadow-sm fixed top-16 left-[1220px] w-[320px]">
+            <CardHeader className="py-3">
               <div className="flex items-center gap-2">
-                <Info size={18} className="text-foreground" />
-                <CardTitle className="text-sm font-medium text-foreground">Předvyplnili jsme za Vás obory a profese</CardTitle>
+                <CardTitle className="text-sm font-medium text-foreground">Předvyplnili jsme za Vás data</CardTitle>
               </div>
             </CardHeader>
             <CardContent className="py-2">
-              <div className="text-sm text-muted-foreground mb-2">
+              <div className="text-sm text-muted-foreground mb-3">
                 {autoFilledInfo.field && (
-                  <p>
-                    <span className="font-medium">
+                  <div className="mb-2">
+                    <p className="font-medium mb-1">Obor a profese:</p>
+                    <p>
                       {autoFilledInfo.field}{autoFilledInfo.professions.length > 0 && ' - '}{autoFilledInfo.professions.join(", ")}
-                    </span>
-                  </p>
+                    </p>
+                  </div>
+                )}
+                
+                {autoFilledInfo.description && (
+                  <div className="mb-2">
+                    <p className="font-medium mb-1">Popis pozice:</p>
+                    <p className="truncate">{autoFilledInfo.description.length > 70 
+                      ? autoFilledInfo.description.substring(0, 70) + "..." 
+                      : autoFilledInfo.description}
+                    </p>
+                  </div>
+                )}
+                
+                {autoFilledInfo.salary && (
+                  <div className="mb-2">
+                    <p className="font-medium mb-1">Mzdové rozmezí:</p>
+                    <p>{autoFilledInfo.salary.from.toLocaleString()} - {autoFilledInfo.salary.to.toLocaleString()} Kč</p>
+                  </div>
                 )}
               </div>
               <div className="flex gap-2">
                 <Button 
-                  variant="ghost" 
+                  variant="outline" 
                   size="sm" 
                   className="h-7 text-muted-foreground hover:text-foreground"
                   onClick={showFieldsFormHandler}
@@ -332,7 +418,7 @@ export function FirstStep() {
               </div>
             )}
           </div>
-          {form.formState.errors.locality && (
+          {showValidationErrors && form.formState.errors.locality && (
             <p className="text-sm text-destructive">{form.formState.errors.locality.message}</p>
           )}
           {isRemote && (
@@ -373,7 +459,7 @@ export function FirstStep() {
                   </div>
                 )}
               </div>
-              {form.formState.errors.field && (
+              {showValidationErrors && form.formState.errors.field && (
                 <p className="text-sm text-destructive">{form.formState.errors.field.message}</p>
               )}
             </div>
@@ -397,7 +483,7 @@ export function FirstStep() {
                   </div>
                 )}
               </div>
-              {form.formState.errors.profession && (
+              {showValidationErrors && form.formState.errors.profession && (
                 <p className="text-sm text-destructive">{form.formState.errors.profession.message}</p>
               )}
             </div>
@@ -422,74 +508,19 @@ export function FirstStep() {
               </div>
             )}
           </div>
-          {form.formState.errors.description && (
+          {showValidationErrors && form.formState.errors.description && (
             <p className="text-sm text-destructive">{form.formState.errors.description.message}</p>
           )}
         </div>
 
-        <SalaryInput />
-
-        <div className="grid gap-2">
-          <Label>Vzdělání</Label>
-          <div className="relative">
-            <Select 
-              onValueChange={(value) => {
-                form.setValue("education", value)
-                handleInputBlur("education", value)
-              }}
-              value={form.watch("education")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Vyberte minimální vzdělání" />
-              </SelectTrigger>
-              <SelectContent>
-                {educationLevels.map((level) => (
-                  <SelectItem key={level} value={level}>
-                    {level}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {loadingFields.education && (
-              <div className="absolute right-10 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">načítám...</span>
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-              </div>
-            )}
-          </div>
-          {form.formState.errors.education && (
-            <p className="text-sm text-destructive">{form.formState.errors.education.message}</p>
-          )}
-        </div>
-
-        <div className="grid gap-2">
-          <Label>Jazykové znalosti</Label>
-          <LanguageSelector />
-        </div>
-
-        <div className="grid gap-2">
-          <Label>Benefity</Label>
-          <div className="relative">
-            <MultiSelect
-              options={benefits}
-              selected={form.watch("benefits")}
-              onChange={(value) => {
-                form.setValue("benefits", value)
-                handleInputBlur("benefits", value)
-              }}
-              placeholder="Vyberte benefity"
-            />
-            {loadingFields.benefits && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1.5">
-                <span className="text-xs text-muted-foreground">načítám...</span>
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-              </div>
-            )}
-          </div>
-          {form.formState.errors.benefits && (
-            <p className="text-sm text-destructive">{form.formState.errors.benefits.message}</p>
-          )}
-        </div>
+        <SalaryInput 
+          defaultValues={form.watch("salary")}
+          onSalaryChange={(value) => {
+            form.setValue("salary", value);
+            handleInputBlur("salary", value);
+          }}
+          isLoading={loadingFields.salary}
+        />
 
         <div className="grid gap-2">
           <Label>Typ úvazku</Label>
@@ -518,7 +549,7 @@ export function FirstStep() {
               </div>
             )}
           </div>
-          {form.formState.errors.type && (
+          {showValidationErrors && form.formState.errors.type && (
             <p className="text-sm text-destructive">{form.formState.errors.type.message}</p>
           )}
         </div>

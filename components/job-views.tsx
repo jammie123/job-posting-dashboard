@@ -285,13 +285,13 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
             
             {/* Vlastní pohledy */}
             {customViews.map((view) => (
-              <TabsTrigger
-                key={view.value}
-                value={view.value}
+          <TabsTrigger
+            key={view.value}
+            value={view.value}
                 className="min-w-[50px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
-              >
-                <div className="flex items-center gap-2">
-                  {view.label}
+          >
+            <div className="flex items-center gap-2">
+              {view.label}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span 
@@ -299,10 +299,10 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
                         onClick={(e) => openEditDialog(view, e)}
                       >
                         <span className="group-hover:opacity-0 transition-opacity absolute inset-0 flex items-center justify-center">
-                          {counts && counts[view.value as keyof typeof counts] !== undefined
-                            ? counts[view.value as keyof typeof counts]
-                            : 0}
-                        </span>
+                {counts && counts[view.value as keyof typeof counts] !== undefined
+                  ? counts[view.value as keyof typeof counts]
+                  : 0}
+              </span>
                         <Edit className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} /> 
                       </span>
                     </TooltipTrigger>
@@ -312,9 +312,9 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
                   </Tooltip>
                   
 
-                </div>
-              </TabsTrigger>
-            ))}
+            </div>
+          </TabsTrigger>
+        ))}
             
             {/* Tlačítko pro vytvoření nového pohledu */}
             <button
@@ -324,8 +324,8 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               <Plus size={14} />
               <span>Nový pohled</span>
             </button>
-          </TabsList>
-        </Tabs>
+      </TabsList>
+    </Tabs>
       </div>
       
       <CreateViewDialog

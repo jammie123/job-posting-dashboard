@@ -154,11 +154,9 @@ export function ColaborationTeam({ onChange }: ColaborationTeamProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Tým spolupracovníků</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+
+
+      <CardContent className="space-y-4 p-0">
         <div className="rounded-md border">
           <div className="divide-y">
             {teamMembers.map((member) => (
@@ -312,7 +310,7 @@ export function ColaborationTeam({ onChange }: ColaborationTeamProps) {
           </DialogContent>
         </Dialog>
       </CardContent>
-    </Card>
+
   )
 }
 

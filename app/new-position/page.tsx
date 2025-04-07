@@ -12,12 +12,18 @@ import { SummaryOrder } from "@/components/summary-order"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { AdditionalInfoStep } from "./components/additional-info-step"
 
 const steps = [
   {
     value: "position",
     label: "Údaje o pozici",
     component: FirstStep,
+  },
+  {
+    value: "additional-info",
+    label: "Doplňující informace",
+    component: AdditionalInfoStep,
   },
   {
     value: "questionnaire",
@@ -150,7 +156,7 @@ export default function NewPosition() {
   }
 
   return (
-    <div className="container py-6">
+    <div className="container mt-8">
 
       <div className="flex gap-6">
         {/* Left column - Vertical stepper */}
@@ -191,7 +197,7 @@ export default function NewPosition() {
 
         {/* Right column - Form content */}
         <div className="flex-1 flex">
-          <Card className={`p-6 ${currentStep === "advertising" ? "w-full" : "w-[900px]"}`}>
+          <Card className={`p-6 ${currentStep === "advertising" ? "w-full" : "w-[850px]"}`}>
             <div className="flex justify-between items-center mb-6 relative">
               <h2 className="text-xl font-semibold">{steps.find((step) => step.value === currentStep)?.label}</h2>
               {currentStep === "questionnaire" && (

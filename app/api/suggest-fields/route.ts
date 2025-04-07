@@ -43,14 +43,19 @@ export async function POST(request: Request) {
 
     // Připravit prompt pro OpenAI
     const prompt = `
-    Na základě názvu pracovní pozice navrhněte nejlepší odpovídající obor a profese z dostupného seznamu.
+    Na základě názvu pracovní pozice "${position}" navrhněte:
     
-    Název pozice: "${position}"
+    1. Nejlepší odpovídající obor z tohoto seznamu: ${availableFields.join(', ')}
+    2. Nejlépe odpovídající profese z tohoto seznamu (max. 3): ${availableProfessions.join(', ')}
+    3. Obsáhlý popis pracovní pozice, očekávání od kandidáta, požadavky na vzdělání, zkušenosti, dovednosti, osobnost, atd.
+    4. Odhadované mzdové rozmezí v Kč pro tuto pozici v Česku (od-do)
     
-    Dostupné obory: ${availableFields.join(', ')}
-    Dostupné profese: ${availableProfessions.join(', ')}
+    Odpověď formátujte jako JSON objekt s následujícími klíči:
+    - "field": (string) jeden obor ze seznamu
+    - "professions": (array) pole profesí ze seznamu, max. 3
+    - "description": (string) stručný popis pozice obsahující hlavní odpovědnosti a požadavky
+    - "salary": (object) obsahující "from" a "to" částky v Kč
     
-    Odpověď formátujte jako JSON objekt s klíči "field" (jeden obor ze seznamu) a "professions" (pole profesí ze seznamu, max. 3).
     Odpověď v JSON formátu:
     `;
 
@@ -97,7 +102,12 @@ export async function POST(request: Request) {
 
     // Vrácení validní odpovědi
     return NextResponse.json(
-      { field, professions: validProfessions },
+      { 
+        field, 
+        professions: validProfessions,
+        description: jsonResponse.description || '',
+        salary: jsonResponse.salary || { from: 0, to: 0 }
+      },
       { status: 200 }
     );
   } catch (error) {
