@@ -41,7 +41,12 @@ const FormSchema = z.object({
   // Další validační pravidla můžete přidat dle potřeby
 })
 
-export function AdditionalInfoStep() {
+interface AdditionalInfoStepProps {
+  onNextStep?: () => void;
+  onPrevStep?: () => void;
+}
+
+export function AdditionalInfoStep({ onNextStep, onPrevStep }: AdditionalInfoStepProps) {
   // Stav pro sledování načítání pro jednotlivá pole
   const [loadingFields, setLoadingFields] = useState<Record<string, boolean>>({
     education: false,
@@ -64,6 +69,11 @@ export function AdditionalInfoStep() {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log("Doplňující informace:", data)
     toast.success("Doplňující informace byly uloženy")
+    
+    // Pokud je formulář validní, přejdeme na další krok
+    if (form.formState.isValid && onNextStep) {
+      onNextStep();
+    }
   }
 
   // Generická funkce pro zpracování blur událostí
@@ -104,7 +114,13 @@ export function AdditionalInfoStep() {
       </div>
 
       <div className="flex justify-between pt-6 mt-6 border-t">
-        <Button variant="outline">Zpět</Button>
+        <Button 
+          variant="outline" 
+          type="button"
+          onClick={onPrevStep}
+        >
+          Zpět
+        </Button>
         <Button 
           type="submit" 
           onClick={() => setShowValidationErrors(true)}

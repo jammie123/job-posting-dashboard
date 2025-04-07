@@ -90,7 +90,11 @@ async function suggestFieldAndProfession(position: string) {
   }
 }
 
-export function FirstStep() {
+interface FirstStepProps {
+  onNextStep?: () => void;
+}
+
+export function FirstStep({ onNextStep }: FirstStepProps) {
   const [isRemote, setIsRemote] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [autoFilledInfo, setAutoFilledInfo] = useState<{
@@ -128,6 +132,25 @@ export function FirstStep() {
     console.log(data)
     // Když odesíláme formulář, zapneme zobrazení chyb
     setShowValidationErrors(true)
+    
+    // Kontrola, zda formulář neobsahuje chyby
+    if (form.formState.isValid) {
+      // Pokud je formulář validní, přejdeme na další krok
+      if (onNextStep) {
+        onNextStep();
+      } else {
+        // Pokud nebyla poskytnuta funkce pro přechod na další krok,
+        // pokusíme se najít rodiče stránky a přejít na další krok
+        try {
+          const parentElement = window.parent.document.querySelector('[data-value="additional-info"]');
+          if (parentElement) {
+            (parentElement as HTMLElement).click();
+          }
+        } catch (error) {
+          console.error("Nepodařilo se automaticky přejít na další krok:", error);
+        }
+      }
+    }
   }
 
   // Funkce pro reset autoFilledInfo

@@ -151,8 +151,39 @@ export default function NewPosition() {
       )
     }
 
-    const CurrentStepComponent = steps.find((step) => step.value === currentStep)?.component || FirstStep
-    return <CurrentStepComponent />
+    // Funkce pro přechod na další krok
+    const goToNextStep = () => {
+      const currentIndex = steps.findIndex(step => step.value === currentStep);
+      if (currentIndex >= 0 && currentIndex < steps.length - 1) {
+        // Nastavit další krok
+        setCurrentStep(steps[currentIndex + 1].value);
+      }
+    };
+
+    // Funkce pro přechod na předchozí krok
+    const goToPrevStep = () => {
+      const currentIndex = steps.findIndex(step => step.value === currentStep);
+      if (currentIndex > 0) {
+        // Nastavit předchozí krok
+        setCurrentStep(steps[currentIndex - 1].value);
+      }
+    };
+
+    // Předat správné props pro každý krok
+    switch(currentStep) {
+      case "position":
+        return <FirstStep onNextStep={goToNextStep} />;
+      case "additional-info":
+        return <AdditionalInfoStep onNextStep={goToNextStep} onPrevStep={goToPrevStep} />;
+      case "questionnaire":
+        return <ApplicationForm />;
+      case "collaboration":
+        return <CollaborationStep />;
+      default:
+        // Fallback k první komponentě, pokud nenajdeme odpovídající hodnotu
+        const CurrentStepComponent = steps.find((step) => step.value === currentStep)?.component || FirstStep;
+        return <CurrentStepComponent />;
+    }
   }
 
   return (
