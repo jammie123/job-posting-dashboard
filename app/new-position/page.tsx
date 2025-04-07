@@ -154,33 +154,65 @@ export default function NewPosition() {
     // Funkce pro přechod na další krok
     const goToNextStep = () => {
       const currentIndex = steps.findIndex(step => step.value === currentStep);
+      console.log("Aktuální krok:", currentStep, "index:", currentIndex);
       if (currentIndex >= 0 && currentIndex < steps.length - 1) {
         // Nastavit další krok
-        setCurrentStep(steps[currentIndex + 1].value);
+        const nextStep = steps[currentIndex + 1].value;
+        console.log("Přecházím na další krok:", nextStep);
+        setCurrentStep(nextStep);
+      } else {
+        console.log("Nelze přejít na další krok - již jsme na posledním kroku nebo krok nebyl nalezen");
       }
     };
 
     // Funkce pro přechod na předchozí krok
     const goToPrevStep = () => {
       const currentIndex = steps.findIndex(step => step.value === currentStep);
+      console.log("Aktuální krok:", currentStep, "index:", currentIndex);
       if (currentIndex > 0) {
         // Nastavit předchozí krok
-        setCurrentStep(steps[currentIndex - 1].value);
+        const prevStep = steps[currentIndex - 1].value;
+        console.log("Přecházím na předchozí krok:", prevStep);
+        setCurrentStep(prevStep);
+      } else {
+        console.log("Nelze přejít na předchozí krok - již jsme na prvním kroku");
       }
     };
+
+    // Funkce pro přímou navigaci na konkrétní krok
+    const navigateToStep = (stepValue: string) => {
+      console.log("Přímá navigace na krok:", stepValue);
+      if (steps.some(step => step.value === stepValue)) {
+        setCurrentStep(stepValue);
+      } else {
+        console.error("Neplatný krok pro navigaci:", stepValue);
+      }
+    };
+
+    // Pro testovací účely vytiskneme všechny dostupné kroky
+    console.log("Dostupné kroky:", steps.map(step => step.value));
 
     // Předat správné props pro každý krok
     switch(currentStep) {
       case "position":
-        return <FirstStep onNextStep={goToNextStep} />;
+        console.log("Renderuji FirstStep komponentu s onNextStep callbackem");
+        return (
+          <FirstStep 
+            onNextStep={goToNextStep} 
+          />
+        );
       case "additional-info":
+        console.log("Renderuji AdditionalInfoStep komponentu s navigačními callbacky");
         return <AdditionalInfoStep onNextStep={goToNextStep} onPrevStep={goToPrevStep} />;
       case "questionnaire":
+        console.log("Renderuji ApplicationForm komponentu");
         return <ApplicationForm />;
       case "collaboration":
+        console.log("Renderuji CollaborationStep komponentu");
         return <CollaborationStep />;
       default:
         // Fallback k první komponentě, pokud nenajdeme odpovídající hodnotu
+        console.log("Použití fallbacku pro krok:", currentStep);
         const CurrentStepComponent = steps.find((step) => step.value === currentStep)?.component || FirstStep;
         return <CurrentStepComponent />;
     }

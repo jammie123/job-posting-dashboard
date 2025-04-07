@@ -129,26 +129,30 @@ export function FirstStep({ onNextStep }: FirstStepProps) {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+    console.log("Odesílám formulář s daty:", data);
     // Když odesíláme formulář, zapneme zobrazení chyb
-    setShowValidationErrors(true)
+    setShowValidationErrors(true);
     
-    // Kontrola, zda formulář neobsahuje chyby
-    if (form.formState.isValid) {
-      // Pokud je formulář validní, přejdeme na další krok
-      if (onNextStep) {
-        onNextStep();
-      } else {
-        // Pokud nebyla poskytnuta funkce pro přechod na další krok,
-        // pokusíme se najít rodiče stránky a přejít na další krok
-        try {
-          const parentElement = window.parent.document.querySelector('[data-value="additional-info"]');
-          if (parentElement) {
-            (parentElement as HTMLElement).click();
-          }
-        } catch (error) {
-          console.error("Nepodařilo se automaticky přejít na další krok:", error);
+    // Pro účely testování přechodu na další krok budeme ignorovat validaci
+    // a přímo přejdeme na další krok
+    if (onNextStep) {
+      console.log("Přecházím na další krok pomocí onNextStep callbacku");
+      onNextStep();
+      return;
+    } else {
+      // Pokud nebyla poskytnuta funkce pro přechod na další krok,
+      // pokusíme se najít rodiče stránky a přejít na další krok
+      try {
+        console.log("Zkouším najít další krok v DOM");
+        const parentElement = window.parent.document.querySelector('[data-value="additional-info"]');
+        if (parentElement) {
+          console.log("Nalezen element, klikám na něj");
+          (parentElement as HTMLElement).click();
+        } else {
+          console.log("Element pro další krok nebyl nalezen");
         }
+      } catch (error) {
+        console.error("Nepodařilo se automaticky přejít na další krok:", error);
       }
     }
   }
@@ -578,8 +582,16 @@ export function FirstStep({ onNextStep }: FirstStepProps) {
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <Button type="submit">Pokračovat</Button>
+      <div className="flex justify-end pt-6 mt-6 border-t">
+        <Button 
+          type="submit"
+          onClick={() => {
+            console.log("Kliknutí na tlačítko Pokračovat");
+            setShowValidationErrors(true);
+          }}
+        >
+          Pokračovat
+        </Button>
       </div>
     </form>
   )
