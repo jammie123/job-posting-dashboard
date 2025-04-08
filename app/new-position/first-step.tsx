@@ -565,8 +565,10 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
       <div className="p-6 grid gap-6">
         {/* Název pozice - buď zobrazení nebo editace */}
         {isMounted && !editingFields.title ? (
-          <div className="relative w-full">
-            <h2 className="text-2xl font-semibold mb-2">{form.getValues('title')}</h2>
+          <div className="relative w-full group">
+            <h2 className="text-2xl font-semibold mb-2 cursor-pointer">
+              {form.getValues('title')}
+            </h2>
             <Button 
               type="button" 
               size="sm" 
@@ -574,7 +576,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
               className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
               onClick={() => setEditingFields(prev => ({ ...prev, title: true }))}
             >
-              <Pencil className="h-3.5 w-3.5 mr-1" /> Upravit
+              Upravit
             </Button>
           </div>
         ) : (
@@ -605,7 +607,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('description')}
                   >
                     Upravit
@@ -660,7 +662,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('locality')}
                   >
                     Upravit
@@ -749,7 +751,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('field')}
                   >
                     Upravit
@@ -815,7 +817,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('profession')}
                   >
                     Upravit
@@ -872,7 +874,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('salary')}
                   >
                     Upravit
@@ -919,7 +921,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('type')}
                   >
                     Upravit
@@ -989,7 +991,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('education')}
                   >
                     Upravit
@@ -1055,7 +1057,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('languages')}
                   >
                     Upravit
@@ -1115,7 +1117,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="absolute right-0 hidden group-hover:block transition-opacity py-2 px-2 shadow-md"
+                    className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
                     onClick={() => toggleFieldEdit('benefits')}
                   >
                     Upravit
