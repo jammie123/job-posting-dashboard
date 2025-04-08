@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -8,8 +8,25 @@ import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Switch } from "@/components/ui/switch"
 // Import the AutomaticResponse component at the top of the file
 import { AutomaticResponse } from "./automatic-response"
+import { CardTitle } from "@/components/ui/card"
+
+// Komponenta pro bezpečné vykreslení HTML popisu pozice
+interface PositionDescriptionProps {
+  html: string;
+  className?: string;
+}
+
+function PositionDescription({ html, className = "" }: PositionDescriptionProps) {
+  return (
+    <div 
+      className={`position-description ${className}`}
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
 
 type QuestionType = "text" | "multiple" | "single" | "date"
 type QuestionVisibility = "required" | "optional" | "hidden"
@@ -28,16 +45,81 @@ const questionTypes = [
   { value: "date", label: "Datum" },
 ]
 
-export function ApplicationForm() {
-  const [questions, setQuestions] = useState<Question[]>([
-    { id: "1", name: "Jméno a Příjmení", type: "text", visibility: "required" },
-    { id: "2", name: "Email", type: "text", visibility: "required" },
-    { id: "3", name: "Telefon", type: "text", visibility: "required" },
-  ])
+// Přidáme props interface
+interface ApplicationFormProps {
+  initialData?: any;
+  onDataChange?: (data: any) => void;
+  onNextStep?: () => void;
+  onPrevStep?: () => void;
+}
+
+export function ApplicationForm({ initialData, onDataChange, onNextStep, onPrevStep }: ApplicationFormProps) {
+  const [questions, setQuestions] = useState<Question[]>(
+    initialData?.questions || [
+      { id: "1", name: "Jméno a Příjmení", type: "text", visibility: "required" },
+      { id: "2", name: "Email", type: "text", visibility: "required" },
+      { id: "3", name: "Telefon", type: "text", visibility: "required" },
+    ]
+  );
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newQuestion, setNewQuestion] = useState<Partial<Question>>({
     type: "text",
   })
+  const [positionDescription, setPositionDescription] = useState<string>("");
+  const descriptionFetchedRef = useRef<{[key: string]: boolean}>({});
+
+  // Efekt pro načtení popisu pozice z API při inicializaci - pouze jednou pro každý název pozice
+  useEffect(() => {
+    // Funkce pro získání popisu pozice z API
+    const fetchPositionDescription = async (positionName: string) => {
+      // Pokud již byl tento popis načten, neprovádíme opakované volání API
+      if (descriptionFetchedRef.current[positionName]) {
+        console.log(`Popis pozice pro '${positionName}' již byl načten dříve.`);
+        return;
+      }
+
+      try {
+        console.log(`Načítám popis pozice pro '${positionName}'...`);
+        const response = await fetch('/api/suggest-fields', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ position: positionName }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Nelze načíst popis pozice');
+        }
+        
+        const data = await response.json();
+        if (data.description) {
+          setPositionDescription(data.description);
+          // Zaznamenáme, že byl popis úspěšně načten
+          descriptionFetchedRef.current[positionName] = true;
+        }
+      } catch (error) {
+        console.error('Chyba při načítání popisu pozice:', error);
+      }
+    };
+
+    // Pokud je v initialData název pozice, načíst popis
+    const positionName = initialData?.positionName;
+    if (positionName && positionName.trim() !== '') {
+      fetchPositionDescription(positionName);
+    }
+  }, [initialData?.positionName]);
+
+  // Přidáme effect pro aktualizaci dat při změně otázek
+  useEffect(() => {
+    if (onDataChange) {
+      // Aktualizujeme pouze questions, nikoliv celý initialData
+      // Toto zabrání cyklickým aktualizacím
+      onDataChange({ 
+        questions 
+      });
+    }
+  }, [questions, onDataChange]); // Odstraněna závislost na initialData
 
   const handleAddQuestion = () => {
     if (newQuestion.name && newQuestion.type) {
@@ -61,7 +143,32 @@ export function ApplicationForm() {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-between items-center mb-6 relative">
+      <div className="flex items-center gap-3">
+          <Switch checked={true} aria-label="Povolit automatickou odpověď" />
+          <CardTitle className="text-lg font-medium">Dotazník pro uchazeče</CardTitle>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Šablona:</span>
+          <Select defaultValue="default">
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder="Vyberte šablonu" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Výchozí šablona</SelectItem>
+              <SelectItem value="it">IT pozice</SelectItem>
+              <SelectItem value="sales">Obchodní pozice</SelectItem>
+              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem value="hr">HR pozice</SelectItem>
+              <SelectItem value="custom">Vlastní šablona</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      
       <div className="space-y-4">
+        {/* Hlavní formulář otázek - vždy nahoře */}
         <div className="rounded-md border">
           <table className="w-full">
             <thead className="bg-muted/50 text-xs">
@@ -152,16 +259,12 @@ export function ApplicationForm() {
             </tbody>
           </table>
         </div>
+        
+  
       </div>
 
-      <div className="pt-4 border-t">
-        <AutomaticResponse />
-      </div>
 
-      <div className="flex justify-between pt-6 mt-6 border-t">
-        <Button variant="outline">Zpět</Button>
-        <Button>Pokračovat</Button>
-      </div>
+
     </div>
   )
 }

@@ -313,7 +313,7 @@ export function JobFilters({
           onRemoveFilter={removeFilter}
           onCreateViewClick={() => setCreateViewOpen(true)}
         >
-          <Button variant="secondary" className="gap-2 rounded-lg">
+          <Button variant="ghost" className="gap-2 rounded-lg">
             Další filtry
             {activeFilters.filter(f => f.id !== "recruiter" && f.id !== "status").length > 0 && (
               <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-medium rounded-full bg-accent text-primary">

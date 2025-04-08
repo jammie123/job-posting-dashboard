@@ -45,7 +45,7 @@ export function AutomaticResponse({ onChange }: AutomaticResponseProps) {
     <Card className="border-none shadow-none">
       <CardHeader className="px-0 pt-0 flex flex-row justify-between items-center">
         <div className="flex items-center gap-3">
-          <Switch checked={isEnabled} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
+          <Switch checked={true} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
           <CardTitle className="text-lg font-medium">Automatická odpověď uchazeči</CardTitle>
         </div>
         {isEnabled && (
