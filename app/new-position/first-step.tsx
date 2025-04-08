@@ -533,16 +533,27 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
   
   // Pro monitorování změn polí formuláře
   const watchedFields = form.watch();
+  // Reference pro sledování posledních odeslaných dat
+  const lastSentDataRef = useRef<string>('{}');
 
-  // Přidat nový useEffect pro sledování změn v polích formuláře
+  // Upravený useEffect pro sledování změn v polích formuláře s ochranou proti cyklům
   useEffect(() => {
     // Pokud již formulář byl načten a uživatel provedl změny, aktualizujeme data
     if (isFormLoaded && onDataChange && !isLoading) {
       // Použijeme debounce pro omezení příliš častých aktualizací
       const timer = setTimeout(() => {
         const currentValues = form.getValues();
-        onDataChange(currentValues);
-        console.log("Aktualizace dat formuláře:", currentValues);
+        const currentValuesJson = JSON.stringify(currentValues);
+        
+        // Porovnáme s posledními odeslanými daty
+        if (currentValuesJson !== lastSentDataRef.current) {
+          console.log("Aktualizace dat formuláře:", currentValues);
+          onDataChange(currentValues);
+          // Uložíme aktuální data jako poslední odeslané
+          lastSentDataRef.current = currentValuesJson;
+        } else {
+          console.log("Přeskakuji aktualizaci - data se nezměnila");
+        }
       }, 500);
       
       return () => clearTimeout(timer);

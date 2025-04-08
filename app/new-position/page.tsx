@@ -130,6 +130,25 @@ const saveDataToLocalStorage = (data: JobPostingData) => {
   }
 };
 
+// Pomocný hook pro načtení dat z localStorage - mimo hlavní komponentu
+function useLoadSavedData(setFormData: React.Dispatch<React.SetStateAction<JobPostingData>>) {
+  // Použijeme useRef pro sledování, zda už data byla načtena
+  const dataLoaded = useRef(false);
+  
+  useEffect(() => {
+    // Pokud už data byla načtena, neprovádíme další načítání
+    if (dataLoaded.current) return;
+    
+    const savedData = getSavedData();
+    if (savedData) {
+      console.log("Načtena uložená data z localStorage:", savedData);
+      setFormData(savedData);
+      // Označíme, že data již byla načtena
+      dataLoaded.current = true;
+    }
+  }, [setFormData]);
+}
+
 export default function NewPosition() {
   const [currentStep, setCurrentStep] = useState("position")
   const [showSidebar, setShowSidebar] = useState(true)
@@ -143,22 +162,21 @@ export default function NewPosition() {
     advertising: {}
   });
 
-  // ClientSide data loading - použijeme ClientOnly wrapper
-  const LoadSavedData = () => {
-    useEffect(() => {
-      const savedData = getSavedData();
-      if (savedData) {
-        console.log("Načtena uložená data z localStorage:", savedData);
-        setFormData(savedData);
-      }
-    }, []);
-    
-    return null;
-  };
+  // Použijeme náš nový hook pro načtení dat
+  useLoadSavedData(setFormData);
   
   // Funkce pro aktualizaci dat z jednotlivých kroků
   const updatePositionData = useCallback((data: PositionData) => {
     setFormData(prev => {
+      // Nejprve kontrolujeme, zda se data skutečně změnila, abychom zabránili zbytečným aktualizacím
+      const currentPosition = JSON.stringify(prev.position);
+      const newPosition = JSON.stringify({...prev.position, ...data});
+      
+      if (currentPosition === newPosition) {
+        console.log("Position data se nezměnila, přeskakuji aktualizaci");
+        return prev;
+      }
+      
       const updatedData = {
         ...prev,
         position: {
@@ -467,8 +485,7 @@ export default function NewPosition() {
   return (
     <ClientOnly>
       <div className="container mt-8">
-        {/* Komponenta pro načtení dat z localStorage - renderuje se pouze na klientovi */}
-        <LoadSavedData />
+        {/* Komponenta pro načtení dat je nyní implementována jako hook useLoadSavedData */}
         
         <div className="flex gap-6">
           {/* Left column - Vertical stepper - zobrazí se pouze když showSidebar je true */}
@@ -511,7 +528,7 @@ export default function NewPosition() {
 
           {/* Right column - Form content */}
           <div className={`flex-1 flex ${!showSidebar ? 'ml-0' : ''}`}>
-            <Card className={` ${currentStep === "advertising" ? "w-full" : "w-[850px]"}`}>
+            <Card className={`shadow-lg mb-8 ${currentStep === "advertising" ? "w-full" : "w-[850px]"}`}>
               {renderCurrentComponent()}
             </Card>
 

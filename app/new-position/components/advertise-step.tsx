@@ -129,13 +129,15 @@ export default function AdvertiseStep({ initialData, onDataChange }: AdvertiseSt
     
     // Zde zaktualizujeme nadřazenou komponentu
     if (onDataChange) {
+      // Získáme aktuální stav settings - nepoužíváme platformSettings jako závislost
+      const currentSettings = localDataRef.current.settings;
       console.log("[AdvertiseStep] Odesílání aktualizace platforms:", platforms);
       onDataChange({
         platforms,
-        settings: platformSettings
+        settings: currentSettings
       });
     }
-  }, [platformSettings, onDataChange]);
+  }, [onDataChange]); // Pouze onDataChange jako závislost
 
   // Handler pro změnu nastavení s prevencí cyklických aktualizací
   const handleSettingsChange = useCallback((settings: PlatformSettings) => {
@@ -159,18 +161,20 @@ export default function AdvertiseStep({ initialData, onDataChange }: AdvertiseSt
     
     // Zde zaktualizujeme nadřazenou komponentu
     if (onDataChange) {
+      // Získáme aktuální stav platforms - nepoužíváme selectedPlatforms jako závislost
+      const currentPlatforms = localDataRef.current.platforms;
       console.log("[AdvertiseStep] Odesílání aktualizace settings:", settings);
       onDataChange({
-        platforms: selectedPlatforms,
+        platforms: currentPlatforms,
         settings
       });
     }
-  }, [selectedPlatforms, onDataChange]);
+  }, [onDataChange]); // Pouze onDataChange jako závislost
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6">
       <div className="space-y-2">
-        <h3 className="text-lg font-medium">Inzerovat pozici</h3>
+        <h2 className="text-xl font-semibold">Inzerovat pozici</h2>
         <p className="text-muted-foreground">
           Vyberte platformy, kde chcete inzerovat novou pozici a nastavte detaily.
         </p>

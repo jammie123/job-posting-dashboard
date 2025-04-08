@@ -237,7 +237,7 @@ export function AdvertiseJob({
       <div className="flex-1 overflow-auto">
         <div className="flex flex-col gap-2 w-full">
           <div className="flex flex-row items-center justify-between mb-4">
-            <div className="flex items-center gap-2 absolute top-[40px] right-[370px]">
+            <div className="flex items-center gap-2 absolute top-[40px] right-[670px]">
               <span className="text-sm font-medium">Nastavení prototypu:</span>
               <Select
                 value={componentContext}
