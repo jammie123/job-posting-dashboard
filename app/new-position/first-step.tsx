@@ -14,7 +14,7 @@ import { MultiSelect } from "@/components/ui/multi-select"
 import { RichTextEditor } from "./components/rich-text-editor"
 import { Switch } from "@/components/ui/switch"
 import { useState, useEffect, useRef } from "react"
-import { Loader2, Info, Pencil, Plus } from "lucide-react"
+import { Loader2, Info, Pencil, Plus, Edit, Save } from "lucide-react"
 import { toast } from "sonner"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -22,7 +22,8 @@ import { AutomaticResponse } from "./components/automatic-response"
 import { ApplicationForm } from "./components/application-form"
 import { Checkbox } from "@/components/ui/checkbox"
 
-const localities = {
+// Exportuji konstanty, aby je bylo možné importovat v jiných souborech
+export const localities = {
   headquarters: ["Adresa centrály: Václavské náměstí 837/11, 110 00 Praha 1"],
   branches: ["Adresa pobočky: Dominikánské náměstí 196/1, 602 00 Brno"],
   others: [
@@ -35,7 +36,7 @@ const localities = {
   ],
 }
 
-const fields = [
+export const fields = [
   "IT a telekomunikace",
   "Finance a účetnictví",
   "Marketing a PR",
@@ -46,7 +47,7 @@ const fields = [
   "Stavebnictví",
 ]
 
-const professions = [
+export const professions = [
   "Programátor",
   "Tester",
   "Projektový manažer",
@@ -57,7 +58,7 @@ const professions = [
   "Skladník",
 ]
 
-const educationLevels = [
+export const educationLevels = [
   "Základní",
   "Středoškolské",
   "Středoškolské s maturitou",
@@ -67,7 +68,7 @@ const educationLevels = [
   "Vysokoškolské doktorské",
 ]
 
-const benefits = [
+export const benefits = [
   "13. plat",
   "5 týdnů dovolené",
   "Stravenky",
@@ -81,7 +82,7 @@ const benefits = [
   "Firemní telefon",
 ]
 
-const levels = [
+export const levels = [
   { value: "none", label: "Vůbec" },
   { value: "basic", label: "Základní" },
   { value: "advanced", label: "Pokročilý" },
@@ -210,6 +211,8 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
   // Stav pro kontrolu zobrazování chyb
   const [showValidationErrors, setShowValidationErrors] = useState(false)
   const [isFormLoaded, setIsFormLoaded] = useState(false)
+  // Nový stav pro globální editační režim
+  const [editAllFields, setEditAllFields] = useState(false)
   
   // Použití hooku pro sledování, zda jsme na klientovi
   const isMounted = useIsMounted();
@@ -560,11 +563,79 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
     }
   }, [watchedFields, isFormLoaded, onDataChange, isLoading]);
 
+  // Efekt pro aktualizaci všech polí podle přepínače editAllFields
+  useEffect(() => {
+    if (editAllFields) {
+      setEditingFields({
+        title: true,
+        locality: true,
+        field: true,
+        profession: true,
+        description: true,
+        salary: true,
+        type: true,
+        education: true,
+        languages: true,
+        benefits: true
+      });
+    } else {
+      setEditingFields({
+        title: false,
+        locality: false,
+        field: false,
+        profession: false,
+        description: false,
+        salary: false,
+        type: false,
+        education: false,
+        languages: false,
+        benefits: false
+      });
+    }
+  }, [editAllFields]);
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative">
+      {/* Plovoucí přepínač pro hromadnou editaci - viditelný vždy když je zobrazen formulář */}
+      {showFieldsForm && (
+        <div className="fixed right-8 top-1/3 z-10 bg-white shadow-xl rounded-lg border border-gray-200 p-4 flex flex-col items-center gap-3 transition-all hover:shadow-2xl">
+          <div className="flex items-center gap-2">
+            <Edit className="h-4 w-4 text-blue-600" />
+            <Label htmlFor="edit-mode-switch" className="text-sm font-semibold text-center cursor-pointer">
+              Hromadná editace
+            </Label>
+          </div>
+          <Switch
+            id="edit-mode-switch"
+            checked={editAllFields}
+            onCheckedChange={setEditAllFields}
+            className="data-[state=checked]:bg-blue-600"
+          />
+          {editAllFields && (
+            <Button 
+              type="button"
+              size="sm"
+              variant="outline"
+              className="mt-2 text-xs flex items-center gap-1"
+              onClick={() => setEditAllFields(false)}
+            >
+              <Save className="h-3 w-3" />
+              Uložit vše
+            </Button>
+          )}
+        </div>
+      )}
+
       <div className="p-6 grid gap-6">
+        {/* Odstraňuji původní hlavičku s přepínačem */}
+        {showFieldsForm && (
+          <div>
+            <h3 className="text-lg font-medium">Detaily pozice</h3>
+          </div>
+        )}
+
         {/* Název pozice - buď zobrazení nebo editace */}
-        {isMounted && !editingFields.title ? (
+        {isMounted && !editingFields.title && form.getValues('title') ? (
           <div className="relative w-full group">
             <h2 className="text-2xl font-semibold mb-2 cursor-pointer">
               {form.getValues('title')}
@@ -588,7 +659,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
               className={`w-full ${showValidationErrors && Boolean(form.formState.errors.title) ? 'border-red-500' : ''}`}
               {...form.register("title")}
               autoFocus={editingFields.title}
-              onBlur={handlePositionBlur}
+              onBlur={editAllFields ? undefined : handlePositionBlur}
             />
             {showValidationErrors && form.formState.errors.title && (
               <p className="text-red-500 text-sm mt-1">{form.formState.errors.title.message}</p>
@@ -596,14 +667,26 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
           </div>
         )}
 
-        {/* Zbytek formuláře se zobrazí až po načtení dat z API */}
-        {isFormLoaded && (
+        {/* Tlačítko pro zobrazení celého formuláře */}
+        {!showFieldsForm && (
+          <Button 
+            type="button" 
+            variant="ghost" 
+            onClick={showFieldsFormHandler}
+            className="w-fit"
+          >
+            Zadat pozici běžným způsobem
+          </Button>
+        )}
+
+        {/* Zbytek formuláře se zobrazí až po kliknutí na tlačítko nebo po načtení dat z API */}
+        {showFieldsForm && (
           <div className="space-y-2">
             {/* Popis pozice */}
             <div className={`rounded-md relative group hover:bg-accent/5 transition-colors pb-5 ${editingFields.description ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex flex-coljustify-between items-baseline mr-2">
                 {/* <p className="font-medium text-sm w-[200px]">Popis pozice</p> */}
-                {!editingFields.description && (
+                {!editingFields.description && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -615,7 +698,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.description ? (
+              {editingFields.description || editAllFields ? (
                 <div className="mt-2 w-3/4">
                   <div className="relative">
                     <RichTextEditor
@@ -638,15 +721,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.description.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('description')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('description')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1 prose prose-sm max-w-none min-h-[50px]" dangerouslySetInnerHTML={{ __html: form.watch("description") || '<p>Nespecifikováno</p>' }} />
@@ -658,7 +743,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`flex rounded-md relative group hover:bg-accent/5 transition-colors ${editingFields.locality ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Místo výkonu práce</p>
-                {!editingFields.locality && (
+                {!editingFields.locality && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -670,7 +755,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.locality ? (
+              {editingFields.locality || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <Switch
@@ -747,7 +832,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`flex flex-c rounded-md relative group hover:bg-accent/5 transition-colors ${editingFields.field ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Obor</p>
-                {!editingFields.field && (
+                {!editingFields.field && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -759,7 +844,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.field ? (
+              {editingFields.field || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="relative">
                     <Select 
@@ -792,15 +877,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.field.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('field')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('field')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -813,7 +900,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`flex flex-c rounded-md relative group hover:bg-accent/5 transition-colors ${editingFields.profession ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Profese</p>
-                {!editingFields.profession && (
+                {!editingFields.profession && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -825,7 +912,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.profession ? (
+              {editingFields.profession || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="relative">
                     <MultiSelect
@@ -849,15 +936,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.profession.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('profession')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('profession')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -870,7 +959,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`flex flex-c rounded-md relative group hover:bg-accent/5 transition-colors ${editingFields.salary ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Mzdové rozmezí</p>
-                {!editingFields.salary && (
+                {!editingFields.salary && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -882,7 +971,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.salary ? (
+              {editingFields.salary || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <SalaryInput 
                     defaultValues={form.watch("salary")}
@@ -893,15 +982,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     isLoading={loadingFields.salary}
                   />
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('salary')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('salary')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -917,7 +1008,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${editingFields.type ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Typ úvazku</p>
-                {!editingFields.type && (
+                {!editingFields.type && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -929,7 +1020,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.type ? (
+              {editingFields.type || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="relative">
                     <RadioGroup 
@@ -961,15 +1052,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.type.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('type')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('type')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -987,7 +1080,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${editingFields.education ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Požadované vzdělání</p>
-                {!editingFields.education && (
+                {!editingFields.education && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -999,7 +1092,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.education ? (
+              {editingFields.education || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="relative">
                     <Select 
@@ -1032,15 +1125,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.education?.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('education')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('education')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -1053,7 +1148,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${editingFields.languages ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Jazykové znalosti</p>
-                {!editingFields.languages && (
+                {!editingFields.languages && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -1065,7 +1160,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.languages ? (
+              {editingFields.languages || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <LanguageSelector 
                     value={form.watch("languages")}
@@ -1082,15 +1177,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     </div>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('languages')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('languages')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -1113,7 +1210,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${editingFields.benefits ? "p-4 border flex-col w-full" : ""}`}>
               <div className="flex justify-between items-center mr-2">
                 <p className="font-medium text-sm w-[200px]">Benefity</p>
-                {!editingFields.benefits && (
+                {!editingFields.benefits && !editAllFields && (
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -1125,7 +1222,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                 )}
               </div>
               
-              {editingFields.benefits ? (
+              {editingFields.benefits || editAllFields ? (
                 <div className="mt-2 flex-1">
                   <div className="relative">
                     <MultiSelect
@@ -1149,15 +1246,17 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
                     <p className="text-sm text-destructive mt-1">{form.formState.errors.benefits.message}</p>
                   )}
                   
-                  <div className="flex justify-end mt-4">
-                    <Button 
-                      variant="default"
-                      size="sm" 
-                      onClick={() => toggleFieldEdit('benefits')}
-                    >
-                      Uložit
-                    </Button>
-                  </div>
+                  {!editAllFields && (
+                    <div className="flex justify-end mt-4">
+                      <Button 
+                        variant="default"
+                        size="sm" 
+                        onClick={() => toggleFieldEdit('benefits')}
+                      >
+                        Uložit
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="mt-1">
@@ -1177,7 +1276,7 @@ export function FirstStep({ onNextStep, onShowSidebar, initialData, onDataChange
             </div>
           </div>
         )}
-              <div className="flex justify-end">
+              <div className="flex justify-end mt-8">
         <Button 
           type="submit"
           onClick={() => {

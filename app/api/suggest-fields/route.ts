@@ -2,8 +2,11 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 // Inicializace OpenAI klienta
+const openaiApiKey = process.env.OPENAI_API_KEY;
+console.log("OpenAI API klíč je " + (openaiApiKey ? "nastaven" : "CHYBÍ!"));
+
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: openaiApiKey,
 });
 
 // Dostupné obory a profese pro validaci
@@ -80,9 +83,22 @@ const availableBenefits = [
 
 export async function POST(request: Request) {
   try {
+    console.log("API: Přijat POST požadavek na /api/suggest-fields");
+    
+    // Ověřit, zda máme API klíč - jasná a specifická chybová zpráva
+    if (!openaiApiKey) {
+      console.error("API: Chybí OpenAI API klíč v proměnných prostředí!");
+      return NextResponse.json(
+        { error: "OpenAI API key is missing from environment variables. Please add OPENAI_API_KEY to your environment." },
+        { status: 500 }
+      );
+    }
+
     const { position } = await request.json();
+    console.log("API: Přijat název pozice:", position);
 
     if (!position) {
+      console.log("API: Chybí název pozice v požadavku");
       return NextResponse.json(
         { error: "Position name is required" },
         { status: 400 }
@@ -100,7 +116,8 @@ export async function POST(request: Request) {
     4. Mzdové rozmezí od-do jako čísla v Kč (realistické, běžné v ČR).
     5. Požadované vzdělání z tohoto seznamu: ${availableEducation.join(", ")}
     6. Seznam vhodných benefitů z tohoto seznamu (maximálně 5): ${availableBenefits.join(", ")}
-    
+    7. v názvu se může vyskytnout lokalita, která je shodná s adresama poboček dané firmy. Vyplň. 
+
     Vrať pouze JSON ve formátu:
     {
       "field": "název oboru",
@@ -114,16 +131,20 @@ export async function POST(request: Request) {
     Při vytváření HTML popisu (description) používej přesné HTML značky, ne jen textové reprezentace. Celý popis musí být validní HTML, které lze bezpečně vložit do DIV elementu.
     Můžeš vybrat pouze z předem definovaných seznamů oborů, profesí, vzdělání a benefitů.`
 
+    console.log("API: Odesílám požadavek na OpenAI API...");
+    const startTime = Date.now();
     const completion = await openai.chat.completions.create({
       messages: [    { role: "system", content: "Jsi zkušený HR specialista se zaměřením na analýzu pracovních pozic." },
         { role: "user", content: prompt }],
       model: "gpt-4o-mini",
       response_format: { type: "json_object" },
     });
-
+    const endTime = Date.now();
+    console.log(`API: Odpověď přijata z OpenAI API (trvalo ${endTime - startTime}ms)`);
 
     const responseContent = completion.choices[0].message.content;
     if (!responseContent) {
+      console.error("API: OpenAI API vrátila prázdnou odpověď");
       return NextResponse.json(
         { error: "Failed to generate suggestions" },
         { status: 500 }
@@ -131,7 +152,9 @@ export async function POST(request: Request) {
     }
 
     try {
+      console.log("API: Parsování JSON odpovědi z OpenAI");
       const parsedResponse = JSON.parse(responseContent);
+      console.log("API: Parsovaná odpověď:", parsedResponse);
       
       // Ověřit, zda odpověď obsahuje očekávané pole
       if (

@@ -41,6 +41,12 @@ export function PageHeader({ title, activeView = "Aktivní", onViewChange, count
               <DropdownMenuItem asChild>
                 <Link href="/new-position-simple">Nová brigáda</Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/new-position-v2">Verze 2</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/new-position-v3">Verze 3</Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
