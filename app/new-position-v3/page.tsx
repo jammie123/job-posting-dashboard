@@ -156,8 +156,22 @@ export default function NewPositionV3() {
   }
 
   const handleRegularForm = () => {
-    // Přesměrování na běžný formulář
-    router.push('/new-position')
+    // Místo přesměrování nastavíme režim úprav pro všechny komponenty
+    setIsViewMode(false)
+    setIsDefaultView(false)
+    setShowNameInput(false)
+    setActiveEditingComponent(null)
+    // Zajistíme, že máme alespoň prázdný titulek, pokud není zadán
+    if (!formData.position.title) {
+      setFormData(prev => ({
+        ...prev,
+        position: {
+          ...prev.position,
+          title: "Nová pozice"
+        }
+      }))
+    }
+    toast.success("Formulář je připraven k úpravám")
   }
 
   const handlePositionDataChange = (data: Partial<PositionData>) => {

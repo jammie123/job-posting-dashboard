@@ -94,7 +94,7 @@ export function Salary({ initialValue = { from: 0, to: 0 }, onChange, isViewMode
   }
 
   return (
-    <div className={`space-y-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
       <Label className="text-base font-medium">
         Nabízená mzda
       </Label>

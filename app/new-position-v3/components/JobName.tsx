@@ -250,7 +250,7 @@ export function JobName({
   // Pokud jsme v režimu úprav v isViewMode, zobrazíme jednodušší verzi
   if (isViewMode && isEditing) {
     return (
-      <div className={`space-y-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+      <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
         <Label htmlFor="job-name" className="text-base font-medium">
           Název pozice
         </Label>
@@ -273,7 +273,7 @@ export function JobName({
   
   // Plná verze pro novou pozici
   return (
-    <div className={`space-y-6 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-6 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="job-name" className="text-base font-medium">

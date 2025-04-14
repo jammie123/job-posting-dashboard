@@ -56,22 +56,7 @@ export default function EshopPage() {
                 <div key={categoryIndex} className="mb-8 last:mb-0">
                   {!packageItem && <h2 className="text-xl font-semibold mb-6">{category.title}</h2>}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {/* Render the package item first with full width */}
-                    {packageItem && (
-                      <div className="col-span-full mb-4">
-                        <TeamioItemCard
-                          title={packageItem.title}
-                          perex={packageItem.perex}
-                          description={packageItem.description}
-                          validFrom={packageItem.validFrom}
-                          validTo={packageItem.validTo}
-                          howToUse={packageItem.howToUse}
-                          upgrade={packageItem.upgrade}
-                          progress={packageItem.progress}
-                          features={packageItem.features}
-                        />
-                      </div>
-                    )}
+
 
                     {/* Render all other items */}
                     {otherItems.map((item, itemIndex) => (

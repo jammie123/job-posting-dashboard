@@ -91,7 +91,7 @@ export function Description({
   }
 
   return (
-    <div className={`space-y-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
       <Label htmlFor="description" className="text-base font-medium">
         Popis pozice
       </Label>

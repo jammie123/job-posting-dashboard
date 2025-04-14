@@ -8,8 +8,8 @@ import { MultiSelect } from "@/components/ui/multi-select"
 import { localities } from "@/app/new-position/first-step"
 
 interface LocalityProps {
-  workplaces: any[]
-  isRemote: boolean
+  initialValue?: string[]
+  isRemoteInitial?: boolean
   onChange: (workplaces: any[], isRemote: boolean) => void
   isViewMode?: boolean
   isBlur?: boolean
@@ -18,8 +18,8 @@ interface LocalityProps {
 }
 
 export function Locality({ 
-  workplaces, 
-  isRemote, 
+  initialValue = [], 
+  isRemoteInitial = false, 
   onChange,
   isViewMode = false,
   isBlur = false,
@@ -27,8 +27,8 @@ export function Locality({
   onSave
 }: LocalityProps) {
   const [isEditing, setIsEditing] = useState(false)
-  const [selectedWorkplaces, setSelectedWorkplaces] = useState<any[]>(workplaces || [])
-  const [isRemoteWork, setIsRemoteWork] = useState<boolean>(isRemote || false)
+  const [selectedWorkplaces, setSelectedWorkplaces] = useState<any[]>(initialValue || [])
+  const [isRemoteWork, setIsRemoteWork] = useState<boolean>(isRemoteInitial || false)
 
   const handleChange = (newSelected: any[]) => {
     setSelectedWorkplaces(newSelected)
@@ -93,7 +93,7 @@ export function Locality({
   }
 
   return (
-    <div className={`space-y-4 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-4 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
       <div className="flex justify-between items-center">
         <Label htmlFor="location-select" className="text-base font-medium">
           Místo výkonu práce
