@@ -203,7 +203,7 @@ export function AutomaticResponse({ onChange }: AutomaticResponseProps) {
     <Card className="border-none shadow-none">
       <CardHeader className="px-0 pt-0 flex flex-row justify-between items-center">
         <div className="flex items-center gap-3">
-          <Switch checked={true} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
+          <Switch checked={isEnabled} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
           <CardTitle className="text-lg font-medium">Automatická odpověď uchazeči</CardTitle>
         </div>
         {isEnabled && (
@@ -245,9 +245,9 @@ export function AutomaticResponse({ onChange }: AutomaticResponseProps) {
         </CardContent>
       ) : (
         <CardContent className="px-0">
-          <p className="text-sm text-muted-foreground">
-            Automatická odpověď se uchazeči odešle okamžitě, co odešle odpovědní formulář k pozici
-          </p>
+          <div className="p-6 bg-muted/30 rounded-lg border border-muted text-muted-foreground">
+            <p>Automatická odpověď se uchazeči odešle okamžitě po odeslání formuláře k pozici. Slouží k potvrzení přijetí žádosti a informování o dalších krocích.</p>
+          </div>
         </CardContent>
       )}
     </Card>

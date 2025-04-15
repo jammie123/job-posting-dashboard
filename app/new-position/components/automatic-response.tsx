@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -17,35 +17,42 @@ const defaultResponseText = `<p>Vážený uchazeči,</p>
 <p>S pozdravem,<br>HR tým</p>`
 
 interface AutomaticResponseProps {
+  initialData?: { template?: string; subject?: string; content?: string }
   onChange?: (data: { template: string; subject: string; content: string }) => void
 }
 
-export function AutomaticResponse({ onChange }: AutomaticResponseProps) {
-  const [template, setTemplate] = useState("default")
-  const [subject, setSubject] = useState("Potvrzení přijetí Vaší žádosti")
-  const [content, setContent] = useState(defaultResponseText)
+export function AutomaticResponse({ initialData, onChange }: AutomaticResponseProps) {
+  const [template, setTemplate] = useState(initialData?.template || "default")
+  const [subject, setSubject] = useState(initialData?.subject || "Potvrzení přijetí Vaší žádosti")
+  const [content, setContent] = useState(initialData?.content || defaultResponseText)
   const [isEnabled, setIsEnabled] = useState(true)
+
+  useEffect(() => {
+    if (onChange) {
+      onChange({ template, subject, content });
+    }
+  }, []);
 
   const handleTemplateChange = (value: string) => {
     setTemplate(value)
-    onChange?.({ template: value, subject, content })
+    if (onChange) onChange({ template: value, subject, content })
   }
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value)
-    onChange?.({ template, subject: e.target.value, content })
+    if (onChange) onChange({ template, subject: e.target.value, content })
   }
 
   const handleContentChange = (value: string) => {
     setContent(value)
-    onChange?.({ template, subject, content: value })
+    if (onChange) onChange({ template, subject, content: value })
   }
 
   return (
     <Card className="border-none shadow-none">
       <CardHeader className="px-0 pt-0 flex flex-row justify-between items-center">
         <div className="flex items-center gap-3">
-          <Switch checked={true} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
+          <Switch checked={isEnabled} onCheckedChange={setIsEnabled} aria-label="Povolit automatickou odpověď" />
           <CardTitle className="text-lg font-medium">Automatická odpověď uchazeči</CardTitle>
         </div>
         {isEnabled && (
@@ -83,9 +90,9 @@ export function AutomaticResponse({ onChange }: AutomaticResponseProps) {
         </CardContent>
       ) : (
         <CardContent className="px-0">
-          <p className="text-sm text-muted-foreground">
-            Automatická odpověď se uchazeči odešle okamžitě, co odešle odpovědní formulář k pozici
-          </p>
+          <div className="p-6 bg-muted/30 rounded-lg border border-muted text-muted-foreground">
+            <p>Automatická odpověď se uchazeči odešle okamžitě po odeslání formuláře k pozici. Slouží k potvrzení přijetí žádosti a informování o dalších krocích.</p>
+          </div>
         </CardContent>
       )}
     </Card>

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Heading1, Heading2, Heading3, List, Bold, Italic, ListOrdered, AlignLeft } from "lucide-react"
+import { Heading1, Heading2, Heading3, List, Bold, Italic, ListOrdered, AlignLeft, Sparkles, Loader2 } from "lucide-react"
 import DOMPurify from "dompurify"
 
 interface DescriptionProps {
@@ -28,6 +28,7 @@ export function Description({
   const [isEditing, setIsEditing] = useState(!isViewMode)
   const [sanitizedValue, setSanitizedValue] = useState("")
   const editorRef = useRef<HTMLDivElement>(null)
+  const [isGenerating, setIsGenerating] = useState(false)
 
   // Sanitizace HTML obsahu při změně hodnoty
   useEffect(() => {
@@ -245,6 +246,44 @@ export function Description({
     }
   }
 
+  // Funkce pro generování popisu pomocí AI
+  const handleGenerateDescription = async () => {
+    if (isGenerating) return
+    
+    setIsGenerating(true)
+    try {
+      // Zde by byla implementace volání AI API
+      // Pro demonstraci pouze simulujeme zpoždění
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // Simulujeme vygenerovaný popis
+      const generatedDescription = `<h1 class="text-2xl font-semibold my-2">O pozici</h1>
+<p class="my-2">Hledáme motivované kandidáty pro pozici, kteří mají zájem o profesní růst v dynamickém prostředí.</p>
+<h2 class="text-xl font-semibold my-2">Náplň práce</h2>
+<ul class="list-disc pl-5 my-2">
+  <li>Aktivní řešení zadaných úkolů</li>
+  <li>Spolupráce v týmu</li>
+  <li>Rozvoj odborných znalostí</li>
+</ul>
+<h2 class="text-xl font-semibold my-2">Požadujeme</h2>
+<ul class="list-disc pl-5 my-2">
+  <li>Spolehlivost a zodpovědnost</li>
+  <li>Ochotu učit se novým věcem</li>
+  <li>Proaktivní přístup k práci</li>
+</ul>`;
+      
+      // Nastavíme hodnotu
+      setValue(generatedDescription)
+      if (onChange) {
+        onChange(generatedDescription)
+      }
+    } catch (error) {
+      console.error("Chyba při generování popisu:", error)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
   if (isViewMode && !isEditing) {
     return (
       <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${blurClass}`}>
@@ -260,14 +299,38 @@ export function Description({
               <p className="text-base text-muted-foreground">Nespecifikováno</p>
             )}
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
-            onClick={toggleEdit}
-          >
-            Upravit
-          </Button>
+          <div className="flex gap-1 absolute right-0 top-0 hidden group-hover:flex transition-opacity">
+            {/* Ikona tlačítko pro generování popisu */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleGenerateDescription}
+              disabled={isGenerating}
+              className="h-7 w-7 p-1 rounded-full hover:bg-blue-100 hover:text-blue-700 group"
+              title="Vygenerovat popis pomocí AI"
+            >
+              {isGenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  <span className="sr-only">Vygenerovat popis pomocí AI</span>
+                  <div className="absolute hidden group-hover:block right-0 top-full mt-1 bg-black text-xs p-1.5 rounded whitespace-nowrap z-50 text-white">
+                    Vygenerovat popis pomocí AI
+                  </div>
+                </>
+              )}
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-7"
+              onClick={toggleEdit}
+            >
+              Upravit
+            </Button>
+          </div>
         </div>
       </div>
     )
@@ -275,9 +338,34 @@ export function Description({
 
   return (
     <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass} flex flex-col h-full`}>
-      <Label htmlFor="description" className="text-base font-medium">
-        Popis pozice
-      </Label>
+      <div className="flex justify-between items-center relative">
+        <Label htmlFor="description" className="text-base font-medium">
+          Popis pozice
+        </Label>
+        
+        {/* Ikona tlačítko pro generování popisu */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={handleGenerateDescription}
+          disabled={isGenerating}
+          className="h-7 w-7 p-1 rounded-full hover:bg-blue-100 hover:text-blue-700 group"
+          title="Vygenerovat popis pomocí AI"
+        >
+          {isGenerating ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" />
+              <span className="sr-only">Vygenerovat popis pomocí AI</span>
+              <div className="absolute hidden group-hover:block right-0 top-full mt-1 bg-black text-xs p-1.5 rounded whitespace-nowrap z-50 text-white">
+                Vygenerovat popis pomocí AI
+              </div>
+            </>
+          )}
+        </Button>
+      </div>
       
       {/* Formátovací toolbar */}
       <div className="flex items-center gap-2 mb-2 border rounded-md p-2 bg-gray-50">

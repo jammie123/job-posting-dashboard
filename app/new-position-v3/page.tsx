@@ -20,6 +20,8 @@ import { LanguageLevel } from "./components/LanguageLevel"
 import { Education } from "./components/Education"
 import { Benefits } from "./components/Benefits"
 import AdvertiseStep from "@/app/new-position/components/advertise-step"
+import { ApplicationForm } from "@/app/new-position/components/application-form"
+import { AutomaticResponse } from "@/app/new-position/components/automatic-response"
 import { SummaryOrder } from "@/components/summary-order"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SelectedLanguage } from "@/app/new-position/components/language-selector"
@@ -53,6 +55,16 @@ interface PositionData {
   languages?: SelectedLanguage[];
 }
 
+// Definuji rozhraní pro data otázek pro uchazeče
+interface QuestionsData {
+  questions?: any[];
+  automaticResponse?: {
+    template?: string;
+    subject?: string;
+    content?: string;
+  }
+}
+
 // Definuji rozhraní pro data inzerce
 interface AdvertisingData {
   platforms?: string[];
@@ -62,6 +74,7 @@ interface AdvertisingData {
 // Definuji rozhraní pro kompletní data pozice
 interface JobPostingData {
   position: PositionData;
+  questions: QuestionsData;
   advertising: AdvertisingData;
 }
 
@@ -73,9 +86,11 @@ export default function NewPositionV3() {
   const [activeEditingComponent, setActiveEditingComponent] = useState<string | null>(null)
   const [formData, setFormData] = useState<JobPostingData>({
     position: {},
+    questions: {},
     advertising: {}
   })
   const [showClearDialog, setShowClearDialog] = useState(false)
+  const [cachedData, setCachedData] = useState<Record<string, any>>({})
   const router = useRouter()
 
   const handleJobNameSubmit = (name: string) => {
@@ -121,6 +136,7 @@ export default function NewPositionV3() {
           ...formData.position,
           ...validatedData
         },
+        questions: { ...formData.questions },  // Zachováme stávající otázky
         advertising: { ...formData.advertising }
       };
       
@@ -191,6 +207,16 @@ export default function NewPositionV3() {
     })
   }
 
+  const handleQuestionsDataChange = (data: Partial<QuestionsData>) => {
+    setFormData(prev => ({
+      ...prev,
+      questions: {
+        ...prev.questions,
+        ...data
+      }
+    }))
+  }
+
   const handleAdvertisingDataChange = (data: Partial<AdvertisingData>) => {
     setFormData(prev => ({
       ...prev,
@@ -226,6 +252,7 @@ export default function NewPositionV3() {
     // Resetujeme data formuláře
     setFormData({
       position: {},
+      questions: {},
       advertising: {}
     })
     // Zobrazíme vstupní pole pro název pozice
@@ -298,6 +325,38 @@ export default function NewPositionV3() {
 
     return { data, totalCredits }
   })()
+
+  const handleCacheData = (key: string, value: string) => {
+    if (key === "name") {
+      setFormData({
+        position: {
+          title: value,
+          type: "full",
+          field: cachedData["field"] || null,
+          profession: cachedData["profession"] || null,
+          salary: cachedData["salary"] || null,
+          description: cachedData["description"] || null,
+          education: cachedData["education"] || null,
+          benefits: cachedData["benefits"] || null,
+        },
+        questions: {
+          questions: [],
+          automaticResponse: {
+            template: "",
+            subject: "",
+            content: ""
+          }
+        },
+        advertising: {}
+      })
+      setShowNameInput(false)
+    } else {
+      setCachedData((prevData) => ({
+        ...prevData,
+        [key]: value,
+      }))
+    }
+  }
 
   return (
     <div className="container mt-8">
@@ -384,6 +443,24 @@ export default function NewPositionV3() {
                   >
                     2
                   </div>
+                  <span className="text-sm font-medium">Otázky na uchazeče</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="3"
+                className="w-full justify-start data-[state=active]:bg-white data-[state=active]:shadow-sm border-none px-4 py-4"
+                disabled={showNameInput}
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                      currentStep === 3
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted-foreground"
+                    }`}
+                  >
+                    3
+                  </div>
                   <span className="text-sm font-medium">Inzerce a místa vystavení</span>
                 </div>
               </TabsTrigger>
@@ -458,7 +535,7 @@ export default function NewPositionV3() {
 
         {/* Right column - Form content */}
         <div className="flex-1 flex">
-          <Card className={`shadow-lg mb-8 ${currentStep === 2 ? "w-full" : "w-[850px]"}`}>
+          <Card className={`shadow-lg mb-8 ${currentStep === 3 ? "w-full" : "w-[850px]"}`}>
             {currentStep === 1 && showNameInput && (
               <CardContent className="p-6">
                 <JobName 
@@ -573,7 +650,7 @@ export default function NewPositionV3() {
                     
                     <div className="flex justify-end mt-6">
                       <Button onClick={() => setCurrentStep(2)}>
-                        Pokračovat k inzerci
+                        Pokračovat k otázkám pro uchazeče
                       </Button>
                     </div>
                   </div>
@@ -582,6 +659,33 @@ export default function NewPositionV3() {
             )}
 
             {currentStep === 2 && (
+              <CardContent className="p-6">
+                <div className="space-y-6">
+                  <CardTitle className="text-xl mb-6">Otázky pro uchazeče</CardTitle>
+                  
+                  <ApplicationForm 
+                    initialData={formData.questions}
+                    onDataChange={(data) => handleQuestionsDataChange({ questions: data?.questions })}
+                  />
+                  
+                  <AutomaticResponse 
+                    initialData={formData.questions.automaticResponse}
+                    onChange={(data) => handleQuestionsDataChange({ automaticResponse: data })}
+                  />
+                  
+                  <div className="flex justify-end space-x-4 mt-8">
+                    <Button variant="outline" onClick={() => setCurrentStep(1)}>
+                      Zpět
+                    </Button>
+                    <Button onClick={() => setCurrentStep(3)}>
+                      Pokračovat k inzerci
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            )}
+
+            {currentStep === 3 && (
               <AdvertiseStep
                 initialData={formData.advertising}
                 onDataChange={handleAdvertisingDataChange}
@@ -590,7 +694,7 @@ export default function NewPositionV3() {
           </Card>
 
           {/* Summary Order component - only shown for advertising step */}
-          {currentStep === 2 && (
+          {currentStep === 3 && (
             <div className="sticky top-6 self-start w-[300px] ml-6">
               <SummaryOrder
                 selectedPlatforms={summaryData.data}
