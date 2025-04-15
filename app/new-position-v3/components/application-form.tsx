@@ -13,6 +13,10 @@ import { Switch } from "@/components/ui/switch"
 import { AutomaticResponse } from "./automatic-response"
 import { CardTitle } from "@/components/ui/card"
 
+// Přidám komentář o AutomaticResponse komponentě
+// Komponenta AutomaticResponse obsahuje vlastní rich text editor s formátováním HTML
+// pro vytváření automatických odpovědí uchazečům
+
 // Komponenta pro bezpečné vykreslení HTML popisu pozice
 interface PositionDescriptionProps {
   html: string;
