@@ -149,9 +149,8 @@ export default function NewPositionV3() {
     }
 
     setShowNameInput(false)
-    // Po předvyplnění dat nastavíme isViewMode na true
-    setIsViewMode(true)
-    // Už nejsme v defaultním zobrazení
+    // Ponecháme aktuální režim zobrazení (isViewMode) beze změny
+    // Již nejsme v defaultním zobrazení
     setIsDefaultView(false)
   }
 
