@@ -2,15 +2,16 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Heading1, Heading2, Heading3, List, Bold, Italic, ListOrdered } from "lucide-react"
+import { Heading1, Heading2, Heading3, List, Bold, Italic, ListOrdered, AlignLeft } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import DOMPurify from "dompurify"
 
 const defaultResponseText = `<p>Vážený uchazeči,</p>
 <p>děkujeme za Váš zájem o pozici v naší společnosti. Tímto potvrzujeme přijetí Vaší žádosti.</p>
@@ -18,7 +19,7 @@ const defaultResponseText = `<p>Vážený uchazeči,</p>
 <p>Děkujeme za Váš čas a zájem o práci v naší společnosti.</p>
 <p>S pozdravem,<br>HR tým</p>`
 
-// Vlastní RichTextEditor komponenta
+// Vylepšený RichTextEditor s WYSIWYG rozhraním
 interface CustomRichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
@@ -26,43 +27,69 @@ interface CustomRichTextEditorProps {
 }
 
 function CustomRichTextEditor({ value, onChange, className = "" }: CustomRichTextEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [sanitizedValue, setSanitizedValue] = useState(value);
 
-  const insertHTMLTag = (tag: string, openClose = true) => {
-    const textArea = textareaRef.current;
-    if (!textArea) return;
+  // Sanitizace HTML obsahu při změně hodnoty
+  useEffect(() => {
+    if (typeof window !== 'undefined' && value) {
+      const clean = DOMPurify.sanitize(value, {
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'ul', 'ol', 'li', 'p', 'strong', 'em', 'br', 'div', 'span'],
+        ALLOWED_ATTR: ['style', 'class']
+      });
+      setSanitizedValue(clean);
 
-    const start = textArea.selectionStart;
-    const end = textArea.selectionEnd;
-    const selectedText = value.substring(start, end);
-    
-    let newText = '';
-    if (openClose) {
-      const openTag = `<${tag}>`;
-      const closeTag = `</${tag}>`;
-      newText = value.substring(0, start) + openTag + selectedText + closeTag + value.substring(end);
+      // Nastavíme sanitizovaný obsah do editoru, pokud je k dispozici
+      if (editorRef.current) {
+        editorRef.current.innerHTML = clean;
+      }
     } else {
-      // Pro tagy jako <li>, které potřebují být uvnitř seznamu
-      if (tag === 'li') {
-        newText = value.substring(0, start) + `<li>${selectedText}</li>` + value.substring(end);
-      } else if (tag === 'ul') {
-        newText = value.substring(0, start) + `<ul>\n  <li>${selectedText}</li>\n</ul>` + value.substring(end);
-      } else if (tag === 'ol') {
-        newText = value.substring(0, start) + `<ol>\n  <li>${selectedText}</li>\n</ol>` + value.substring(end);
-      } else if (tag === 'p') {
-        newText = value.substring(0, start) + `<p>${selectedText}</p>` + value.substring(end);
+      setSanitizedValue("");
+      if (editorRef.current) {
+        editorRef.current.innerHTML = "";
       }
     }
-    
-    onChange(newText);
-    
-    // Nastavíme focus zpět na textové pole
-    setTimeout(() => {
-      textArea.focus();
-      // Posuneme kurzor za vložený tag
-      const newPosition = start + newText.length - value.length;
-      textArea.setSelectionRange(newPosition, newPosition);
-    }, 0);
+  }, [value]);
+
+  // Sledujeme změny v editoru a aktualizujeme hodnotu
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleInput = () => {
+      const newValue = editor.innerHTML;
+      onChange(newValue);
+    };
+
+    editor.addEventListener('input', handleInput);
+    return () => {
+      editor.removeEventListener('input', handleInput);
+    };
+  }, [onChange]);
+
+  // Funkce pro použití formátovacích příkazů
+  const execCommand = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value);
+    // Získáme aktuální obsah po úpravě
+    if (editorRef.current) {
+      const newValue = editorRef.current.innerHTML;
+      onChange(newValue);
+      // Vracíme focus na editor
+      editorRef.current.focus();
+    }
+  };
+
+  // Funkce pro vložení HTML prvku
+  const insertElement = (tag: string) => {
+    if (tag === 'ul') {
+      execCommand('insertUnorderedList');
+    } else if (tag === 'ol') {
+      execCommand('insertOrderedList');
+    } else if (tag === 'h1' || tag === 'h2' || tag === 'h3') {
+      execCommand('formatBlock', `<${tag}>`);
+    } else if (tag === 'p') {
+      execCommand('formatBlock', '<p>');
+    }
   };
 
   return (
@@ -71,25 +98,25 @@ function CustomRichTextEditor({ value, onChange, className = "" }: CustomRichTex
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('p', false)}
+          onClick={() => execCommand('formatBlock', '<p>')}
           title="Odstavec"
           className="h-8 px-2"
         >
-          <span className="text-xs font-mono">P</span>
+          <AlignLeft className="h-4 w-4" />
         </Button>
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('h1')}
+          onClick={() => insertElement('h1')}
           title="Nadpis 1"
           className="h-8 px-2"
         >
           <Heading1 className="h-4 w-4" />
         </Button>
         <Button 
-          variant="ghost" 
+          variant="ghost"
           size="sm" 
-          onClick={() => insertHTMLTag('h2')}
+          onClick={() => insertElement('h2')}
           title="Nadpis 2"
           className="h-8 px-2"
         >
@@ -99,7 +126,7 @@ function CustomRichTextEditor({ value, onChange, className = "" }: CustomRichTex
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('ul', false)}
+          onClick={() => insertElement('ul')}
           title="Seznam s odrážkami"
           className="h-8 px-2"
         >
@@ -108,26 +135,17 @@ function CustomRichTextEditor({ value, onChange, className = "" }: CustomRichTex
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('ol', false)}
+          onClick={() => insertElement('ol')}
           title="Číslovaný seznam"
           className="h-8 px-2"
         >
           <ListOrdered className="h-4 w-4" />
         </Button>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => insertHTMLTag('li', false)}
-          title="Položka seznamu"
-          className="h-8 px-2"
-        >
-          <span className="text-xs font-mono">LI</span>
-        </Button>
         <div className="h-5 w-[1px] bg-gray-300 mx-1"></div>
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('strong')}
+          onClick={() => execCommand('bold')}
           title="Tučné písmo"
           className="h-8 px-2"
         >
@@ -136,19 +154,18 @@ function CustomRichTextEditor({ value, onChange, className = "" }: CustomRichTex
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('em')}
+          onClick={() => execCommand('italic')}
           title="Kurzíva"
           className="h-8 px-2"
         >
           <Italic className="h-4 w-4" />
         </Button>
       </div>
-      <Textarea
-        ref={textareaRef}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className={`font-mono text-sm ${className}`}
-        rows={10}
+      <div
+        ref={editorRef}
+        contentEditable
+        className={`min-h-[200px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary overflow-auto ${className}`}
+        dangerouslySetInnerHTML={{ __html: sanitizedValue }}
       />
       <div className="text-xs text-muted-foreground">
         Povolené HTML značky: &lt;p&gt;, &lt;h1&gt;, &lt;h2&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;br&gt;

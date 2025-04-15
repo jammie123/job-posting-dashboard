@@ -254,14 +254,37 @@ export function JobName({
         <Label htmlFor="job-name" className="text-base font-medium">
           Název pozice
         </Label>
-        <Input
-          id="job-name"
-          placeholder="Např. Zedník do skansky"
-          value={value}
-          onChange={(e) => handleChange(e.target.value)}
-          className="w-full"
-          autoFocus
-        />
+        <div className="relative">
+          <Input
+            id="job-name"
+            placeholder="Např. Zedník do skansky"
+            value={value}
+            onChange={(e) => handleChange(e.target.value)}
+            className="w-full pr-10"
+            autoFocus
+          />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handlePrefilData}
+            disabled={!value.trim() || isLoading}
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-1 rounded-full hover:bg-blue-100 hover:text-blue-700 group"
+            title="Předvyplnit data do formuláře"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" />
+                <span className="sr-only">Předvyplnit data do formuláře</span>
+                <div className="absolute hidden group-hover:block right-0 top-full mt-1 bg-black text-xs p-1.5 rounded whitespace-nowrap z-50 text-white">
+                  Předvyplnit data do formuláře
+                </div>
+              </>
+            )}
+          </Button>
+        </div>
         <div className="flex justify-end mt-4">
           <Button onClick={toggleEdit}>
             Uložit
@@ -273,53 +296,47 @@ export function JobName({
   
   // Plná verze pro novou pozici
   return (
-    <div className={`space-y-6 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-6 my-2 p-4 border border-gray-200 rounded-md ${blurClass} relative`}>
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="job-name" className="text-base font-medium">
             Název náboru
           </Label>
-          <Input
-            id="job-name"
-            placeholder="Např. Zedník do skansky"
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            className="w-full"
-            autoFocus
-            required
-          />
+          <div className="relative">
+            <Input
+              id="job-name"
+              placeholder="Např. Zedník do skansky"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="w-full pr-10"
+              autoFocus
+              required
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handlePrefilData}
+              disabled={!value.trim() || isLoading}
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-1 rounded-full hover:bg-blue-100 hover:text-blue-700 group"
+              title="Předvyplnit data do formuláře"
+            >
+              {isLoading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  <span className="sr-only">Předvyplnit data do formuláře</span>
+                  <div className="absolute hidden group-hover:block right-0 top-full mt-1 bg-black text-xs p-1.5 rounded whitespace-nowrap z-50 text-white">
+                    Předvyplnit data do formuláře
+                  </div>
+                </>
+              )}
+            </Button>
+          </div>
           <p className="text-sm text-muted-foreground">
             Zadejte název pozice, kterou potřebujete obsadit.
           </p>
-        </div>
-        
-        <div className="flex gap-4 mt-6">
-          <Button
-            type="button"
-            onClick={handlePrefilData}
-            disabled={!value.trim() || isLoading}
-            className="gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generuji data...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Předvyplnit data do formuláře
-              </>
-            )}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onRegularForm}
-            disabled={isLoading}
-          >
-            Přejít na běžný formulář
-          </Button>
         </div>
       </form>
     </div>

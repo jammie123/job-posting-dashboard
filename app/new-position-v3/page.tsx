@@ -149,8 +149,9 @@ export default function NewPositionV3() {
     }
 
     setShowNameInput(false)
-    // Ponecháme aktuální režim zobrazení (isViewMode) beze změny
-    // Již nejsme v defaultním zobrazení
+    // Po předvyplnění dat nastavíme isViewMode na true
+    setIsViewMode(true)
+    // Už nejsme v defaultním zobrazení
     setIsDefaultView(false)
   }
 
@@ -473,12 +474,14 @@ export default function NewPositionV3() {
 
             {currentStep === 1 && !showNameInput && (
               <CardContent className="p-6">
-                <div className="space-y-8">
+                <div className="space-y-8 relative">
                   {/* Odstraním debugovací panel */}
                 
                   <JobName
                     initialValue={formData.position.title}
                     onChange={(value) => handlePositionDataChange({ title: value })}
+                 
+                    onPrefilData={handlePrefilData}
                     isViewMode={isViewMode}
                     isBlur={isViewMode && activeEditingComponent !== null && activeEditingComponent !== 'JobName'}
                     onEdit={() => handleComponentEdit('JobName')}

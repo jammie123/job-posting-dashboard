@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Heading1, Heading2, Heading3, List, Bold, Italic } from "lucide-react"
+import { Heading1, Heading2, Heading3, List, Bold, Italic, ListOrdered, AlignLeft } from "lucide-react"
 import DOMPurify from "dompurify"
 
 interface DescriptionProps {
@@ -27,19 +27,91 @@ export function Description({
   const [value, setValue] = useState(initialValue)
   const [isEditing, setIsEditing] = useState(!isViewMode)
   const [sanitizedValue, setSanitizedValue] = useState("")
+  const editorRef = useRef<HTMLDivElement>(null)
 
   // Sanitizace HTML obsahu při změně hodnoty
   useEffect(() => {
     if (typeof window !== 'undefined' && value) {
       const clean = DOMPurify.sanitize(value, {
-        ALLOWED_TAGS: ['h3', 'ul', 'ol', 'li', 'p', 'strong', 'em', 'br'],
-        ALLOWED_ATTR: []
+        ALLOWED_TAGS: ['h1', 'h2', 'h3', 'ul', 'ol', 'li', 'p', 'strong', 'em', 'br', 'div', 'span'],
+        ALLOWED_ATTR: ['style', 'class']
       })
       setSanitizedValue(clean)
+
+      // Nastavíme sanitizovaný obsah do editoru, pokud je k dispozici
+      if (editorRef.current) {
+        editorRef.current.innerHTML = clean
+        // Aplikujeme Tailwind třídy na všechny prvky
+        applyTailwindClasses(editorRef.current)
+      }
     } else {
       setSanitizedValue("")
+      if (editorRef.current) {
+        editorRef.current.innerHTML = ""
+      }
     }
-  }, [value])
+  }, [value, isEditing])
+
+  // Funkce pro čištění vnořených elementů (span) z obsahu
+  const cleanNestedElements = (container: HTMLElement) => {
+    // Najdeme všechny nadpisy a odstavce
+    const elements = container.querySelectorAll('h1, h2, h3, p')
+    
+    elements.forEach(el => {
+      // Pokud element obsahuje span, vyčistíme ho
+      const spans = el.querySelectorAll('span')
+      if (spans.length > 0) {
+        // Zachováme obsah, ale odstraníme vnořené span elementy
+        const content = el.textContent || ''
+        el.innerHTML = content
+      }
+    })
+  }
+
+  // Vylepšená funkce pro aplikaci tříd, která zároveň vyčistí vnořené elementy
+  const applyTailwindClasses = (container: HTMLElement) => {
+    // Nejprve vyčistíme vnořené elementy
+    cleanNestedElements(container)
+    
+    // Poté aplikujeme třídy
+    container.querySelectorAll('h1').forEach(el => {
+      el.classList.add('text-2xl', 'font-semibold', 'my-2')
+    })
+    container.querySelectorAll('h2').forEach(el => {
+      el.classList.add('text-xl', 'font-semibold', 'my-2')
+    })
+    container.querySelectorAll('h3').forEach(el => {
+      el.classList.add('text-lg', 'font-medium', 'my-2')
+    })
+    container.querySelectorAll('ul').forEach(el => {
+      el.classList.add('list-disc', 'pl-5', 'my-2')
+    })
+    container.querySelectorAll('ol').forEach(el => {
+      el.classList.add('list-decimal', 'pl-5', 'my-2')
+    })
+    container.querySelectorAll('p').forEach(el => {
+      el.classList.add('my-2')
+    })
+  }
+
+  // Sledujeme změny v editoru a aktualizujeme hodnotu
+  useEffect(() => {
+    const editor = editorRef.current
+    if (!editor) return
+
+    const handleInput = () => {
+      const newValue = editor.innerHTML
+      setValue(newValue)
+      if (onChange) {
+        onChange(newValue)
+      }
+    }
+
+    editor.addEventListener('input', handleInput)
+    return () => {
+      editor.removeEventListener('input', handleInput)
+    }
+  }, [onChange])
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value)
@@ -53,7 +125,15 @@ export function Description({
       onEdit()
     }
     
-    setIsEditing(!isEditing)
+    const newEditingState = !isEditing
+    setIsEditing(newEditingState)
+    
+    // Po přepnutí do režimu úprav aktualizuj obsah editoru
+    if (newEditingState && editorRef.current) {
+      editorRef.current.innerHTML = sanitizedValue
+      // Aplikujeme Tailwind třídy na všechny prvky
+      applyTailwindClasses(editorRef.current)
+    }
     
     if (isEditing && onSave) {
       onSave()
@@ -63,54 +143,117 @@ export function Description({
   // CSS třídy pro rozmazání komponenty
   const blurClass = isBlur ? "filter blur-[13px] opacity-[0.5] brightness-[0.8] contrast-[120%]" : ""
 
-  // Nová funkce pro vkládání HTML tagů
-  const insertHTMLTag = (tag: string, openClose = true) => {
-    const textArea = document.getElementById('description') as HTMLTextAreaElement;
-    if (!textArea) return;
-
-    const start = textArea.selectionStart;
-    const end = textArea.selectionEnd;
-    const selectedText = value.substring(start, end);
-    
-    let newText = '';
-    if (openClose) {
-      const openTag = `<${tag}>`;
-      const closeTag = `</${tag}>`;
-      newText = value.substring(0, start) + openTag + selectedText + closeTag + value.substring(end);
-    } else {
-      // Pro tagy jako <li>, které potřebují být uvnitř seznamu
-      if (tag === 'li') {
-        newText = value.substring(0, start) + `<li>${selectedText}</li>` + value.substring(end);
-      } else if (tag === 'ul') {
-        newText = value.substring(0, start) + `<ul>\n  <li>${selectedText}</li>\n</ul>` + value.substring(end);
-      } else if (tag === 'ol') {
-        newText = value.substring(0, start) + `<ol>\n  <li>${selectedText}</li>\n</ol>` + value.substring(end);
+  // Funkce pro použití formátovacích příkazů
+  const execCommand = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value)
+    // Získáme aktuální obsah po úpravě
+    if (editorRef.current) {
+      const newValue = editorRef.current.innerHTML
+      setValue(newValue)
+      if (onChange) {
+        onChange(newValue)
       }
+      // Vracíme focus na editor
+      editorRef.current.focus()
     }
-    
-    setValue(newText);
-    if (onChange) {
-      onChange(newText);
+  }
+
+  // Funkce pro vložení HTML prvku
+  const insertElement = (tag: string) => {
+    if (tag === 'ul') {
+      execCommand('insertUnorderedList')
+      // Aplikace stylu na seznam po vložení
+      setTimeout(() => {
+        if (editorRef.current) {
+          const lists = editorRef.current.querySelectorAll('ul')
+          lists.forEach(list => {
+            list.classList.add('list-disc', 'pl-5', 'my-2')
+          })
+          const newValue = editorRef.current.innerHTML
+          setValue(newValue)
+          if (onChange) {
+            onChange(newValue)
+          }
+        }
+      }, 0)
+    } else if (tag === 'ol') {
+      execCommand('insertOrderedList')
+      // Aplikace stylu na číslovaný seznam po vložení
+      setTimeout(() => {
+        if (editorRef.current) {
+          const lists = editorRef.current.querySelectorAll('ol')
+          lists.forEach(list => {
+            list.classList.add('list-decimal', 'pl-5', 'my-2')
+          })
+          const newValue = editorRef.current.innerHTML
+          setValue(newValue)
+          if (onChange) {
+            onChange(newValue)
+          }
+        }
+      }, 0)
+    } else if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') {
+      // Nejprve jen aplikujeme základní HTML element bez tříd
+      execCommand('formatBlock', `<${tag}>`)
+      
+      // Poté aplikujeme Tailwind třídy
+      setTimeout(() => {
+        if (editorRef.current) {
+          // Najdeme všechny nově vytvořené elementy
+          if (tag === 'h1') {
+            editorRef.current.querySelectorAll('h1').forEach(el => {
+              // Vyčistíme vnořené span elementy
+              if (el.querySelector('span')) {
+                const content = el.textContent || ''
+                el.innerHTML = content
+              }
+              el.classList.add('text-2xl', 'font-semibold', 'my-2')
+            })
+          } else if (tag === 'h2') {
+            editorRef.current.querySelectorAll('h2').forEach(el => {
+              if (el.querySelector('span')) {
+                const content = el.textContent || ''
+                el.innerHTML = content
+              }
+              el.classList.add('text-xl', 'font-semibold', 'my-2')
+            })
+          } else if (tag === 'h3') {
+            editorRef.current.querySelectorAll('h3').forEach(el => {
+              if (el.querySelector('span')) {
+                const content = el.textContent || ''
+                el.innerHTML = content
+              }
+              el.classList.add('text-lg', 'font-medium', 'my-2')
+            })
+          } else if (tag === 'p') {
+            editorRef.current.querySelectorAll('p').forEach(el => {
+              if (el.querySelector('span')) {
+                const content = el.textContent || ''
+                el.innerHTML = content
+              }
+              el.classList.add('my-2')
+            })
+          }
+          
+          const newValue = editorRef.current.innerHTML
+          setValue(newValue)
+          if (onChange) {
+            onChange(newValue)
+          }
+        }
+      }, 10)
     }
-    
-    // Nastavíme focus zpět na textové pole
-    setTimeout(() => {
-      textArea.focus();
-      // Posuneme kurzor za vložený tag
-      const newPosition = start + newText.length - value.length;
-      textArea.setSelectionRange(newPosition, newPosition);
-    }, 0);
-  };
+  }
 
   if (isViewMode && !isEditing) {
     return (
       <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${blurClass}`}>
-        <div className="flex justify-between items-start mr-2 w-full">
-          <div className="flex flex-col gap-2 w-full">
+        <div className="flex justify-between items-start mr-2 w-full h-full">
+          <div className="flex flex-col gap-2 w-full h-full">
        
             {value ? (
               <div 
-                className="text-sm description-content"
+                className="text-sm description-content prose prose-sm max-w-none h-full"
                 dangerouslySetInnerHTML={{ __html: sanitizedValue }} 
               />
             ) : (
@@ -131,17 +274,26 @@ export function Description({
   }
 
   return (
-    <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass}`}>
+    <div className={`space-y-2 my-2 p-4 border border-gray-200 rounded-md ${blurClass} flex flex-col h-full`}>
       <Label htmlFor="description" className="text-base font-medium">
         Popis pozice
       </Label>
       
-      {/* Nový formátovací toolbar */}
+      {/* Formátovací toolbar */}
       <div className="flex items-center gap-2 mb-2 border rounded-md p-2 bg-gray-50">
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('h1')}
+          onClick={() => execCommand('formatBlock', '<p>')}
+          title="Normální text"
+          className="h-8 px-2"
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Button>
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={() => insertElement('h1')}
           title="Nadpis 1"
           className="h-8 px-2"
         >
@@ -150,7 +302,7 @@ export function Description({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('h2')}
+          onClick={() => insertElement('h2')}
           title="Nadpis 2"
           className="h-8 px-2"
         >
@@ -159,7 +311,7 @@ export function Description({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('h3')}
+          onClick={() => insertElement('h3')}
           title="Nadpis 3"
           className="h-8 px-2"
         >
@@ -169,7 +321,7 @@ export function Description({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('ul', false)}
+          onClick={() => insertElement('ul')}
           title="Seznam s odrážkami"
           className="h-8 px-2"
         >
@@ -178,17 +330,17 @@ export function Description({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('li', false)}
-          title="Položka seznamu"
+          onClick={() => insertElement('ol')}
+          title="Číslovaný seznam"
           className="h-8 px-2"
         >
-          <span className="text-xs font-mono">LI</span>
+          <ListOrdered className="h-4 w-4" />
         </Button>
         <div className="h-5 w-[1px] bg-gray-300 mx-1"></div>
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('strong')}
+          onClick={() => execCommand('bold')}
           title="Tučné písmo"
           className="h-8 px-2"
         >
@@ -197,7 +349,7 @@ export function Description({
         <Button 
           variant="ghost" 
           size="sm" 
-          onClick={() => insertHTMLTag('em')}
+          onClick={() => execCommand('italic')}
           title="Kurzíva"
           className="h-8 px-2"
         >
@@ -205,19 +357,17 @@ export function Description({
         </Button>
       </div>
       
-      <Textarea
-        id="description"
-        placeholder="Popište náplň práce, odpovědnosti a očekávání od kandidáta. Můžete použít HTML formátování (h3, ul, li, p, strong, em)."
-        value={value}
-        onChange={handleChange}
-        className="min-h-[200px] font-mono text-sm"
+      {/* WYSIWYG Editor místo textarea */}
+      <div
+        ref={editorRef}
+        contentEditable
+        className="flex-1 min-h-[300px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary overflow-auto"
+        dangerouslySetInnerHTML={{ __html: sanitizedValue }}
       />
+      
       <p className="text-sm text-muted-foreground">
-        Detailní popis pozice pomůže kandidátům lépe pochopit, co se od nich očekává. Můžete použít jednoduché HTML formátování.
+        Detailní popis pozice pomůže kandidátům lépe pochopit, co se od nich očekává.
       </p>
-      <div className="text-xs text-muted-foreground mt-1">
-        Povolené HTML značky: &lt;h3&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;br&gt;
-      </div>
       {isViewMode && (
         <div className="flex justify-end mt-4">
           <Button onClick={toggleEdit}>
