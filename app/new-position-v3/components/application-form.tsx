@@ -9,8 +9,6 @@ import { Plus } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
-// Import the AutomaticResponse component at the top of the file
-import { AutomaticResponse } from "./automatic-response"
 import { CardTitle } from "@/components/ui/card"
 
 // Komponenta pro bezpečné vykreslení HTML popisu pozice
@@ -114,19 +112,13 @@ export function ApplicationForm({ initialData, onDataChange, onNextStep, onPrevS
   // Přidáme effect pro aktualizaci dat při změně otázek
   useEffect(() => {
     if (onDataChange) {
-      // Porovnáme current questions s initial questions pro zjištění, zda došlo ke změně
-      const initialQuestions = initialData?.questions || [];
-      const questionsChanged = questions.length !== initialQuestions.length || 
-        JSON.stringify(questions) !== JSON.stringify(initialQuestions);
-      
-      // Voláme onDataChange pouze pokud se questions skutečně změnily
-      if (questionsChanged) {
-        onDataChange({ 
-          questions 
-        });
-      }
+      // Aktualizujeme pouze questions, nikoliv celý initialData
+      // Toto zabrání cyklickým aktualizacím
+      onDataChange({ 
+        questions 
+      });
     }
-  }, [questions, onDataChange, initialData?.questions]);
+  }, [questions, onDataChange]); // Odstraněna závislost na initialData
 
   const handleAddQuestion = () => {
     if (newQuestion.name && newQuestion.type) {
@@ -281,5 +273,4 @@ export function ApplicationForm({ initialData, onDataChange, onNextStep, onPrevS
       )}
     </div>
   )
-}
-
+} 

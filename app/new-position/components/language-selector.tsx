@@ -20,32 +20,52 @@ const levels = [
   { value: "native", label: "Rodilý mluvčí" },
 ]
 
-interface SelectedLanguage {
+export interface SelectedLanguage {
   code: string
   name: string
   level: string
 }
 
-export function LanguageSelector() {
-  const [selectedLanguages, setSelectedLanguages] = useState<SelectedLanguage[]>([
-    { code: "cs", name: "Čeština", level: "none" },
-    { code: "en", name: "Angličtina", level: "none" },
-    { code: "de", name: "Němčina", level: "none" },
-    { code: "sk", name: "Slovenština", level: "none" },
-  ])
+interface LanguageSelectorProps {
+  value?: SelectedLanguage[] // Původní hodnota
+  onChange?: (languages: SelectedLanguage[]) => void // Callback pro změny
+}
+
+export function LanguageSelector({ value, onChange }: LanguageSelectorProps) {
+  // Inicializace interního stavu z prop hodnoty nebo výchozích hodnot
+  const [selectedLanguages, setSelectedLanguages] = useState<SelectedLanguage[]>(
+    value || [
+      { code: "cs", name: "Čeština", level: "none" },
+      { code: "en", name: "Angličtina", level: "none" },
+    ]
+  )
 
   const handleLanguageSelect = (language: { code: string; name: string }) => {
     if (!selectedLanguages.find((l) => l.code === language.code)) {
-      setSelectedLanguages([...selectedLanguages, { ...language, level: "none" }])
+      const newLanguages = [...selectedLanguages, { ...language, level: "none" }];
+      setSelectedLanguages(newLanguages);
+      if (onChange) {
+        onChange(newLanguages);
+      }
     }
   }
 
   const handleLevelChange = (languageCode: string, level: string) => {
-    setSelectedLanguages(selectedLanguages.map((lang) => (lang.code === languageCode ? { ...lang, level } : lang)))
+    const newLanguages = selectedLanguages.map((lang) => 
+      (lang.code === languageCode ? { ...lang, level } : lang)
+    );
+    setSelectedLanguages(newLanguages);
+    if (onChange) {
+      onChange(newLanguages);
+    }
   }
 
   const removeLanguage = (languageCode: string) => {
-    setSelectedLanguages(selectedLanguages.filter((lang) => lang.code !== languageCode))
+    const newLanguages = selectedLanguages.filter((lang) => lang.code !== languageCode);
+    setSelectedLanguages(newLanguages);
+    if (onChange) {
+      onChange(newLanguages);
+    }
   }
 
   return (
