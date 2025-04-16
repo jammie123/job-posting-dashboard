@@ -31,9 +31,9 @@ const menuItems = [
     href: "/statistics",
   },
   {
-    label: "E-shop",
+    label: "Marketplace",
     icon: ShoppingCart,
-    href: "/shop",
+    href: "/eshop-v2",
   },
 ]
 

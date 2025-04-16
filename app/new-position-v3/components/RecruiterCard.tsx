@@ -129,7 +129,7 @@ export function RecruiterCard({ avatar, fullname, role = "Náborář", onChange 
 
   return (
     <>
-      <Card className="overflow-hidden max-w-[250px] gap-3 flex flex-col bg-transparent border-none shadow-none">
+      <Card className="overflow-hidden border border-gray-200 p-3 gap-3 flex flex-col bg-transparent shadow-none">
 
         <CardContent className="p-0">
           <div className="flex items-center gap-3">

@@ -49,7 +49,7 @@ export function TeamioItemCard({
         className="bg-white rounded-lg border border-blue-200 shadow-md p-6 flex flex-col transition-all duration-200 hover:shadow-lg hover:border-blue-500 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       >
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-6">
           <div className="flex-1">
             <div className="inline-block bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full mb-2">
               Teamio Profesional
@@ -60,8 +60,8 @@ export function TeamioItemCard({
               </div>
             )}
             <h3 className="text-xl font-medium text-gray-900 mb-2">{title}</h3>
-            <p className="text-sm text-gray-600 mb-4">{perex}</p>
-            <p className="text-sm text-gray-700">{description}</p>
+            <p className="text-sm text-gray-700 mb-1">{perex}</p>
+       
 
             {validFrom && validTo && (
               <p className="text-xs text-gray-500 mt-4">
@@ -70,9 +70,9 @@ export function TeamioItemCard({
             )}
           </div>
 
-          <div className="md:w-1/2 space-y-4">
-            <h4 className="font-medium text-gray-900">Premium funkce:</h4>
-            <ul className="space-y-3">
+          <div className="space-y-4">
+            <h4 className="font-medium text-sm text-gray-700">Premium funkce:</h4>
+            <ul className="grid grid-cols-4 gap-4">
               {features?.map((feature, index) => (
                 <li key={index} className="flex items-start">
                   <svg

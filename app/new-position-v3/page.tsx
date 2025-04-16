@@ -401,8 +401,8 @@ export default function NewPositionV3() {
       `}</style>
       <div className="flex gap-6">
         {/* Left column - Vertical stepper */}
-        <div className="w-[270px] shrink-0 mr-1">
-          <Tabs value={String(currentStep)} onValueChange={(value) => setCurrentStep(Number(value))} orientation="vertical" className="fixed">
+        <div className="w-[320px] shrink-0 mr-1">
+          <Tabs value={String(currentStep)} onValueChange={(value) => setCurrentStep(Number(value))} orientation="vertical" className="fixed w-[320px]">
             <div className="my-4 mx-1">
               <Button variant="ghost" asChild className="gap-2">
                 <Link href="/">
@@ -469,7 +469,7 @@ export default function NewPositionV3() {
 
             {/* Debug přepínač pro isViewMode */}
             {!showNameInput && (
-              <div className="mt-8 p-4 bg-muted rounded-md">
+              <div className="mt-8 bg-muted rounded-md">
                 <RecruiterCard 
                   fullname="Jan Novák" 
                   role="Náborář"

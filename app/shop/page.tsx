@@ -17,8 +17,7 @@ export default function EshopPage() {
     // Check if any item in the category matches the active tab
     return category.items.some((item) => {
       switch (activeTab) {
-        case "news":
-          return item.perex?.toLowerCase().includes("novinky") || item.title?.toLowerCase().includes("akce")
+        
         case "recruitment":
           return item.perex?.toLowerCase().includes("nábor") || category.title?.toLowerCase().includes("nábor")
         case "promotion":
@@ -54,8 +53,8 @@ export default function EshopPage() {
 
               return (
                 <div key={categoryIndex} className="mb-8 last:mb-0">
-                  {!packageItem && <h2 className="text-xl font-semibold mb-6">{category.title}</h2>}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                  {!packageItem && <h2 className="text-xl font-semibold mb-6"> {category.category ? category.category : category.title}</h2>}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
 
 
                     {/* Render all other items */}

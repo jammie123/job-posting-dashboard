@@ -1,5 +1,6 @@
 import type React from "react"
 import { TableVisibilityProvider } from "@/contexts/table-visibility-context"
+import { CartProvider } from "@/app/contexts/cart-context"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Poppins } from 'next/font/google'
 
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body className="bg-[#F5F6FA]">
         <TooltipProvider>
           <TableVisibilityProvider>
-            <main className="pl-[60px]">{children}</main>
+            <CartProvider>
+              <main className="pl-[60px]">{children}</main>
+            </CartProvider>
           </TableVisibilityProvider>
         </TooltipProvider>
       </body>
