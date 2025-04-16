@@ -229,7 +229,7 @@ export function JobName({
 
   if (isViewMode && !isEditing) {
     return (
-      <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${blurClass} max-w-[300px]`}>
+      <div className={`rounded-md flex relative group hover:bg-accent/5 transition-colors ${blurClass} items-center`}>
         <div className="flex justify-between items-center mr-2 w-full">
           <div className="flex items-center gap-2 mt-4">
             <h3 className="font-bold text-2xl">{value || "Nespecifikováno"}</h3>
@@ -237,7 +237,7 @@ export function JobName({
           <Button 
             variant="outline" 
             size="sm" 
-            className="absolute right-0 top-0 hidden group-hover:block transition-opacity h-7"
+            className="absolute right-0 top-2 hidden group-hover:block transition-opacity h-7"
             onClick={toggleEdit}
           >
             Upravit

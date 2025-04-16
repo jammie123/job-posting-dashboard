@@ -19,6 +19,7 @@ import { Type } from "./components/Type"
 import { LanguageLevel } from "./components/LanguageLevel"
 import { Education } from "./components/Education"
 import { Benefits } from "./components/Benefits"
+import { RecruiterCard } from "./components/RecruiterCard"
 import AdvertiseStep from "@/app/new-position/components/advertise-step"
 import { ApplicationForm } from "@/app/new-position/components/application-form"
 import { AutomaticResponse } from "@/app/new-position/components/automatic-response"
@@ -469,7 +470,13 @@ export default function NewPositionV3() {
             {/* Debug přepínač pro isViewMode */}
             {!showNameInput && (
               <div className="mt-8 p-4 bg-muted rounded-md">
-                <div className="flex items-center justify-between space-x-2 mb-4">
+                <RecruiterCard 
+                  fullname="Jan Novák" 
+                  role="Náborář"
+                  onChange={(members) => console.log("Tým byl aktualizován:", members)}
+                />
+                
+                <div className="flex items-center justify-between space-x-2 mb-4 mt-4">
                   <div className="flex flex-col gap-1">
                     <Label htmlFor="view-mode-toggle" className="text-sm">Režim zobrazení</Label>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
