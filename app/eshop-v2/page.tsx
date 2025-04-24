@@ -55,6 +55,8 @@ export default function EshopV2Page() {
             case "recruitment":
               return item.perex?.toLowerCase().includes("nábor") || 
                     item.title?.toLowerCase().includes("nábor") ||
+                    item.title?.toLowerCase().includes("nástup uchazeče") ||
+                    category.title?.toLowerCase().includes("nástup uchazeče") ||
                     category.title?.toLowerCase().includes("nábor");
             case "promotion":
               return item.perex?.toLowerCase().includes("prezentace") || 
@@ -146,8 +148,9 @@ export default function EshopV2Page() {
 
               // Decide layout based on category title - column for "Inzerce", grid for others
               const isInzerceCategory = category.title === "Inzerce a kredity";
-              const gridClassName = isInzerceCategory 
-                ? "grid grid-cols-1 gap-4" // Column layout for "Inzerce"
+              const useOneColumnLayout = isInzerceCategory || activeFilter === "active-purchased";
+              const gridClassName = useOneColumnLayout
+                ? "grid grid-cols-1 gap-4" // Column layout for "Inzerce" or active services
                 : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4"; // Standard grid for others
 
               // Group items by subcategory if this is Inzerce a kredity
