@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { benefits } from "@/app/new-position/first-step"
-import { Sparkles, Loader2 } from "lucide-react"
+import { Sparkles, Loader2, Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
 
 interface BenefitsProps {
   initialValue?: string[]
@@ -27,6 +28,7 @@ export function Benefits({
   const [selected, setSelected] = useState<string[]>(initialValue)
   const [isEditing, setIsEditing] = useState(!isViewMode)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const handleToggle = (benefit: string) => {
     let newSelected: string[]
@@ -81,6 +83,13 @@ export function Benefits({
       setIsGenerating(false)
     }
   }
+
+  // Filtrování benefitů podle vyhledávacího dotazu
+  const filteredBenefits = searchQuery.trim() === "" 
+    ? benefits 
+    : benefits.filter(benefit => 
+        benefit.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
   // CSS třídy pro rozmazání komponenty
   const blurClass = isBlur ? "filter blur-[13px] opacity-[0.5] brightness-[0.8] contrast-[120%]" : ""
@@ -164,25 +173,61 @@ export function Benefits({
           )}
         </Button>
       </div>
+
+      {/* Vyhledávací pole pro filtrování benefitů */}
+      <div className="relative">
+        <Input 
+          type="text"
+          placeholder="Vyhledat benefit..." 
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-8"
+        />
+        <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        {searchQuery && (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 p-0" 
+            onClick={() => setSearchQuery("")}
+          >
+            ×
+          </Button>
+        )}
+      </div>
+
       <div className="border rounded-md p-4">
         <div className="grid grid-cols-2 gap-4">
-          {benefits.map((benefit) => (
-            <div key={benefit} className="flex items-start space-x-2">
-              <Checkbox 
-                id={`benefit-${benefit}`} 
-                checked={selected.includes(benefit)}
-                onCheckedChange={() => handleToggle(benefit)}
-              />
-              <Label 
-                htmlFor={`benefit-${benefit}`}
-                className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                {benefit}
-              </Label>
+          {filteredBenefits.length > 0 ? (
+            filteredBenefits.map((benefit) => (
+              <div key={benefit} className="flex items-start space-x-2">
+                <Checkbox 
+                  id={`benefit-${benefit}`} 
+                  checked={selected.includes(benefit)}
+                  onCheckedChange={() => handleToggle(benefit)}
+                />
+                <Label 
+                  htmlFor={`benefit-${benefit}`}
+                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  {benefit}
+                </Label>
+              </div>
+            ))
+          ) : (
+            <div className="col-span-2 text-center py-4 text-gray-500">
+              Žádné benefity neodpovídají vašemu vyhledávání
             </div>
-          ))}
+          )}
         </div>
       </div>
+
+      {filteredBenefits.length !== benefits.length && (
+        <div className="text-xs text-gray-500">
+          Zobrazeno {filteredBenefits.length} z {benefits.length} benefitů
+        </div>
+      )}
+
       <p className="text-sm text-muted-foreground">
         Vyberte benefity, které nabízíte pro tuto pozici.
       </p>

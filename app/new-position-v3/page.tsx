@@ -20,6 +20,7 @@ import { LanguageLevel } from "./components/LanguageLevel"
 import { Education } from "./components/Education"
 import { Benefits } from "./components/Benefits"
 import { RecruiterCard } from "./components/RecruiterCard"
+import { ActionFooter } from "./components/ActionFooter"
 import AdvertiseStep from "@/app/new-position/components/advertise-step"
 import { ApplicationForm } from "@/app/new-position/components/application-form"
 import { AutomaticResponse } from "@/app/new-position/components/automatic-response"
@@ -359,6 +360,22 @@ export default function NewPositionV3() {
     }
   }
 
+  // Funkce pro navigaci na další krok
+  const handleContinue = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1)
+    } else {
+      // Poslední krok - odeslání formuláře
+      handleSubmit()
+    }
+  }
+
+  // Funkce pro uložení jako koncept
+  const handleSaveAsDraft = () => {
+    // Implementace uložení jako koncept
+    toast.success("Pozice byla uložena jako koncept")
+  }
+
   return (
     <div className="container mt-8">
       <style jsx global>{`
@@ -411,6 +428,17 @@ export default function NewPositionV3() {
                 </Link>
               </Button>
             </div>
+                        {/* Debug přepínač pro isViewMode */}
+                        {!showNameInput && (
+              <div className="my-8 bg-muted rounded-md">
+                <RecruiterCard 
+                  fullname="Jan Novák" 
+                  role="Náborář"
+                  onChange={(members) => console.log("Tým byl aktualizován:", members)}
+                />
+                
+              </div>
+            )}
             <TabsList className="flex flex-col h-auto w-full bg-transparent gap-2">
               <TabsTrigger
                 value="1"
@@ -467,76 +495,7 @@ export default function NewPositionV3() {
               </TabsTrigger>
             </TabsList>
 
-            {/* Debug přepínač pro isViewMode */}
-            {!showNameInput && (
-              <div className="mt-8 bg-muted rounded-md">
-                <RecruiterCard 
-                  fullname="Jan Novák" 
-                  role="Náborář"
-                  onChange={(members) => console.log("Tým byl aktualizován:", members)}
-                />
-                
-                <div className="flex items-center justify-between space-x-2 mb-4 mt-4">
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="view-mode-toggle" className="text-sm">Režim zobrazení</Label>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Edit size={14} />
-                      <span>Úpravy</span>
-                      <span>/</span>
-                      <Eye size={14} />
-                      <span>Náhled</span>
-                    </div>
-                  </div>
-                  <Switch
-                    id="view-mode-toggle"
-                    checked={isViewMode}
-                    onCheckedChange={toggleViewMode}
-                  />
-                </div>
-                
-                {/* Nový přepínač pro vyčištění formuláře */}
-                <div className="flex items-center justify-between space-x-2 mt-6 pt-4 border-t border-muted-foreground/20">
-                  <div className="flex flex-col gap-1">
-                    <Label htmlFor="clear-form-toggle" className="text-sm">Nová pozice</Label>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <FilePlus size={14} />
-                      <span>Vyčistit a začít znovu</span>
-                    </div>
-                  </div>
-                  
-                  <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="gap-1"
-                      >
-                        <RefreshCw size={14} className="mr-1" />
-                        Nová
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5 text-amber-500" />
-                          Vyčistit formulář?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Chystáte se vyčistit všechna data ve formuláři a začít znovu. Tato akce je nevratná.
-                          Všechna rozpracovaná data budou ztracena.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Zrušit</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleClearForm} className="bg-red-500 hover:bg-red-600">
-                          Vyčistit
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
-              </div>
-            )}
+
           </Tabs>
         </div>
 
@@ -564,7 +523,6 @@ export default function NewPositionV3() {
                   <JobName
                     initialValue={formData.position.title}
                     onChange={(value) => handlePositionDataChange({ title: value })}
-                 
                     onPrefilData={handlePrefilData}
                     isViewMode={isViewMode}
                     isBlur={isViewMode && activeEditingComponent !== null && activeEditingComponent !== 'JobName'}
@@ -654,12 +612,6 @@ export default function NewPositionV3() {
                       onEdit={() => handleComponentEdit('Benefits')}
                       onSave={() => handleComponentEdit(null)}
                     />
-                    
-                    <div className="flex justify-end mt-6">
-                      <Button onClick={() => setCurrentStep(2)}>
-                        Pokračovat k otázkám pro uchazeče
-                      </Button>
-                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -679,15 +631,6 @@ export default function NewPositionV3() {
                     initialData={formData.questions.automaticResponse}
                     onChange={(data) => handleQuestionsDataChange({ automaticResponse: data })}
                   />
-                  
-                  <div className="flex justify-end space-x-4 mt-8">
-                    <Button variant="outline" onClick={() => setCurrentStep(1)}>
-                      Zpět
-                    </Button>
-                    <Button onClick={() => setCurrentStep(3)}>
-                      Pokračovat k inzerci
-                    </Button>
-                  </div>
                 </div>
               </CardContent>
             )}
@@ -712,6 +655,17 @@ export default function NewPositionV3() {
           )}
         </div>
       </div>
+      
+      {/* Přidání ActionFooter komponenty, pokud není v režimu zadávání názvu pozice */}
+      {!showNameInput && (
+        <ActionFooter
+          onContinue={handleContinue}
+          onSaveAsDraft={handleSaveAsDraft}
+          positionTitle={formData.position.title || "Nová pozice"}
+          jobStatus="draft"
+          isLastStep={currentStep === 3}
+        />
+      )}
     </div>
   )
 } 
