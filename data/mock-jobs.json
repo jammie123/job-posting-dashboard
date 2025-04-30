@@ -41,6 +41,9 @@
             "views": 432,
             "clicks": 78,
             "applications": 12
+          },
+          "highlighted": {
+            "name": "JobsTip"
           }
         },
         {
@@ -53,6 +56,66 @@
             "views": 267,
             "clicks": 54,
             "applications": 8
+          }
+        },
+        {
+          "name": "Atmoskop",
+          "url": "https://atmoskop.cz/job/123789",
+          "icon": "AtmoskopIcon",
+          "publishedAt": "2023-10-18",
+          "expiresAt": "2023-11-18",
+          "performance": {
+            "views": 198,
+            "clicks": 45,
+            "applications": 7
+          }
+        },
+        {
+          "name": "Kariérky",
+          "url": "https://karierky.cz/jobs/456123",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2023-10-17",
+          "expiresAt": "2023-11-17",
+          "performance": {
+            "views": 175,
+            "clicks": 38,
+            "applications": 5
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://export.jobs/id/789456",
+          "icon": "ExportIcon",
+          "publishedAt": "2023-10-20",
+          "expiresAt": "2023-11-20",
+          "performance": {
+            "views": 156,
+            "clicks": 32,
+            "applications": 4
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://profesia.sk/job/963741",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2023-10-16",
+          "expiresAt": "2023-11-16",
+          "performance": {
+            "views": 223,
+            "clicks": 49,
+            "applications": 6
+          }
+        },
+        {
+          "name": "Brigády na Jobs.cz, Prace.cz a v aplikaci Práce za rohem",
+          "url": "https://jobsprace.cz/brigady/354687",
+          "icon": "JobspraceIcon",
+          "publishedAt": "2023-10-22",
+          "expiresAt": "2023-11-22",
+          "performance": {
+            "views": 184,
+            "clicks": 43,
+            "applications": 5
           }
         }
       ]
@@ -106,6 +169,54 @@
             "clicks": 62,
             "applications": 10
           }
+        },
+        {
+          "name": "Atmoskop",
+          "url": "https://atmoskop.cz/job/234567",
+          "icon": "AtmoskopIcon",
+          "publishedAt": "2023-09-12",
+          "expiresAt": "2023-10-12",
+          "performance": {
+            "views": 187,
+            "clicks": 41,
+            "applications": 6
+          }
+        },
+        {
+          "name": "Kariérky",
+          "url": "https://karierky.cz/jobs/345678",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2023-09-11",
+          "expiresAt": "2023-10-11",
+          "performance": {
+            "views": 165,
+            "clicks": 35,
+            "applications": 4
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://export.jobs/id/456789",
+          "icon": "ExportIcon",
+          "publishedAt": "2023-09-15",
+          "expiresAt": "2023-10-15",
+          "performance": {
+            "views": 142,
+            "clicks": 28,
+            "applications": 3
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://profesia.sk/job/567890",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2023-09-13",
+          "expiresAt": "2023-10-13",
+          "performance": {
+            "views": 210,
+            "clicks": 45,
+            "applications": 5
+          }
         }
       ]
     },
@@ -141,7 +252,56 @@
     "advertisement": {
       "active": false,
       "status": "Nevystavený",
-      "portals": []
+      "portals": [
+        {
+          "name": "Atmoskop",
+          "url": "https://atmoskop.cz/job/draft/678901",
+          "icon": "AtmoskopIcon",
+          "publishedAt": "",
+          "expiresAt": "",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérky",
+          "url": "https://karierky.cz/jobs/draft/789012",
+          "icon": "WebpagesIcon",
+          "publishedAt": "",
+          "expiresAt": "",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://export.jobs/id/draft/890123",
+          "icon": "ExportIcon",
+          "publishedAt": "",
+          "expiresAt": "",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://profesia.sk/job/draft/901234",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "",
+          "expiresAt": "",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
     },
     "performance": {
       "views": 0,
@@ -521,6 +681,9 @@
             "views": 98,
             "clicks": 27,
             "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
           }
         }
       ]

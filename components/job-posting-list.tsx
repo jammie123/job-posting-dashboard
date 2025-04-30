@@ -1,10 +1,31 @@
 "use client"
 
+/*
+ * DŮLEŽITÉ: Import a mapování ikon pro portály
+ * ============================================
+ * Pro správné zobrazení ikon portálů je potřeba:
+ * 1. Importovat všechny požadované ikony z components/icons
+ * 2. Přidat je do objektu iconMapping níže
+ * 3. Zajistit, že každý záznam portálu v mock-jobs.json má hodnotu "icon" odpovídající klíči v iconMapping
+ *
+ * Pokud ikona v mapování chybí, použije se výchozí JobsIcon jako fallback
+ */
+
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons"
+import { 
+  JobsIcon, 
+  PraceIcon,
+  JobspraceIcon,
+  CarreerIcon, 
+  IntranetIcon, 
+  AtmoskopIcon, 
+  WebpagesIcon, 
+  ExportIcon, 
+  ProfesiaIcon 
+} from "@/components/icons"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button } from "@/components/ui/button"
 import { JobFilters, type ActiveFilter } from "@/components/job-filters"
@@ -38,9 +59,14 @@ const sampleNotes = [
 const iconMapping = {
   JobsIcon,
   PraceIcon,
+  JobspraceIcon,
   CarreerIcon,
   IntranetIcon,
   LinkedInIcon: PraceIcon, // Fallback
+  AtmoskopIcon,
+  WebpagesIcon,
+  ExportIcon,
+  ProfesiaIcon
 }
 
 const formatDate = (dateString: string) => {
@@ -458,10 +484,30 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   })
 
   const renderPortalIcon = (portal: JobPortal) => {
-    const Icon = portal.icon && iconMapping[portal.icon as keyof typeof iconMapping] 
-      ? iconMapping[portal.icon as keyof typeof iconMapping] 
-      : JobsIcon
-    return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground" />
+    console.log(`Rendering portal icon for ${portal.name}`, portal);
+    
+    if (!portal.icon) {
+      console.warn(`Portál ${portal.name} nemá definovanou ikonu. Použije se výchozí JobsIcon.`);
+      return <JobsIcon className="h-8 w-7 text-muted-foreground hover:text-foreground rounded-full" />;
+    }
+    
+    const iconExists = Object.keys(iconMapping).includes(portal.icon);
+    if (!iconExists) {
+      console.warn(`Ikona "${portal.icon}" pro portál ${portal.name} není v mapování. Použije se výchozí JobsIcon.`);
+      return <JobsIcon className="h-8 w-7 text-muted-foreground hover:text-foreground rounded-full" />;
+    }
+    
+    const Icon = iconMapping[portal.icon as keyof typeof iconMapping];
+    
+    // Kontrola existence atributu highlighted
+    if (portal.highlighted) {
+      console.log(`Portal ${portal.name} is highlighted:`, portal.highlighted);
+      // Pokud má portál atribut highlighted, aplikujeme větší velikost a zlatý okraj
+      return <Icon className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-full border-2 border-amber-400" />;9
+    }
+    
+    // Standardní ikona bez zvýraznění
+    return <Icon className="h-8 w-7 text-muted-foreground hover:text-foreground rounded-full" />;
   }
 
   const handleBulkActionToggle = (enabled: boolean) => {
@@ -707,13 +753,13 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                             {formatDate(getActivePortals(job)[0].publishedAt)} - {formatDate(getActivePortals(job)[0].expiresAt)}
                           </span>
                             <div className="flex items-center gap-4">
-                              <div className="flex -space-x-1">
+                              <div className="flex -space-x-1 items-center">
                               {getActivePortals(job).map((portal) => (
                                 <Tooltip key={portal.url}>
                                   <TooltipTrigger asChild>
                                   <a
                                     href={portal.url}
-                                    className="relative flex h-7 w-7 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
+                                    className={`relative flex items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0 ${portal.highlighted ? 'h-9 w-9 border border-2 border-amber-400' : 'h-8 w-8'}`}
                                   >
                                     {renderPortalIcon(portal)}
                                   </a>
@@ -724,6 +770,11 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                       <span className="text-xs text-muted-foreground">
                                         {formatDateWithYear(portal.publishedAt)} - {formatDateWithYear(portal.expiresAt)}
                                       </span>
+                                      {portal.highlighted && (
+                                        <span className="text-xs font-medium text-amber-600">
+                                          Zvýraznění: {portal.highlighted.name}
+                                        </span>
+                                      )}
                                     </div>
                                   </TooltipContent>
                                 </Tooltip>
@@ -741,7 +792,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   </TooltipTrigger>
                                   <TooltipContent>Celkem shlédnutí</TooltipContent>
                                 </Tooltip>
-                              </div>
+                              </div>  
                             </div>
                           </div>
                         )}
@@ -760,10 +811,13 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                       .map((portal) => (
                                         <div
                                           key={portal.url}
-                                          className="relative flex h-7 w-7 items-center justify-center rounded-full border border-amber-300 bg-white"
+                                          className={`relative flex items-center justify-center rounded-full border border-amber-300 bg-white ${portal.highlighted ? 'h-10 w-10 border border-2 border-amber-400' : 'h-8 w-8'}`}
                                           title={portal.name}
                                         >
-                                          {renderPortalIcon(portal)}
+                                          <div className="flex items-center gap-2">
+                                              <div className={`rounded-full overflow-hidden ${portal.highlighted ? 'h-6 w-6' : 'h-5 w-5'}`}>{renderPortalIcon(portal)}</div>
+                                              {portal.name}
+                                            </div>
                                         </div>
                                       ))}
                                   </div>
@@ -820,15 +874,18 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   {getExpiredPortals(job).slice(0, 3).map((portal) => (
                                       <div
                                         key={portal.url}
-                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white"
+                                        className={`relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white ${portal.highlighted ? 'h-10 w-10' : 'h-8 w-8'}`}
                                         title={portal.name}
                                       >
-                                        {renderPortalIcon(portal)}
+                                        <div className="flex items-center gap-2">
+                                              <div className={`rounded-full flex items-center justify-center overflow-hidden ${portal.highlighted ? 'h-8 w-8' : 'h-8 w-8'}`}>{renderPortalIcon(portal)}</div>
+                                              
+                                            </div>
                                       </div>
                                     ))}
                                   {getExpiredPortals(job).length > 3 && (
                                       <div
-                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
+                                        className="relative flex h-8 w-8 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
                                         title="More portals"
                                       >
                                       +{getExpiredPortals(job).length - 3}
@@ -857,7 +914,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                         <tr key={portal.url} className="border-b last:border-0">
                                           <td className="p-2 text-xs">
                                             <div className="flex items-center gap-2">
-                                              <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
+                                              <div className={`rounded-full overflow-hidden ${portal.highlighted ? 'h-6 w-6' : 'h-5 w-5'}`}>{renderPortalIcon(portal)}</div>
                                               {portal.name}
                                             </div>
                                           </td>

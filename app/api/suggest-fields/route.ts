@@ -109,7 +109,7 @@ export async function POST(request: Request) {
     const prompt = `Na základě názvu pracovní pozice "${position}" mi vrať JSON objekt, který bude obsahovat:
     1. Odpovídající obor z tohoto seznamu: ${availableFields.join(", ")}
     2. Seznam relevantních profesí z tohoto seznamu (maximálně 3): ${availableProfessions.join(", ")}
-    3. Důkladný popis pozice (čeština) v HTML formátu. Struktura: 
+    3. Důkladný popis pozice (čeština o 21řádků cca 1200 znaků) v HTML formátu. Struktura: 
        - Úvod začni nadpisem <h3>O pozici</h3> a pokračuj textem v <p> paragrafech
        - Očekávání začni nadpisem <h3>Očekáváme</h3> a vytvoř seznam <ul><li>položka</li>...</ul>
        - Výhody začni nadpisem <h3>Nabízíme</h3> a vytvoř seznam <ul><li>položka</li>...</ul>

@@ -71,7 +71,7 @@ export function JobPostingTable({
 
   const renderPortalIcon = (portal: JobPortal) => {
     const Icon = iconMapping[portal.icon as keyof typeof iconMapping]
-    return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground" />
+    return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-full" />
   }
 
   const getRandomNote = () => {
@@ -239,7 +239,7 @@ export function JobPostingTable({
                                               <tr key={portal.url} className="border-b last:border-0">
                                                 <td className="p-2 text-xs">
                                                   <div className="flex items-center gap-2">
-                                                    <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
+                                                    <div className="h-5 w-5 rounded-full overflow-hidden">{renderPortalIcon(portal)}</div>
                                                     {portal.name}
                                                   </div>
                                                 </td>
@@ -313,7 +313,7 @@ export function JobPostingTable({
                                 <div className="relative flex h-9 w-9 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0">
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <div className="flex h-full w-full items-center justify-center">
+                                      <div className="flex h-full w-full items-center justify-center rounded-full overflow-hidden">
                                         {renderPortalIcon(portal)}
                                       </div>
                                     </TooltipTrigger>

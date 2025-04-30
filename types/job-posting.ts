@@ -7,6 +7,9 @@ export interface JobPortal {
   url?: string
   icon?: string
   price?: string
+  highlighted?: {
+    name: string
+  }
   performance: {
     views: number
     clicks: number
