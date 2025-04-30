@@ -35,8 +35,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/123456",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-15",
-          "expiresAt": "2023-11-15",
+          "publishedAt": "2025-04-01",
+          "expiresAt": "2025-05-02",
           "performance": {
             "views": 432,
             "clicks": 78,
@@ -50,8 +50,8 @@
           "name": "linkedin.com",
           "url": "https://linkedin.com/jobs/789",
           "icon": "LinkedInIcon",
-          "publishedAt": "2023-10-15",
-          "expiresAt": "2023-11-15",
+          "publishedAt": "2025-04-01",
+          "expiresAt": "2025-05-03",
           "performance": {
             "views": 267,
             "clicks": 54,
@@ -62,8 +62,8 @@
           "name": "Atmoskop",
           "url": "https://atmoskop.cz/job/123789",
           "icon": "AtmoskopIcon",
-          "publishedAt": "2023-10-18",
-          "expiresAt": "2023-11-18",
+          "publishedAt": "2025-04-10",
+          "expiresAt": "2025-05-04",
           "performance": {
             "views": 198,
             "clicks": 45,
@@ -74,8 +74,8 @@
           "name": "Kariérky",
           "url": "https://karierky.cz/jobs/456123",
           "icon": "WebpagesIcon",
-          "publishedAt": "2023-10-17",
-          "expiresAt": "2023-11-17",
+          "publishedAt": "2025-04-05",
+          "expiresAt": "2025-05-06",
           "performance": {
             "views": 175,
             "clicks": 38,
@@ -86,8 +86,8 @@
           "name": "Export pozic",
           "url": "https://export.jobs/id/789456",
           "icon": "ExportIcon",
-          "publishedAt": "2023-10-20",
-          "expiresAt": "2023-11-20",
+          "publishedAt": "2025-04-15",
+          "expiresAt": "2025-05-01",
           "performance": {
             "views": 156,
             "clicks": 32,
@@ -98,8 +98,8 @@
           "name": "Profesia",
           "url": "https://profesia.sk/job/963741",
           "icon": "ProfesiaIcon",
-          "publishedAt": "2023-10-16",
-          "expiresAt": "2023-11-16",
+          "publishedAt": "2025-04-03",
+          "expiresAt": "2025-05-05",
           "performance": {
             "views": 223,
             "clicks": 49,
@@ -110,8 +110,8 @@
           "name": "Brigády na Jobs.cz, Prace.cz a v aplikaci Práce za rohem",
           "url": "https://jobsprace.cz/brigady/354687",
           "icon": "JobspraceIcon",
-          "publishedAt": "2023-10-22",
-          "expiresAt": "2023-11-22",
+          "publishedAt": "2025-04-18",
+          "expiresAt": "2025-05-07",
           "performance": {
             "views": 184,
             "clicks": 43,
@@ -155,15 +155,15 @@
       "total": 10
     },
     "advertisement": {
-      "active": false,
-      "status": "Ukončený",
+      "active": true,
+      "status": "Vystavený",
       "portals": [
         {
           "name": "jobs.cz",
           "url": "https://jobs.cz/789012",
           "icon": "JobsIcon",
-          "publishedAt": "2023-09-10",
-          "expiresAt": "2023-10-10",
+          "publishedAt": "2025-04-05",
+          "expiresAt": "2025-05-01",
           "performance": {
             "views": 345,
             "clicks": 62,
@@ -174,8 +174,8 @@
           "name": "Atmoskop",
           "url": "https://atmoskop.cz/job/234567",
           "icon": "AtmoskopIcon",
-          "publishedAt": "2023-09-12",
-          "expiresAt": "2023-10-12",
+          "publishedAt": "2025-04-03",
+          "expiresAt": "2025-05-02",
           "performance": {
             "views": 187,
             "clicks": 41,
@@ -186,8 +186,8 @@
           "name": "Kariérky",
           "url": "https://karierky.cz/jobs/345678",
           "icon": "WebpagesIcon",
-          "publishedAt": "2023-09-11",
-          "expiresAt": "2023-10-11",
+          "publishedAt": "2025-04-08",
+          "expiresAt": "2025-05-03",
           "performance": {
             "views": 165,
             "clicks": 35,
@@ -198,8 +198,8 @@
           "name": "Export pozic",
           "url": "https://export.jobs/id/456789",
           "icon": "ExportIcon",
-          "publishedAt": "2023-09-15",
-          "expiresAt": "2023-10-15",
+          "publishedAt": "2025-04-10",
+          "expiresAt": "2025-05-04",
           "performance": {
             "views": 142,
             "clicks": 28,
@@ -210,8 +210,8 @@
           "name": "Profesia",
           "url": "https://profesia.sk/job/567890",
           "icon": "ProfesiaIcon",
-          "publishedAt": "2023-09-13",
-          "expiresAt": "2023-10-13",
+          "publishedAt": "2025-04-07",
+          "expiresAt": "2025-05-05",
           "performance": {
             "views": 210,
             "clicks": 45,
@@ -250,15 +250,15 @@
       "total": 0
     },
     "advertisement": {
-      "active": false,
-      "status": "Nevystavený",
+      "active": true,
+      "status": "Vystavený",
       "portals": [
         {
           "name": "Atmoskop",
           "url": "https://atmoskop.cz/job/draft/678901",
           "icon": "AtmoskopIcon",
-          "publishedAt": "",
-          "expiresAt": "",
+          "publishedAt": "2025-04-15",
+          "expiresAt": "2025-05-02",
           "performance": {
             "views": 0,
             "clicks": 0,
@@ -269,8 +269,8 @@
           "name": "Kariérky",
           "url": "https://karierky.cz/jobs/draft/789012",
           "icon": "WebpagesIcon",
-          "publishedAt": "",
-          "expiresAt": "",
+          "publishedAt": "2025-04-15",
+          "expiresAt": "2025-05-05",
           "performance": {
             "views": 0,
             "clicks": 0,
@@ -281,8 +281,8 @@
           "name": "Export pozic",
           "url": "https://export.jobs/id/draft/890123",
           "icon": "ExportIcon",
-          "publishedAt": "",
-          "expiresAt": "",
+          "publishedAt": "2025-04-15",
+          "expiresAt": "2025-05-03",
           "performance": {
             "views": 0,
             "clicks": 0,
@@ -293,8 +293,8 @@
           "name": "Profesia",
           "url": "https://profesia.sk/job/draft/901234",
           "icon": "ProfesiaIcon",
-          "publishedAt": "",
-          "expiresAt": "",
+          "publishedAt": "2025-04-15",
+          "expiresAt": "2025-05-01",
           "performance": {
             "views": 0,
             "clicks": 0,
