@@ -1,0 +1,136 @@
+{
+  "products": [
+    {
+      "id": "p001",
+      "name": "Zvýraznění inzerátu na Práce za rohem",
+      "description": "Inzerát bude zvýrazněn po dobu 14 dní v relevantních výsledcích hledání v mobilní aplikaci Práce za rohem. Získáte tak vyšší návštěvnost inzerátu.",
+      "prize": "1 500 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-01",
+      "dateValidTo": "2024-04-15",
+      "namePortal": "prace za rohem",
+      "logoPortal": "PraceZaRohemIcon"
+    },
+    {
+      "id": "p002",
+      "name": "SUPERMAX",
+      "description": "Inzerát bude 3 dny na prvních místech ve výsledcích vyhledávání na Prace.cz. Získáte od uchazečů až o 64 % více reakcí proti inzerátu bez zvýraznění.",
+      "prize": "3 200 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-02",
+      "dateValidTo": "2024-04-05",
+      "namePortal": "prace.cz",
+      "logoPortal": "PraceIcon"
+    },
+    {
+      "id": "p003",
+      "name": "JobTips",
+      "description": "Inzerát bude 3 dny umístěn na prvních místech v relevantních výsledcích hledání na Jobs.cz. Získáte tak až o 120 % vyšší návštěvnost inzerátu.",
+      "prize": "4 500 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-03",
+      "dateValidTo": "2024-04-06",
+      "namePortal": "jobs.cz",
+      "logoPortal": "JobsIcon"
+    },
+    {
+      "id": "p004",
+      "name": "Jednorázové topování (aktualizace) inzerátu",
+      "description": "Váš inzerát vyskočí na horní pozici v příslušných výsledcích hledání na Jobs.cz. Na horní pozici pak zůstane, dokud nepřibudou novější inzeráty. Můžete tak získat až o 120 % shlédnutí víc.",
+      "prize": "4 500 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-03",
+      "dateValidTo": "2024-04-03",
+      "namePortal": "jobs.cz",
+      "logoPortal": "JobsIcon"
+    },
+    {
+      "id": "p005",
+      "name": "Jednorázové topování (aktualizace) inzerátu na Prace.cz",
+      "description": "Váš inzerát vyskočí na horní pozici v příslušných výsledcích hledání na Prace.cz. Na horní pozici pak zůstane, dokud nepřibudou novější inzeráty. Můžete tak získat až o 120 % shlédnutí víc.",
+      "prize": "4 500 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-03",
+      "dateValidTo": "2024-04-06",
+      "namePortal": "prace.cz",
+      "logoPortal": "PraceIcon"
+    },
+    {
+      "id": "p006",
+      "name": "Zvýraznění inzerátu na Jobs.cz",
+      "description": "Inzerát bude barevně odlišený ve výsledcích hledání na Jobs.cz po dobu 14 dní. Toto zvýraznění přitáhne více pozornosti a zvýší počet zobrazení vašeho inzerátu až o 45 %.",
+      "prize": "2 800 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-01",
+      "dateValidTo": "2024-04-15",
+      "namePortal": "jobs.cz",
+      "logoPortal": "JobsIcon"
+    },
+    {
+      "id": "p007",
+      "name": "Zvýraznění inzerátu na Prace.cz",
+      "description": "Inzerát bude výrazně odlišený ve výsledcích hledání na Prace.cz. Toto barevné zvýraznění pomůže kandidátům lépe zaregistrovat váš inzerát mezi ostatními.",
+      "prize": "1 800 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-05",
+      "dateValidTo": "2024-04-19",
+      "namePortal": "prace.cz",
+      "logoPortal": "PraceIcon"
+    },
+    {
+      "id": "p008",
+      "name": "Prémiový balíček",
+      "description": "Komplexní balíček pro maximální zviditelnění vašeho inzerátu na platformě Atmoskop. Zahrnuje zvýraznění, prémiové umístění a rozšířený popis pozice.",
+      "prize": "5 900 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-15",
+      "dateValidTo": "2024-05-15",
+      "namePortal": "atmoskop.cz",
+      "logoPortal": "AtmoskopIcon"
+    },
+    {
+      "id": "p009",
+      "name": "Export inzerátu",
+      "description": "Služba umožňuje automatický export vašeho inzerátu na 10+ partnerských portálů, čímž zvýšíte jeho dosah a šanci najít vhodné kandidáty.",
+      "prize": "3 500 Kč",
+      "status": "active",
+      "dateValidFrom": "2024-04-20",
+      "dateValidTo": "2024-05-20",
+      "namePortal": "export služba",
+      "logoPortal": "ExportIcon"
+    },
+    {
+      "id": "p010",
+      "name": "Firemní profil Plus",
+      "description": "Rozšířený firemní profil na portálu Carreer.cz s možností přidání videa, galerie fotografií a detailního popisu firemní kultury a benefitů.",
+      "prize": "8 900 Kč",
+      "status": "inactive",
+      "dateValidFrom": "2024-03-01",
+      "dateValidTo": "2024-03-31",
+      "namePortal": "carreer.cz",
+      "logoPortal": "CarreerIcon"
+    },
+    {
+      "id": "p011",
+      "name": "Interní zvýraznění",
+      "description": "Zvýraznění pozice na vašem firemním intranetu pro podporu interních přesunů a kariérního růstu zaměstnanců.",
+      "prize": "zdarma",
+      "status": "active",
+      "dateValidFrom": "2024-04-01",
+      "dateValidTo": "2024-12-31",
+      "namePortal": "interní portál",
+      "logoPortal": "IntranetIcon"
+    },
+    {
+      "id": "p012",
+      "name": "Webový banner",
+      "description": "Umístění reklamního banneru s vaší pozicí na hlavní stránce portálu Webpages.cz po dobu 10 dnů. Zajistí maximální viditelnost vaší nabídky.",
+      "prize": "7 200 Kč",
+      "status": "inactive",
+      "dateValidFrom": "2024-02-15",
+      "dateValidTo": "2024-02-25",
+      "namePortal": "webpages.cz",
+      "logoPortal": "WebpagesIcon"
+    }
+  ]
+} 

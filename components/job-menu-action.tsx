@@ -30,6 +30,8 @@ import { JobStatusesModal } from "@/components/job-statuses-modal"
 import { CancelAdvertismentDialog } from "@/components/cancel-advertisment-dialog"
 import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-modal"
 import { ExtendAdvertisementModal } from "@/components/extend-advertisement-modal"
+import { TopAdvertisementModal } from "@/components/top-advertisement-modal"
+import { HighlightAdvertisementModal } from "@/components/highlight-advertisement-modal"
 import type { JobPosting } from "@/types/job-posting"
 import { AdvertisementForm } from "@/components/advertisement-form"
 import Link from "next/link"
@@ -44,6 +46,8 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
   const [isAdvertismentModalOpen, setIsAdvertismentModalOpen] = useState(false)
   const [isRepublishModalOpen, setIsRepublishModalOpen] = useState(false)
   const [isExtendModalOpen, setIsExtendModalOpen] = useState(false)
+  const [isTopModalOpen, setIsTopModalOpen] = useState(false)
+  const [isHighlightModalOpen, setIsHighlightModalOpen] = useState(false)
   const [isAdvertisementFormOpen, setIsAdvertisementFormOpen] = useState(false)
 
   return (
@@ -111,14 +115,17 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
                   <span>Prodloužit inzerát</span>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => onAction?.("top")}>
+              <DropdownMenuItem 
+                onClick={() => {
+                  setIsTopModalOpen(true)
+                }}
+              >
                 <TrendingUp className="mr-2 h-4 w-4" />
                 <span>Topovat inzerát</span>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault()
-                  setIsRepublishModalOpen(true)
+                onClick={() => {
+                  setIsHighlightModalOpen(true)
                 }}
               >
                 <Star className="mr-2 h-4 w-4" />
@@ -194,6 +201,24 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         onConfirm={(selectedPortals) => {
           onAction?.("extend")
           setIsExtendModalOpen(false)
+        }}
+      />
+      <TopAdvertisementModal
+        portals={job.advertisement.active ? job.advertisement.portals : []}
+        open={isTopModalOpen}
+        onOpenChange={setIsTopModalOpen}
+        onConfirm={(selectedProducts) => {
+          onAction?.("top")
+          setIsTopModalOpen(false)
+        }}
+      />
+      <HighlightAdvertisementModal
+        portals={job.advertisement.active ? job.advertisement.portals : []}
+        open={isHighlightModalOpen}
+        onOpenChange={setIsHighlightModalOpen}
+        onConfirm={(selectedProducts) => {
+          onAction?.("highlight")
+          setIsHighlightModalOpen(false)
         }}
       />
       <AdvertisementForm

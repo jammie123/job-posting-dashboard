@@ -47,6 +47,30 @@
           }
         },
         {
+          "name": "prace za rohem",
+          "url": "https://jobs.cz/123456",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-04-01",
+          "expiresAt": "2025-05-02",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          }
+        },
+        {
+          "name": "prace.cz",
+          "url": "https://prace.cz/123456",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-04-01",
+          "expiresAt": "2025-05-02",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          }
+        },
+        {
           "name": "linkedin.com",
           "url": "https://linkedin.com/jobs/789",
           "icon": "LinkedInIcon",

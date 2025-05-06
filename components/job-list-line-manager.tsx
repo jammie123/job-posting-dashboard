@@ -11,6 +11,7 @@ import { getJobPostings } from "@/lib/get-job-postings"
 import Link from "next/link"
 import type { JobPosting } from "@/types/job-posting"
 import { TopHeader } from "@/components/top-header"
+import { CalendarIcon } from "lucide-react"
 
 // Function to get random new candidates (for demonstration)
 const getRandomNewCandidates = (jobId: string): number | null => {
@@ -20,6 +21,22 @@ const getRandomNewCandidates = (jobId: string): number | null => {
     return Math.floor(Math.random() * 20) + 1 // Random number between 1-20
   }
   return null
+}
+
+// Funkce pro formátování data v českém formátu
+const formatDate = (date: Date): string => {
+  return new Intl.DateTimeFormat("cs-CZ", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric"
+  }).format(date)
+}
+
+// Funkce pro získání včerejšího data
+const getYesterdayDate = (): Date => {
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  return yesterday
 }
 
 export function JobListLineManager() {
@@ -43,7 +60,7 @@ export function JobListLineManager() {
   }, [])
 
   // Filter jobs - pouze aktivní pozice
-  const filteredJobs = jobPostings.filter((job) => job.status === "Aktivní")
+  const filteredJobs = jobPostings.filter((job) => job.status === "Aktivní" || job.status === "Rozpracovaný")
 
   return (
     <TooltipProvider>
@@ -166,27 +183,38 @@ export function JobListLineManager() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                          <div
-                            className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
-                          >
-                            {getRandomNewCandidates(job.id) && (
-                              <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
-                                +{getRandomNewCandidates(job.id)}
-                              </div>
-                            )}
-                            <span className="text-lg font-semibold">{job.candidates.new}</span>
-                            <span className="text-xs text-muted-foreground">K ohodnocení</span>
+                        {job.status === "Rozpracovaný" ? (
+                          <div className="flex items-center">
+                            <div className="flex items-center px-4 py-2 rounded-md bg-gray-50">
+                              <CalendarIcon className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm text-gray-600">
+                                Poslední aktualizace: 1.4.2024
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold">{job.candidates.inProcess}</span>
-                            <span className="text-xs">Ve hře</span>
+                        ) : (
+                          <div className="flex items-center gap-6">
+                            <div
+                              className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                            >
+                              {getRandomNewCandidates(job.id) && (
+                                <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
+                                  +{getRandomNewCandidates(job.id)}
+                                </div>
+                              )}
+                              <span className="text-lg font-semibold">{job.candidates.new}</span>
+                              <span className="text-xs text-muted-foreground">K ohodnocení</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                              <span className="text-lg font-semibold">{job.candidates.inProcess}</span>
+                              <span className="text-xs">Ve hře</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                              <span className="text-lg font-semibold">{job.candidates.total}</span>
+                              <span className="text-xs text-muted-foreground">Celkem</span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold">{job.candidates.total}</span>
-                            <span className="text-xs text-muted-foreground">Celkem</span>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>
