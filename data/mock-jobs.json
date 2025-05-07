@@ -43,7 +43,7 @@
             "applications": 12
           },
           "highlighted": {
-            "name": "JobsTip"
+            "name": "JobTips"
           }
         },
         {
@@ -56,6 +56,9 @@
             "views": 432,
             "clicks": 78,
             "applications": 12
+          },
+          "highlighted": {
+            "name": "rohem"
           }
         },
         {
@@ -192,6 +195,9 @@
             "views": 345,
             "clicks": 62,
             "applications": 10
+          },
+          "highlighted": {
+            "name": "inzerátu"
           }
         },
         {
@@ -486,6 +492,9 @@
             "views": 312,
             "clicks": 58,
             "applications": 8
+          },
+          "highlighted": {
+            "name": "JobTips"
           }
         }
       ]
@@ -693,10 +702,13 @@
             "views": 156,
             "clicks": 42,
             "applications": 7
+          },
+          "highlighted": {
+            "name": "inzerátu"
           }
         },
         {
-          "name": "práce.cz",
+          "name": "prace.cz",
           "url": "https://prace.cz/jobs/741",
           "icon": "PraceIcon",
           "publishedAt": "2023-10-28",
@@ -805,7 +817,7 @@
     }
   },
   {
-    "id": "JOB-008",
+    "id": "JOB-013",
     "status": "Ukončený",
     "title": "Frontend Developer",
     "location": "Brno",
@@ -857,7 +869,7 @@
     }
   },
   {
-    "id": "JOB-009",
+    "id": "JOB-014",
     "status": "Ukončený",
     "title": "Marketing Specialist",
     "location": "Remote",
@@ -909,14 +921,14 @@
     }
   },
   {
-    "id": "JOB-010",
-    "status": "Ukončený",
+    "id": "JOB-015",
+    "status": "Aktivní",
     "title": "HR Generalist",
     "location": "Ostrava",
     "department": "Centrála",
     "recruiter": {
       "id": "REC-004",
-      "name": "Michaela Dvořáková",
+      "name": "Anna Kovářová",
       "role": "HR Recruiter"
     },
     "assignedUsers": [
@@ -938,14 +950,14 @@
     },
     "advertisement": {
       "active": false,
-      "status": "Neaktivní",
+      "status": "Ukončený",
       "portals": [
         {
-          "name": "jobs.cz",
-          "url": "https://jobs.cz/987654",
-          "icon": "JobsIcon",
+          "name": "prace.cz",
+          "url": "https://prace.cz/123456",
+          "icon": "PraceIcon",
           "publishedAt": "2023-06-01",
-          "expiresAt": "2023-07-01",
+          "expiresAt": "2023-08-01",
           "performance": {
             "views": 120,
             "clicks": 30,
@@ -961,14 +973,14 @@
     }
   },
   {
-    "id": "JOB-011",
+    "id": "JOB-016",
     "status": "Aktivní",
     "title": "IT Support Specialist",
     "location": "Olomouc",
     "department": "Servis",
     "recruiter": {
       "id": "REC-005",
-      "name": "Petr Král",
+      "name": "Anna Kovářová",
       "role": "IT Recruiter"
     },
     "assignedUsers": [
@@ -990,8 +1002,21 @@
     },
     "advertisement": {
       "active": false,
-      "status": "Archivovaný",
-      "portals": []
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/987654",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-06-01",
+          "expiresAt": "2023-07-01",
+          "performance": {
+            "views": 120,
+            "clicks": 30,
+            "applications": 5
+          }
+        }
+      ]
     },
     "performance": {
       "views": 95,
@@ -999,5 +1024,4 @@
       "applications": 6
     }
   }
-  
-] 
+]

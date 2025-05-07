@@ -562,6 +562,11 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     return `${text.substring(0, maxLength)}...`;
   }
 
+  // Tato funkce získá celá data o vybraných inzerátech
+  const getSelectedJobsData = () => {
+    return sortedJobs.filter(job => selectedJobs.includes(job.id));
+  };
+
   return (
     <>
       <div className="flex flex-col w-full">
@@ -595,6 +600,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
             viewType={viewType}
             onViewChange={(view) => setViewType(view)}
             activeView={activeView}
+            selectedJobs={getSelectedJobsData()}
           />
 
           {viewType === "table" ? (

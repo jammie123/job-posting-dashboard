@@ -211,6 +211,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
           onAction?.("top")
           setIsTopModalOpen(false)
         }}
+        job={job}
       />
       <HighlightAdvertisementModal
         portals={job.advertisement.active ? job.advertisement.portals : []}
@@ -220,6 +221,7 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
           onAction?.("highlight")
           setIsHighlightModalOpen(false)
         }}
+        job={job}
       />
       <AdvertisementForm
         open={isAdvertisementFormOpen}

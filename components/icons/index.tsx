@@ -307,7 +307,7 @@ export function PraceZaRohemIcon(props: React.SVGProps<SVGSVGElement>) {
 <rect width="26" height="26" fill="white"/>
 </clipPath>
 </defs>
-</svg>
+    </svg>
   )
 }
 
