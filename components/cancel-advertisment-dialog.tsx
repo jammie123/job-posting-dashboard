@@ -4,7 +4,18 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons/index"
+import { 
+  JobsIcon, 
+  PraceIcon,
+  PraceZaRohemIcon,
+  JobspraceIcon,
+  CarreerIcon, 
+  IntranetIcon, 
+  AtmoskopIcon, 
+  WebpagesIcon, 
+  ExportIcon, 
+  ProfesiaIcon 
+} from "@/components/icons"
 import type { JobPortal } from "@/types/job-posting"
 import { Checkbox } from "@/components/ui/checkbox"
 
@@ -13,6 +24,10 @@ const iconMapping = {
   PraceIcon,
   CarreerIcon,
   IntranetIcon,
+  AtmoskopIcon,
+  WebpagesIcon,
+  ExportIcon,
+  ProfesiaIcon,
 }
 
 interface CancelAdvertismentDialogProps {
@@ -75,7 +90,7 @@ export function CancelAdvertismentDialog({
                 </TableHead>
                 <TableHead className="w-[40px]"></TableHead>
                 <TableHead>Portál</TableHead>
-                <TableHead>Datum vystavení</TableHead>
+
                 <TableHead>Datum ukončení</TableHead>
               </TableRow>
             </TableHeader>
@@ -90,8 +105,11 @@ export function CancelAdvertismentDialog({
                   </TableCell>
                   <TableCell>{renderIcon(portal.icon)}</TableCell>
                   <TableCell>{portal.name}</TableCell>
-                  <TableCell>{portal.publishedAt ? formatDate(portal.publishedAt) : '-'}</TableCell>
-                  <TableCell>{portal.expiresAt ? formatDate(portal.expiresAt) : '-'}</TableCell>
+               
+                  <TableCell className="flex flex-col"> 7.5.2025
+
+                    <span className="text-xs text-muted-foreground">Inzerát můžete obnovit do { portal.expiresAt ? formatDate(portal.expiresAt) : '-'}</span>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

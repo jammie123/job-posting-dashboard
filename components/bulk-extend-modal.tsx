@@ -138,6 +138,15 @@ export function BulkExtendModal({
     }).format(new Date(dateString))
   }
 
+  // Funkce pro získání aktuálního data ve formátovaném tvaru
+  const getCurrentFormattedDate = () => {
+    return new Intl.DateTimeFormat("cs-CZ", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).format(new Date())
+  }
+
   const renderIcon = (iconName?: string) => {
     if (!iconName) return null
     const Icon = iconMapping[iconName as keyof typeof iconMapping]
@@ -149,12 +158,18 @@ export function BulkExtendModal({
     setSelectedPortals([])
   }
 
-  // Když se modální okno zavře, resetujeme vybrané portály
+  // Když se modální okno otevře, nastavíme všechny portály jako vybrané
+  // Když se zavře, resetujeme vybrané portály
   React.useEffect(() => {
-    if (!open) {
+    if (open) {
+      setSelectedPortals(uniquePortals
+        .filter(p => p.name)
+        .map(p => p.name as string)
+      );
+    } else {
       setSelectedPortals([]);
     }
-  }, [open]);
+  }, [open, uniquePortals]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -184,7 +199,7 @@ export function BulkExtendModal({
           ) : (
             <>
               <p className="mb-4 text-sm text-muted-foreground">
-                Prodloužení inzerce provedeme podle původního nastavení inzerce.
+                Prodloužení inzerce provedeme podle původního nastavení inzerce. Datum prodloužení: <strong>{getCurrentFormattedDate()}</strong>
               </p>
               <Table>
                 <TableHeader>

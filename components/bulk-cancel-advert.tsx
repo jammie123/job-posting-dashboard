@@ -120,6 +120,15 @@ export function BulkCancelAdvert({
     }).format(new Date(dateString))
   }
 
+  // Funkce pro získání aktuálního data ve formátovaném tvaru
+  const getCurrentFormattedDate = () => {
+    return new Intl.DateTimeFormat("cs-CZ", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).format(new Date())
+  }
+
   const renderIcon = (iconName?: string) => {
     if (!iconName) return null
     const Icon = iconMapping[iconName as keyof typeof iconMapping]
@@ -131,12 +140,18 @@ export function BulkCancelAdvert({
     setSelectedPortals([])
   }
 
-  // Když se modální okno zavře, resetujeme vybrané portály
+  // Když se modální okno otevře, nastavíme všechny portály jako vybrané
+  // Když se zavře, resetujeme vybrané portály
   React.useEffect(() => {
-    if (!open) {
+    if (open) {
+      setSelectedPortals(uniquePortals
+        .filter(p => p.name)
+        .map(p => p.name as string)
+      );
+    } else {
       setSelectedPortals([]);
     }
-  }, [open]);
+  }, [open, uniquePortals]);
 
   // Funkce pro zjištění, zda má portál různé datumy expirace
   const hasDifferentExpiryDates = (portalName: string): boolean => {
@@ -175,68 +190,73 @@ export function BulkCancelAdvert({
           {activeJobs.length === 0 ? (
             <p className="text-center py-4">Nebyly nalezeny žádné aktivní inzeráty, které by bylo možné ukončit.</p>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[40px]">
-                    <Checkbox
-                      checked={selectedPortals.length === uniquePortals.length && uniquePortals.length > 0}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedPortals(uniquePortals
-                            .filter(p => p.name)
-                            .map(p => p.name as string)
-                          );
-                        } else {
-                          setSelectedPortals([])
-                        }
-                      }}
-                    />
-                  </TableHead>
-                  <TableHead className="w-[40px]"></TableHead>
-                  <TableHead>Portál</TableHead>
-                  <TableHead>Plastnost do</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {uniquePortals.map((portal, index) => {
-                  if (!portal.name) return null;
-                  
-                  // Počet inzerátů pro tento portál
-                  const jobsCount = portalJobCounts[portal.name] || 0;
-                  
-                  return (
-                    <TableRow key={`${portal.name}-${index}`}>
-                      <TableCell>
-                        <Checkbox
-                          checked={selectedPortals.includes(portal.name)}
-                          onCheckedChange={() => portal.name && togglePortal(portal.name)}
-                        />
-                      </TableCell>
-                      <TableCell>{renderIcon(portal.icon)}</TableCell>
-                      <TableCell>{portal.name} ({jobsCount} {jobsCount === 1 ? "inzerát" : jobsCount >= 2 && jobsCount <= 4 ? "inzeráty" : "inzerátů"})</TableCell>
-                      <TableCell>
-                        {hasDifferentExpiryDates(portal.name) 
-                          ? (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="text-amber-600 cursor-help">Odlišné platnosti</span>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                Inzeráty na {portal.name} mají různé datumy platnosti
-                              </TooltipContent>
-                            </Tooltip>
-                          )
-                          : getExpiryDate(portal.name) 
-                            ? formatDate(getExpiryDate(portal.name)!) 
-                            : "Neurčeno"
-                        }
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+            <>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Inzeráty budou ukončeny k dnešnímu dni: <strong>{getCurrentFormattedDate()}</strong>
+              </p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40px]">
+                      <Checkbox
+                        checked={selectedPortals.length === uniquePortals.length && uniquePortals.length > 0}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedPortals(uniquePortals
+                              .filter(p => p.name)
+                              .map(p => p.name as string)
+                            );
+                          } else {
+                            setSelectedPortals([])
+                          }
+                        }}
+                      />
+                    </TableHead>
+                    <TableHead className="w-[40px]"></TableHead>
+                    <TableHead>Portál</TableHead>
+                    <TableHead>Plastnost do</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {uniquePortals.map((portal, index) => {
+                    if (!portal.name) return null;
+                    
+                    // Počet inzerátů pro tento portál
+                    const jobsCount = portalJobCounts[portal.name] || 0;
+                    
+                    return (
+                      <TableRow key={`${portal.name}-${index}`}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedPortals.includes(portal.name)}
+                            onCheckedChange={() => portal.name && togglePortal(portal.name)}
+                          />
+                        </TableCell>
+                        <TableCell>{renderIcon(portal.icon)}</TableCell>
+                        <TableCell>{portal.name} ({jobsCount} {jobsCount === 1 ? "inzerát" : jobsCount >= 2 && jobsCount <= 4 ? "inzeráty" : "inzerátů"})</TableCell>
+                        <TableCell>
+                          {hasDifferentExpiryDates(portal.name) 
+                            ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="text-amber-600 cursor-help">Odlišné platnosti</span>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  Inzeráty na {portal.name} mají různé datumy platnosti
+                                </TooltipContent>
+                              </Tooltip>
+                            )
+                            : getExpiryDate(portal.name) 
+                              ? formatDate(getExpiryDate(portal.name)!) 
+                              : "Neurčeno"
+                          }
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </>
           )}
         </div>
         <DialogFooter>

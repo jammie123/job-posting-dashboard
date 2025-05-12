@@ -122,12 +122,18 @@ export function BulkRepublishModal({
     return total;
   }, [portalJobCounts, selectedPortals]);
 
-  // Když se modální okno zavře, resetujeme vybrané portály
+  // Když se modální okno otevře, nastavíme všechny portály jako vybrané
+  // Když se zavře, resetujeme vybrané portály
   React.useEffect(() => {
-    if (!open) {
+    if (open) {
+      setSelectedPortals(uniquePortals
+        .filter(p => p.name)
+        .map(p => p.name as string)
+      );
+    } else {
       setSelectedPortals([]);
     }
-  }, [open]);
+  }, [open, uniquePortals]);
 
   const togglePortal = (portalName: string) => {
     setSelectedPortals((prev) => 
@@ -141,6 +147,15 @@ export function BulkRepublishModal({
       month: "numeric",
       year: "numeric",
     }).format(new Date(dateString))
+  }
+
+  // Funkce pro získání aktuálního data ve formátovaném tvaru
+  const getCurrentFormattedDate = () => {
+    return new Intl.DateTimeFormat("cs-CZ", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).format(new Date())
   }
 
   const renderIcon = (iconName?: string) => {
@@ -182,7 +197,7 @@ export function BulkRepublishModal({
           ) : (
             <>
               <p className="mb-4 text-sm text-muted-foreground">
-                Obnovení inzerce provedeme podle původního nastavení inzerce. Bez zvýraznění a topování.
+                Obnovení inzerce provedeme podle původního nastavení inzerce. Bez zvýraznění a topování. Datum vystavení: <strong>{getCurrentFormattedDate()}</strong>
               </p>
               <Table>
                 <TableHeader>

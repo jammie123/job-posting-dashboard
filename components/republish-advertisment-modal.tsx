@@ -4,7 +4,18 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons/index"
+import { 
+  JobsIcon, 
+  PraceIcon,
+  PraceZaRohemIcon,
+  JobspraceIcon,
+  CarreerIcon, 
+  IntranetIcon, 
+  AtmoskopIcon, 
+  WebpagesIcon, 
+  ExportIcon, 
+  ProfesiaIcon 
+} from "@/components/icons"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { JobPortal } from "@/types/job-posting"
 
@@ -21,6 +32,12 @@ const iconMapping = {
   PraceIcon: PraceIcon,
   CarreerIcon: CarreerIcon,
   IntranetIcon: IntranetIcon,
+  AtmoskopIcon: AtmoskopIcon,
+  WebpagesIcon: WebpagesIcon,
+  ExportIcon: ExportIcon,
+  ProfesiaIcon: ProfesiaIcon,
+  PraceZaRohemIcon: PraceZaRohemIcon,
+  JobspraceIcon: JobspraceIcon,
 }
 
 export function RepublishAdvertsimentModal({
@@ -32,6 +49,14 @@ export function RepublishAdvertsimentModal({
 }: RepublishAdvertsimentModalProps) {
   const [selectedPortals, setSelectedPortals] = React.useState<string[]>([])
 
+  React.useEffect(() => {
+    if (open) {
+      setSelectedPortals(portals.filter(p => p.url).map(p => p.url as string));
+    } else {
+      setSelectedPortals([]);
+    }
+  }, [open, portals]);
+
   const togglePortal = (url: string) => {
     setSelectedPortals((prev) => (prev.includes(url) ? prev.filter((p) => p !== url) : [...prev, url]))
   }
@@ -42,6 +67,15 @@ export function RepublishAdvertsimentModal({
       month: "numeric",
       year: "numeric",
     }).format(new Date(dateString))
+  }
+
+  // Funkce pro získání aktuálního data ve formátovaném tvaru
+  const getCurrentFormattedDate = () => {
+    return new Intl.DateTimeFormat("cs-CZ", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).format(new Date())
   }
 
   const renderIcon = (iconName?: string) => {
@@ -63,6 +97,9 @@ export function RepublishAdvertsimentModal({
           <DialogTitle>Znovu vystavit inzeráty</DialogTitle>
         </DialogHeader>
         <div className="py-4">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Datum znovuvystavení: <strong>{getCurrentFormattedDate()}</strong>
+          </p>
           <Table>
             <TableHeader>
               <TableRow>
