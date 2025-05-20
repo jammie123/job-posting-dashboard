@@ -11,14 +11,16 @@ import { useState, useEffect } from "react"
 export default function EshopV2Page() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [filteredItems, setFilteredItems] = useState<MarketplaceCategory[]>(marketplaceCategories);
+  
+  // Vždy používáme všechny položky bez filtrování
+  const allItems = marketplaceCategories;
   
   // Debugging function to log the state of categories and items
   const logCategoryStats = () => {
     console.log("Active filter:", activeFilter);
     console.log("Search query:", searchQuery);
-    console.log("Filtered categories count:", filteredItems.length);
-    filteredItems.forEach((category, i) => {
+    console.log("All categories count:", allItems.length);
+    allItems.forEach((category, i) => {
       console.log(`Category ${i+1}: ${category.title}, Items: ${category.items.length}`);
     });
   };
@@ -41,76 +43,22 @@ export default function EshopV2Page() {
     }, {})
   }
 
-  // Update filtered items when activeFilter or searchQuery changes
-  useEffect(() => {
-    // First, filter by category
-    let results = marketplaceCategories.map(category => {
-      // Deep clone the category to avoid mutating the original
-      const newCategory = { ...category, items: [...category.items] };
-      
-      // Filter items based on the active filter
-      if (activeFilter !== "all") {
-        newCategory.items = category.items.filter(item => {
-          switch (activeFilter) {
-            case "recruitment":
-              return item.perex?.toLowerCase().includes("nábor") || 
-                    item.title?.toLowerCase().includes("nábor") ||
-                    item.title?.toLowerCase().includes("nástup uchazeče") ||
-                    category.title?.toLowerCase().includes("nástup uchazeče") ||
-                    category.title?.toLowerCase().includes("nábor");
-            case "promotion":
-              return item.perex?.toLowerCase().includes("prezentace") || 
-                    item.title?.toLowerCase().includes("prezentace") ||
-                    category.title?.toLowerCase().includes("prezentace") || 
-                    item.perex?.toLowerCase().includes("propagace") ||
-                    item.title?.toLowerCase().includes("propagace") ||
-                    category.title?.toLowerCase().includes("propagace");
-            case "job-portals":
-              return item.perex?.toLowerCase().includes("inzerce") ||
-                    item.title?.toLowerCase().includes("inzerce") ||
-                    category.title?.toLowerCase().includes("inzerce");
-            case "active-purchased":
-              return item.validFrom && item.validTo;
-            default:
-              return true;
-          }
-        });
-      }
-      
-      // If search query exists, filter by that too
-      if (searchQuery.trim()) {
-        const query = searchQuery.toLowerCase();
-        newCategory.items = newCategory.items.filter(item => 
-          item.title?.toLowerCase().includes(query) ||
-          item.perex?.toLowerCase().includes(query) ||
-          item.description?.toLowerCase().includes(query)
-        );
-      }
-      
-      return newCategory;
-    });
-    
-    // Filter out categories with no items
-    results = results.filter(category => category.items.length > 0);
-    
-    setFilteredItems(results);
-    
-    // Log the results for debugging
-    setTimeout(() => {
-      console.log("Filtered results:", results);
-      logCategoryStats();
-    }, 100);
-  }, [activeFilter, searchQuery]);
-
-  // Handle filter change from UserJobs component
+  // Handle filter change from UserJobs component - pouze pro vizuální účely, nemá efekt na zobrazená data
   const handleFilterChange = (filter: FilterType) => {
     setActiveFilter(filter === activeFilter ? "all" : filter);
   }
 
-  // Handle search input change
+  // Handle search input change - zachováno, ale nemá efekt na zobrazená data
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
+    // Nefiltrujeme položky
   }
+
+  // Log stats při inicializaci
+  useEffect(() => {
+    console.log("Component mounted, displaying all items without filtering");
+    logCategoryStats();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -129,20 +77,14 @@ export default function EshopV2Page() {
             <div className="mb-4 mx-4">
               <input
                 type="text"
-                placeholder="Vyhledat addon, službu nebo balíček"
+                placeholder="Vyhledat addon, službu nebo balíček (vyhledávání aktuálně nefunkční)"
                 className="w-full max-w-sm px-4 py-4 border border-gray-200 text-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={handleSearchChange}
               />
             </div>
             
-            {filteredItems.length === 0 && (
-              <div className="text-center py-12 text-gray-500">
-                <p>Žádné položky neodpovídají vašemu filtru. Zkuste jiné kritérium.</p>
-              </div>
-            )}
-            
-            {filteredItems.map((category, categoryIndex) => {
+            {allItems.map((category, categoryIndex) => {
               // Use all items in the category
               const otherItems = category.items;
 

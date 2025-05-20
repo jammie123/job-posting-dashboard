@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, Info } from "lucide-react"
+import { ShoppingCart, Info, ExternalLink } from "lucide-react"
 import { useCart } from "@/app/contexts/cart-context"
 import { MarketplaceItem } from "@/data/mock-data"
 import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons"
@@ -19,6 +19,7 @@ export interface MarketplaceItemCardProps extends Omit<MarketplaceItem, 'feature
   progress?: string
   prize?: string
   icon?: string
+  externalLink?: boolean
 }
 
 export function MarketplaceItemCard({
@@ -32,6 +33,7 @@ export function MarketplaceItemCard({
   progress,
   prize,
   icon,
+  externalLink,
   ...rest
 }: MarketplaceItemCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -83,6 +85,7 @@ export function MarketplaceItemCard({
       progress,
       ...(prize && { prize }),
       ...(icon && { icon }),
+      ...(externalLink && { externalLink }),
       ...rest
     }
     
@@ -93,6 +96,14 @@ export function MarketplaceItemCard({
   const handleInfoClick = (e: React.MouseEvent) => {
     e.stopPropagation() // Prevent default card click behavior
     setIsModalOpen(true)
+  }
+
+  const handleExternalLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent opening modal
+    // Zde by mohla být logika pro otevření externího odkazu
+    console.log('External link clicked for item:', title)
+    // Otevření v novém okně by mohlo být implementováno zde
+    // window.open(url, '_blank')
   }
 
   return (
@@ -122,7 +133,16 @@ export function MarketplaceItemCard({
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start w-full">
               <div>
-                <h3 className="font-medium text-gray-900 mb-2">{title}</h3>
+                <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                  {title}
+                  {externalLink && (
+                    <ExternalLink 
+                      className="h-4 w-4 text-blue-500" 
+                      onClick={handleExternalLinkClick}
+                      aria-label="Otevřít externí odkaz"
+                    />
+                  )}
+                </h3>
                 <p className="text-sm text-gray-600 mb-1 w-3/4">{perex}</p>
               </div>
               
@@ -147,7 +167,19 @@ export function MarketplaceItemCard({
                       <span className="sr-only">Přidat do košíku</span>
                     </Button>
                   )}
-                 
+                  
+                  {externalLink && (
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="h-7 w-7 bg-white hover:bg-gray-50 border-gray-200 hover:border-blue-400 text-blue-600"
+                      onClick={handleExternalLinkClick}
+                      title="Otevřít v externím odkazu"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                      <span className="sr-only">Otevřít odkaz</span>
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -186,7 +218,10 @@ export function MarketplaceItemCard({
                   {renderIcon()}
                 </div>
               )}
-              <span className="text-xl">{title}</span>
+              <span className="text-xl flex items-center gap-2">
+                {title}
+                {externalLink && <ExternalLink className="h-4 w-4 text-blue-500" onClick={handleExternalLinkClick} />}
+              </span>
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">

@@ -12,6 +12,7 @@ export interface MarketplaceItem {
   prize?: string
   category?: string
   icon?: string
+  externalLink?: boolean
 }
 
 export interface MarketplaceCategory {
@@ -217,173 +218,29 @@ export const marketplaceCategories: MarketplaceCategory[] = [
     ],
   },
   {
-    title: "Inzerce a kredity",
-    category: "Jednorázová inzerce",
+    title: "Inzerce a zvýraznění",
+    category: "Inzerce a zvýraznění",
     items: [
       {
-        title: "Inzerát na Jobs.cz - LIGHT",
-        perex: "Každý inzerát je vystaven na 30 dní",
+        title: "Jednorázová inzerce, balíčky a kredity",
+        perex: "Zakoupení jednorázové inzerce na Jobs.cz, Prace.cz nebo Práce za rohem",
         description: "Inzerát na 30 dní bez automatického přesunutí na začátek výpisu.",
-        prize: "6 900 Kč",
-        icon: "jobs"
+        externalLink: true
       },
       {
-        title: "Inzerát na Jobs.cz - STANDARD",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Inzerát na 30 dní. Každý týden přesuneme váš inzerát na začátek výpisu vyhledávaných pozic.",
-        prize: "8 400 Kč",
-        icon: "jobs"
+        title: "Zvýraznění inzerátu",
+        perex: "Chcete zvýraznit svůj inzerát na Jobs.cz, Prace.cz nebo Práce za rohem?",
+        description: "Inzerát na 30 dní bez automatického přesunutí na začátek výpisu.",
+        externalLink: true
       },
       {
-        title: "Inzerát na Prace.cz - Mini",
-        perex: "Každý inzerát je vystaven na 10 dní",
-        description: "",
-        prize: "2 990 Kč",
-        icon: "prace"
-      },
-      {
-        title: "Inzerát na Prace.cz - STANDARD",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Inzerát na 30 dní. Každý týden přesuneme váš inzerát na začátek výpisu vyhledávaných pozic.",
-        prize: "4 500 Kč",
-        icon: "prace"
-      },
-      {
-        title: "Inzerát na Práce za rohem",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Inzerát na 30 dní. Oslovení kandidátů hledající práci v blízkém okolí přímo do jejich mobilů.",
-        prize: "3 900 Kč",
-        icon: "career"
-      },
-      {
-        title: "Inzerát na Atmoskop.cz",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "",
-        prize: "3 500 Kč",
-        icon: "intranet"
-      },
+        title: "Zahraniční inzerce",
+        perex: "Začněte zvýrazňovat svůj inzerát na zahraničních portálech.",
+        description: "Inzerát na 30 dní bez automatického přesunutí na začátek výpisu.",
+        externalLink: true
+      },     
     ],
   },
-  {
-    title: "Inzerce a kredity",
-    category: "Brigády",
-    items: [
-      {
-        title: "Brigáda na Jobs.cz, Prace.cz a Práce za rohem",
-        perex: "Každý inzerát je vystaven na 10 dní",
-        description: "",
-        prize: "490 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "Balíček 3 brigád na Jobs.cz, Prace.cz a Práce za rohem",
-        perex: "Každý inzerát je vystaven na 10 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "1 350 Kč",
-        icon: "jobs"
-      },
-    ],
-  },
-  {
-    title: "Inzerce a kredity",
-    category: "Balíčky inzerátů",
-    items: [
-
-      {
-        title: "Balíček 3 inzerátů na Jobs.cz - STANDARD s čerpáním 3 měsíce",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "17 900 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "Balíček 3 inzerátů na Jobs.cz - STANDARD testovaci",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "22 900 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "Balíček 3 inzerátů na Prace.cz - STANDARD s čerpáním 3 měsíce",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "9 500 Kč",
-        icon: "prace"
-      },
-      {
-        title: "Balíček 3 inzerátů na Prace.cz - STANDARD",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "11 000 Kč",
-        icon: "prace"
-      },
-      {
-        title: "Balíček 5 inzerátů na Prace.cz - STANDARD",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "16 700 Kč",
-        icon: "prace"
-      },
-      {
-        title: "Balíček 3 inzerátů na Práce za rohem - s čerpáním 3 měsíce",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Balíček je možné vyčerpat do 1 roku",
-        prize: "8 300 Kč",
-        icon: "career"
-      },
-      {
-        title: "Balíček 3 inzerátů na Práce za rohem",
-        perex: "Každý inzerát je vystaven na 30 dní",
-        description: "Vystavení 3 inzerátů na 30 dní během 1 roku přímo do mobilní aplikace. Balíček je možné vyčerpat do 1 roku",
-        prize: "10 400 Kč",
-        icon: "career"
-      }
-    ],
-  },
-  {
-    title: "Inzerce a kredity",
-    category: "Kombi balíčky",
-    items: [
-      {
-        title: "KOMBI 5 - Balíček inzerátů na Jobs.cz, Prace.cz a Práce za rohem",
-        perex: "Předplatné 5 inzerátů na Jobs.cz nebo 10 inzerátů na Prace.cz nebo 10 inzerátů na Práce za rohem nebo 10 inzerátů na Atmoskop.cz",
-        description: "Vystavujte jen na jednom portálu nebo kombinujte inzerci podle potřeby Každý inzerát je vystaven na 30 dní, přičemž na Jobs.cz a Prace.cz se 1× týdně přesune na začátek výpisu pozic Balíček je možné vyčerpat do 1 roku",
-        prize: "32 500 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "KOMBI 10 - Balíček inzerátů na Jobs.cz, Prace.cz a Práce za rohem",
-        perex: "Předplatné 10 inzerátů na Jobs.cz nebo 20 inzerátů na Prace.cz nebo 20 inzerátů na Práce za rohem nebo 20 inzerátů na Atmoskop.cz",
-        description: "Vystavujte jen na jednom portálu nebo kombinujte inzerci podle potřeby Každý inzerát je vystaven na 30 dní, přičemž na Jobs.cz a Prace.cz se 1× týdně přesune na začátek výpisu pozic Balíček je možné vyčerpat do 1 roku",
-        prize: "53 500 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "KOMBI 20 - Balíček inzerátů na Jobs.cz, Prace.cz a Práce za rohem",
-        perex: "Předplatné 20 inzerátů na Jobs.cz nebo 40 inzerátů na Prace.cz nebo 40 inzerátů na Práce za rohem nebo 40 inzerátů na Atmoskop.cz",
-        description: "Vystavujte jen na jednom portálu nebo kombinujte inzerci podle potřeby Každý inzerát je vystaven na 30 dní, přičemž na Jobs.cz a Prace.cz se 1× týdně přesune na začátek výpisu pozic Balíček je možné vyčerpat do 1 roku",
-        prize: "85 000 Kč",
-        icon: "jobs"
-      },
-
-      {
-        title: "KOMBI 5 + Teamio PRO 20",
-        perex: "Předplatné 5 inzerátů na Jobs.cz nebo 10 inzerátů na Prace.cz nebo 10 inzerátů na Práce za rohem nebo 10 inzerátů na Atmoskop.cz + placená edice Teamio KOMBI",
-        description: "Každý inzerát je vystaven na 30 dní, přičemž na Jobs.cz a Prace.cz se 1× týdně přesune na začátek výpisu pozic Balíček inzerátů KOMBI je možné vyčerpat do 1 roku Platnost služby Teamio KOMBI je 14 měsíců. Po vyčerpání posledního inzerátu ze zakoupeného balíčku se platnost služby Teamio KOMBI zkracuje na 62 dní.",
-        prize: "37 250 Kč",
-        icon: "jobs"
-      },
-      {
-        title: "KOMBI 10 + Teamio PRO 20",
-        perex: "Předplatné 10 inzerátů na Jobs.cz nebo 20 inzerátů na Prace.cz nebo 20 inzerátů na Práce za rohem nebo 20 inzerátů na Atmoskop.cz + placená edice Teamio KOMBI",
-        description: "Každý inzerát je vystaven na 30 dní, přičemž na Jobs.cz a Prace.cz se 1× týdně přesune na začátek výpisu pozic Balíček inzerátů KOMBI je možné vyčerpat do 1 roku Platnost služby Teamio KOMBI je 14 měsíců. Po vyčerpání posledního inzerátu ze zakoupeného balíčku se platnost služby Teamio KOMBI zkracuje na 62 dní.",
-        prize: "63 000 Kč",
-        icon: "jobs"
-      }
-    ],
-  },
-
-
 ]
 
 
