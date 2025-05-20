@@ -505,7 +505,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     if (portal.highlighted) {
       console.log(`Portal ${portal.name} is highlighted:`, portal.highlighted);
       // Pokud má portál atribut highlighted, aplikujeme větší velikost a zlatý okraj
-      return <Icon className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-full border-2 border-amber-400" />;9
+      return <Icon className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-full " />;
     }
     
     // Standardní ikona bez zvýraznění
@@ -827,7 +827,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                             <div className="flex items-center gap-3">
                               <HoverCard>
                                 <HoverCardTrigger>
-                                  <div className="flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 shadow-sm border border-amber-200 hover:border-amber-300 transition-all">
+                                  <div className="flex items-center gap-2 rounded-full  px-3 py-1 shadow-sm transition-all">
                                     <span className="text-xs font-medium text-amber-800">
                                       {`Zkončí za ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "")} ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "") === 1 ? "den" : "dny"}`}
                                     </span>
@@ -837,7 +837,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                         .map((portal) => (
                                           <div
                                             key={portal.url}
-                                            className={`relative flex items-center justify-center rounded-full border ${portal.highlighted ? 'border-2 border-[#A866FF] bg-white h-8 w-8' : 'border-gray-300 bg-white h-7 w-7'}`}
+                                            className={`relative flex items-center justify-center rounded-full border ${portal.highlighted ? ' bg-white h-8 w-8' : 'bg-white h-7 w-7'}`}
                                             title={portal.name}
                                           >
                                             {renderPortalIcon(portal)}
@@ -912,7 +912,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     {getExpiredPortals(job).slice(0, 3).map((portal) => (
                                         <div
                                           key={portal.url}
-                                          className={`relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white ${portal.highlighted ? 'h-10 w-10' : 'h-8 w-8'}`}
+                                          className={`relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white ${portal.highlighted && portal.active ? 'h-10 w-10' : 'h-8 w-8'}`}
                                           title={portal.name}
                                         >
                                           <div className="flex items-center gap-2">
@@ -1008,8 +1008,12 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           portals={getExpiredPortals(selectedJobForRepublish)}
           open={isRepublishModalOpen}
           onOpenChange={setIsRepublishModalOpen}
-          onConfirm={(selectedPortals) => {
+          jobId={selectedJobForRepublish.id}
+          onConfirm={(selectedPortals, updatedPortals) => {
             console.log("Republishing portals:", selectedPortals)
+            if (updatedPortals) {
+              console.log("Updated portals data:", updatedPortals)
+            }
             setIsRepublishModalOpen(false)
           }}
         />

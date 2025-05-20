@@ -180,7 +180,8 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         portals={job.advertisement.active ? job.advertisement.portals : []}
         open={isAdvertismentModalOpen}
         onOpenChange={setIsAdvertismentModalOpen}
-        onConfirm={() => {
+        jobId={job.id}
+        onConfirm={(selectedPortals) => {
           onAction?.("end")
           setIsAdvertismentModalOpen(false)
         }}
@@ -189,7 +190,8 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
         portals={!job.advertisement.active && job.advertisement.portals.length > 0 ? job.advertisement.portals : []}
         open={isRepublishModalOpen}
         onOpenChange={setIsRepublishModalOpen}
-        onConfirm={(selectedPortals) => {
+        jobId={job.id}
+        onConfirm={(selectedPortals, updatedPortals) => {
           onAction?.("republish")
           setIsRepublishModalOpen(false)
         }}

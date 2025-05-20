@@ -208,13 +208,13 @@ export default function DetailJob() {
         <TopHeader userName="Anna K." companyName="Acme Corporation s.r.o." />
 
         {/* Page Header */}
-        <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background shadow-sm">
+        <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background">
           <div className="flex items-center justify-between px-6 pt-6 pb-4">
             <div className="flex items-center gap-4">
               <h1 className="text-2xl font-semibold tracking-tight flex items-center gap-2">
-                Senior Frontend Developer
+                Senior Frontend Developer 
                 <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                <span className="text-sm font-medium text-muted-foreground">Zveřejněný</span>
+                <span className="text-sm font-medium text-muted-foreground">Aktivní - Zveřejněný</span>
               </h1>
             </div>
             <div className="flex gap-2">
@@ -226,8 +226,8 @@ export default function DetailJob() {
             </div>
           </div>
 
-          <Tabs defaultValue="prehled" className="bg-[#F5F6FA]">
-            <TabsList className="w-full justify-start border-b-0 p-0 left-0 bg-white drop-shadow-xs px-5">
+          <Tabs defaultValue="prehled" className="bg-[#F5F6FA] ">
+            <TabsList className="w-full justify-start border-b-0 p-0 left-0 bg-white drop-shadow-xs px-5 bg-background shadow-sm">
               <TabsTrigger
                 value="prehled"
                 className="min-w-[100px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
@@ -589,8 +589,9 @@ export default function DetailJob() {
           portals={jobPortals}
           open={showCancelDialog}
           onOpenChange={setShowCancelDialog}
-          onConfirm={() => {
-            console.log("Cancelling advertisements")
+          jobId={params.id as string}
+          onConfirm={(selectedPortals) => {
+            console.log("Cancelling advertisements:", selectedPortals)
             setShowCancelDialog(false)
           }}
         />

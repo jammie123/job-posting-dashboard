@@ -21,6 +21,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import type { JobPosting, JobPortal } from "@/types/job-posting"
+import { useToast } from "@/components/ui/use-toast"
 
 interface BulkCancelAdvertProps {
   selectedJobs: JobPosting[]
@@ -51,6 +52,8 @@ export function BulkCancelAdvert({
   onConfirm,
 }: BulkCancelAdvertProps) {
   const [selectedPortals, setSelectedPortals] = React.useState<string[]>([])
+  const [isLoading, setIsLoading] = React.useState(false)
+  const { toast } = useToast()
 
   // Filtrujeme aktivní a neaktivní inzeráty
   const { activeJobs, inactiveJobs } = React.useMemo(() => {
@@ -129,15 +132,63 @@ export function BulkCancelAdvert({
     }).format(new Date())
   }
 
+  // Funkce pro získání aktuálního data v ISO formátu
+  const getCurrentISODate = () => {
+    return new Date().toISOString().split('T')[0];
+  }
+
   const renderIcon = (iconName?: string) => {
     if (!iconName) return null
     const Icon = iconMapping[iconName as keyof typeof iconMapping]
     return Icon ? <Icon className="h-7 w-7 text-muted-foreground" /> : null
   }
 
-  const handleConfirm = () => {
-    onConfirm?.(selectedPortals)
-    setSelectedPortals([])
+  const handleConfirm = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Pokud máme vybrané portály a aktivní inzeráty, pokusíme se aktualizovat data přes API
+      if (selectedPortals.length > 0 && activeJobs.length > 0) {
+        const cancelDate = getCurrentISODate();
+        const jobIds = activeJobs.map(job => job.id);
+        
+        const response = await fetch('/api/jobs/cancel', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jobIds,
+            selectedPortals,
+            cancelDate,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update job data');
+        }
+        
+        toast({
+          title: "Inzeráty úspěšně ukončeny",
+          description: `${selectedPortals.length} ${selectedPortals.length === 1 ? "místo bylo" : "místa byla"} úspěšně ukončeno na ${activeJobs.length} ${activeJobs.length === 1 ? "náboru" : "náborech"}.`,
+        });
+      }
+      
+      // Voláme callback s vybranými portály
+      onConfirm?.(selectedPortals)
+      setSelectedPortals([])
+      onOpenChange?.(false)
+    } catch (error) {
+      console.error("Error updating job data:", error);
+      toast({
+        title: "Chyba při ukončení inzerátů",
+        description: error instanceof Error ? error.message : "Nepodařilo se ukončit inzeráty. Zkuste to prosím znovu.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   // Když se modální okno otevře, nastavíme všechny portály jako vybrané
@@ -266,9 +317,10 @@ export function BulkCancelAdvert({
           <Button 
             variant="destructive"
             onClick={handleConfirm} 
-            disabled={selectedPortals.length === 0 || activeJobs.length === 0}
+            disabled={selectedPortals.length === 0 || activeJobs.length === 0 || isLoading}
+            className={isLoading ? "opacity-70" : ""}
           >
-            {selectedPortals.length} {selectedPortals.length === 1 ? "místo bude ukončeno" : "místa budou ukončena"}
+            {isLoading ? "Zpracovávám..." : `${selectedPortals.length} ${selectedPortals.length === 1 ? "místo bude ukončeno" : "místa budou ukončena"}`}
           </Button>
         </DialogFooter>
       </DialogContent>

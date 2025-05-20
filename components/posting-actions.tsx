@@ -56,10 +56,16 @@ export function PostingActions({
     onBulkActionToggle?.(newState)
   }
 
-  const handleRepublishConfirm = (selectedPortals: string[]) => {
+  const handleRepublishConfirm = (selectedPortals: string[], updatedPortals?: any) => {
     setIsRepublishModalOpen(false)
     
     if (selectedPortals.length === 0) return;
+    
+    // Pokud máme aktualizovaná data portálů, můžeme je zde zpracovat
+    if (updatedPortals) {
+      console.log("Updated portals data:", updatedPortals);
+      // V reálné aplikaci bychom zde aktualizovali stav nebo volali API
+    }
     
     // Informace o úspěšném znovuvystavení
     toast({
@@ -215,6 +221,7 @@ export function PostingActions({
           open={isRepublishModalOpen}
           onOpenChange={setIsRepublishModalOpen}
           portals={selectedJobs[0].advertisement.portals}
+          jobId={selectedJobs[0].id}
           onConfirm={handleRepublishConfirm}
         />
       )}
