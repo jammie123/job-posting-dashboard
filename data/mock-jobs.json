@@ -179,6 +179,7 @@
           "icon": "JobsIcon",
           "publishedAt": "2025-04-05",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2025-05-13",
           "performance": {
             "views": 345,
             "clicks": 62,
@@ -194,6 +195,7 @@
           "icon": "AtmoskopIcon",
           "publishedAt": "2025-04-03",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2025-05-13",
           "performance": {
             "views": 187,
             "clicks": 41,
@@ -206,6 +208,7 @@
           "icon": "WebpagesIcon",
           "publishedAt": "2025-04-08",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2025-05-13",
           "performance": {
             "views": 165,
             "clicks": 35,
@@ -218,6 +221,7 @@
           "icon": "ExportIcon",
           "publishedAt": "2025-04-10",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2025-05-13",
           "performance": {
             "views": 142,
             "clicks": 28,
@@ -230,6 +234,7 @@
           "icon": "ProfesiaIcon",
           "publishedAt": "2025-04-07",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2025-05-13",
           "performance": {
             "views": 210,
             "clicks": 45,
@@ -365,6 +370,7 @@
           "icon": "JobsIcon",
           "publishedAt": "2023-08-01",
           "expiresAt": "2023-09-01",
+          "cancelAt": "2023-09-01",
           "performance": {
             "views": 521,
             "clicks": 95,
@@ -377,6 +383,7 @@
           "icon": "LinkedInIcon",
           "publishedAt": "2023-08-01",
           "expiresAt": "2023-09-01",
+          "cancelAt": "2023-09-01",
           "performance": {
             "views": 380,
             "clicks": 75,
@@ -424,6 +431,7 @@
           "icon": "JobsIcon",
           "publishedAt": "2023-10-25",
           "expiresAt": "2025-05-13",
+          "cancelAt": "2023-11-25",
           "performance": {
             "views": 245,
             "clicks": 47,
@@ -467,15 +475,16 @@
       "total": 8
     },
     "advertisement": {
-      "active": true,
-      "status": "Vystavený",
+      "active": false,
+      "status": "Ukončený",
       "portals": [
         {
           "name": "jobs.cz",
           "url": "https://jobs.cz/567890",
           "icon": "JobsIcon",
-          "publishedAt": "2025-05-13",
-          "expiresAt": "2025-06-12",
+          "publishedAt": "2023-10-20",
+          "expiresAt": "2025-05-13",
+          "cancelAt": "2023-11-20",
           "performance": {
             "views": 312,
             "clicks": 58,
@@ -634,6 +643,7 @@
           "icon": "JobsIcon",
           "publishedAt": "2023-07-15",
           "expiresAt": "2023-08-15",
+          "cancelAt": "2023-08-15",
           "performance": {
             "views": 478,
             "clicks": 89,
@@ -842,6 +852,7 @@
           "icon": "StartupJobsIcon",
           "publishedAt": "2023-08-01",
           "expiresAt": "2023-09-01",
+          "cancelAt": "2023-09-01",
           "performance": {
             "views": 250,
             "clicks": 90,
@@ -894,6 +905,7 @@
           "icon": "PraceIcon",
           "publishedAt": "2023-07-10",
           "expiresAt": "2023-08-10",
+          "cancelAt": "2023-08-10",
           "performance": {
             "views": 180,
             "clicks": 45,

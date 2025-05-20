@@ -4,6 +4,7 @@ export interface JobPortal {
   name: string
   publishedAt: string
   expiresAt: string
+  cancelAt?: string
   url?: string
   icon?: string
   price?: string

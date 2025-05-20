@@ -133,14 +133,19 @@ export function MarketplaceItemCard({
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-start w-full">
               <div>
-                <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2">
+                <h3 className="font-medium text-gray-900 mb-2 flex items-center gap-2 justify-between">
                   {title}
                   {externalLink && (
-                    <ExternalLink 
-                      className="h-4 w-4 text-blue-500" 
-                      onClick={handleExternalLinkClick}
-                      aria-label="Otevřít externí odkaz"
-                    />
+                    <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="h-7 w-7 bg-white hover:bg-gray-50 border-gray-200 hover:border-blue-400 text-blue-600"
+                    onClick={handleExternalLinkClick}
+                    aria-label="Otevřít v externím odkazu"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    <span className="sr-only">Otevřít odkaz</span>
+                  </Button>
                   )}
                 </h3>
                 <p className="text-sm text-gray-600 mb-1 w-3/4">{perex}</p>
@@ -168,18 +173,7 @@ export function MarketplaceItemCard({
                     </Button>
                   )}
                   
-                  {externalLink && (
-                    <Button 
-                      variant="outline" 
-                      size="icon" 
-                      className="h-7 w-7 bg-white hover:bg-gray-50 border-gray-200 hover:border-blue-400 text-blue-600"
-                      onClick={handleExternalLinkClick}
-                      title="Otevřít v externím odkazu"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                      <span className="sr-only">Otevřít odkaz</span>
-                    </Button>
-                  )}
+
                 </div>
               </div>
             </div>
@@ -218,9 +212,9 @@ export function MarketplaceItemCard({
                   {renderIcon()}
                 </div>
               )}
-              <span className="text-xl flex items-center gap-2">
+              <span className="text-xl flex items-center gap-2 ">
                 {title}
-                {externalLink && <ExternalLink className="h-4 w-4 text-blue-500" onClick={handleExternalLinkClick} />}
+                {externalLink && <ExternalLink className="h-5 w-5 text-blue-500" onClick={handleExternalLinkClick} />}
               </span>
             </DialogTitle>
           </DialogHeader>

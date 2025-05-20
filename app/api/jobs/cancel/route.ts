@@ -45,7 +45,8 @@ export async function POST(request: Request) {
         if (portal.url && selectedPortals.includes(portal.url)) {
           return {
             ...portal,
-            expiresAt: cancelDate
+            expiresAt: cancelDate,
+            cancelAt: cancelDate
           };
         }
         return portal;
@@ -75,7 +76,8 @@ export async function POST(request: Request) {
           if (portal.url && selectedPortals.includes(portal.url)) {
             return {
               ...portal,
-              expiresAt: cancelDate
+              expiresAt: cancelDate,
+              cancelAt: cancelDate
             };
           }
           return portal;

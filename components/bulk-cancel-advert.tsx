@@ -301,6 +301,12 @@ export function BulkCancelAdvert({
                               ? formatDate(getExpiryDate(portal.name)!) 
                               : "Neurčeno"
                           }
+                          {/* Zobrazení data ukončení, pokud existuje */}
+                          {portal.cancelAt && (
+                            <div className="text-xs text-amber-600 mt-1">
+                              Dříve ukončeno: {formatDate(portal.cancelAt)}
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );

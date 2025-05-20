@@ -59,11 +59,18 @@ export async function updateJobPortals(
     // Aktualizace vybraných portálů
     job.advertisement.portals = job.advertisement.portals.map(portal => {
       if (portal.url && selectedPortalUrls.includes(portal.url)) {
-        return {
+        const updatedPortal = {
           ...portal,
           publishedAt: updates.publishedAt,
           expiresAt: updates.expiresAt
         };
+        
+        // Odstranění cancelAt property při znovuvystavení inzerátu
+        if ('cancelAt' in updatedPortal) {
+          delete updatedPortal.cancelAt;
+        }
+        
+        return updatedPortal;
       }
       return portal;
     });
@@ -113,11 +120,18 @@ export async function bulkUpdateJobPortals(
       // Aktualizace vybraných portálů
       job.advertisement.portals = job.advertisement.portals.map(portal => {
         if (portal.url && selectedPortalUrls.includes(portal.url)) {
-          return {
+          const updatedPortal = {
             ...portal,
             publishedAt: updates.publishedAt,
             expiresAt: updates.expiresAt
           };
+          
+          // Odstranění cancelAt property při znovuvystavení inzerátu
+          if ('cancelAt' in updatedPortal) {
+            delete updatedPortal.cancelAt;
+          }
+          
+          return updatedPortal;
         }
         return portal;
       });

@@ -189,6 +189,11 @@ export function CancelAdvertismentDialog({
                     <span className="text-xs text-muted-foreground">
                       Inzerát můžete obnovit do {portal.expiresAt ? formatDate(portal.expiresAt) : '-'}
                     </span>
+                    {portal.cancelAt && (
+                      <span className="text-xs text-amber-600">
+                        Dříve ukončeno: {formatDate(portal.cancelAt)}
+                      </span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
