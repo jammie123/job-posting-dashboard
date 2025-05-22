@@ -1,14 +1,22 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Save, Info, X, Plus, Edit, ChevronDown, ChevronUp } from "lucide-react"
+import { Save, Info, X, Plus, Edit, ChevronDown, ChevronUp, MoreHorizontal } from "lucide-react"
 import { JobStatus } from "@/types/job-posting"
 import { CreateViewDialog } from "./create-view-dialog"
 import { EditViewDialog } from "./edit-view-dialog"
 import { ActiveFilter } from "./job-filters"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export interface JobViewConfig {
   value: string
@@ -89,8 +97,6 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
   const [createViewOpen, setCreateViewOpen] = useState(false);
   const [editViewOpen, setEditViewOpen] = useState(false);
   const [viewToEdit, setViewToEdit] = useState<JobViewConfig | null>(null);
-  // Nový stav pro sledování, zda jsou rozbaleny další vlastní pohledy
-  const [isCustomViewsExpanded, setIsCustomViewsExpanded] = useState(false);
   
   // Načítáme vlastní pohledy z localStorage
   const [customViews, setCustomViews] = useState<JobViewConfig[]>(() => {
@@ -198,11 +204,6 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
     if (onViewChange) {
       onViewChange(newView.value);
     }
-    
-    // Pokud jsme právě přidali třetí pohled, automaticky rozbalíme skryté pohledy
-    if (updatedViews.length > MAX_VISIBLE_CUSTOM_VIEWS && !isCustomViewsExpanded) {
-      setIsCustomViewsExpanded(true);
-    }
   }
 
   // Funkce pro úpravu vlastního pohledu
@@ -260,10 +261,12 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
     setEditViewOpen(true);
   }
   
-  // Funkce pro přepínání rozbalení/sbalení dalších vlastních pohledů
-  const toggleCustomViewsExpansion = () => {
-    setIsCustomViewsExpanded(!isCustomViewsExpanded);
-  }
+  // Funkce pro přepnutí na vybraný pohled z dropdown menu
+  const selectView = (value: string) => {
+    if (onViewChange) {
+      onViewChange(value);
+    }
+  };
 
   // Funkce pro renderování vlastního pohledu (tab)
   const renderCustomViewTab = (view: JobViewConfig) => (
@@ -337,21 +340,42 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
             {/* Viditelné vlastní pohledy (max 2) */}
             {visibleCustomViews.map(renderCustomViewTab)}
             
-            {/* Tlačítko pro rozbalení více vlastních pohledů, pokud existují */}
+            {/* Dropdown menu pro zobrazení dalších vlastních pohledů */}
             {hasHiddenCustomViews && (
-              <button 
-                onClick={toggleCustomViewsExpansion}
-                className="ml-1 flex items-center justify-center w-7 h-7 text-xs text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
-                title={isCustomViewsExpanded ? "Sbalit další pohledy" : "Rozbalit další pohledy"}
-              >
-                {isCustomViewsExpanded 
-                  ? <ChevronUp size={16} /> 
-                  : <ChevronDown size={16} />}
-              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button 
+                    className="ml-1 flex items-center justify-center w-7 h-7 text-xs text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
+                    title="Více vlastních pohledů"
+                  >
+                    <ChevronDown size={16} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuLabel>Další vlastní pohledy</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {hiddenCustomViews.map((view) => (
+                    <DropdownMenuItem 
+                      key={view.value}
+                      onClick={() => selectView(view.value)}
+                      className="flex justify-between items-center cursor-pointer"
+                    >
+                      <span>{view.label}</span>
+                      <span 
+                        className="inline-flex items-center justify-center w-6 h-6 text-xs font-medium rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setViewToEdit(view);
+                          setEditViewOpen(true);
+                        }}
+                      >
+                        <Edit size={12} />
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
-            
-            {/* Skryté vlastní pohledy, které se zobrazí po rozbalení */}
-            {isCustomViewsExpanded && hiddenCustomViews.map(renderCustomViewTab)}
             
             {/* Tlačítko pro vytvoření nového pohledu */}
             <button
