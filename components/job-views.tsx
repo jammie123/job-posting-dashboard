@@ -352,8 +352,7 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuLabel>Další vlastní pohledy</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
+
                   {hiddenCustomViews.map((view) => (
                     <DropdownMenuItem 
                       key={view.value}
