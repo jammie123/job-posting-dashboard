@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Save, Info, X, Plus, Edit } from "lucide-react"
+import { Save, Info, X, Plus, Edit, ChevronDown, ChevronUp } from "lucide-react"
 import { JobStatus } from "@/types/job-posting"
 import { CreateViewDialog } from "./create-view-dialog"
 import { EditViewDialog } from "./edit-view-dialog"
@@ -80,12 +80,17 @@ const eshopViews: JobViewConfig[] = [
 // Klíč pro localStorage
 const CUSTOM_VIEWS_STORAGE_KEY = 'jobDashboard_customViews';
 
+// Maximální počet vlastních pohledů, které se zobrazí bez rozbalení
+const MAX_VISIBLE_CUSTOM_VIEWS = 2;
+
 export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEshop = false, activeFilters = [] }: JobViewsProps) {
   const initialViews = isEshop ? eshopViews : defaultViews;
   const defaultValue = isEshop ? "addons" : "Aktivní";
   const [createViewOpen, setCreateViewOpen] = useState(false);
   const [editViewOpen, setEditViewOpen] = useState(false);
   const [viewToEdit, setViewToEdit] = useState<JobViewConfig | null>(null);
+  // Nový stav pro sledování, zda jsou rozbaleny další vlastní pohledy
+  const [isCustomViewsExpanded, setIsCustomViewsExpanded] = useState(false);
   
   // Načítáme vlastní pohledy z localStorage
   const [customViews, setCustomViews] = useState<JobViewConfig[]>(() => {
@@ -104,6 +109,11 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
   
   // Spojení výchozích pohledů a vlastních pohledů
   const currentViews = [...initialViews, ...customViews];
+  
+  // Rozdělení vlastních pohledů na viditelné a skryté
+  const visibleCustomViews = customViews.slice(0, MAX_VISIBLE_CUSTOM_VIEWS);
+  const hiddenCustomViews = customViews.slice(MAX_VISIBLE_CUSTOM_VIEWS);
+  const hasHiddenCustomViews = hiddenCustomViews.length > 0;
   
   // Funkce pro získání popisu záložky podle hodnoty
   const getTabDescription = (value: string): string => {
@@ -188,6 +198,11 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
     if (onViewChange) {
       onViewChange(newView.value);
     }
+    
+    // Pokud jsme právě přidali třetí pohled, automaticky rozbalíme skryté pohledy
+    if (updatedViews.length > MAX_VISIBLE_CUSTOM_VIEWS && !isCustomViewsExpanded) {
+      setIsCustomViewsExpanded(true);
+    }
   }
 
   // Funkce pro úpravu vlastního pohledu
@@ -244,6 +259,42 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
     setViewToEdit(view);
     setEditViewOpen(true);
   }
+  
+  // Funkce pro přepínání rozbalení/sbalení dalších vlastních pohledů
+  const toggleCustomViewsExpansion = () => {
+    setIsCustomViewsExpanded(!isCustomViewsExpanded);
+  }
+
+  // Funkce pro renderování vlastního pohledu (tab)
+  const renderCustomViewTab = (view: JobViewConfig) => (
+    <TabsTrigger
+      key={view.value}
+      value={view.value}
+      className="min-w-[50px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
+    >
+      <div className="flex items-center gap-2">
+        {view.label}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span 
+              className="inline-flex items-center justify-center w-6 h-5 text-xs font-medium rounded-full bg-gray-100 text-gray-600 relative group cursor-pointer"
+              onClick={(e) => openEditDialog(view, e)}
+            >
+              <span className="group-hover:opacity-0 transition-opacity absolute inset-0 flex items-center justify-center">
+                {counts && counts[view.value as keyof typeof counts] !== undefined
+                  ? counts[view.value as keyof typeof counts]
+                  : 0}
+              </span>
+              <Edit className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} /> 
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="bottom" className="z-[100]">
+            <p>Upravit nastavení pohledu</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+    </TabsTrigger>
+  );
 
   return (
     <>
@@ -283,38 +334,24 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               <div className="h-6 w-px mx-2 bg-gray-200 self-center"></div>
             )}
             
-            {/* Vlastní pohledy */}
-            {customViews.map((view) => (
-          <TabsTrigger
-            key={view.value}
-            value={view.value}
-                className="min-w-[50px] drop-shadow-none data-[state=active]:border-b-2 data-[state=active]:font-medium h-full rounded-none data-[state=active]:border-[#E61F60]"
-          >
-            <div className="flex items-center gap-2">
-              {view.label}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span 
-                        className="inline-flex items-center justify-center w-6 h-5 text-xs font-medium rounded-full bg-gray-100 text-gray-600 relative group cursor-pointer"
-                        onClick={(e) => openEditDialog(view, e)}
-                      >
-                        <span className="group-hover:opacity-0 transition-opacity absolute inset-0 flex items-center justify-center">
-                {counts && counts[view.value as keyof typeof counts] !== undefined
-                  ? counts[view.value as keyof typeof counts]
-                  : 0}
-              </span>
-                        <Edit className="opacity-0 group-hover:opacity-100 transition-opacity" size={15} /> 
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="z-[100]">
-                      <p>Upravit nastavení pohledu</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  
-
-            </div>
-          </TabsTrigger>
-        ))}
+            {/* Viditelné vlastní pohledy (max 2) */}
+            {visibleCustomViews.map(renderCustomViewTab)}
+            
+            {/* Tlačítko pro rozbalení více vlastních pohledů, pokud existují */}
+            {hasHiddenCustomViews && (
+              <button 
+                onClick={toggleCustomViewsExpansion}
+                className="ml-1 flex items-center justify-center w-7 h-7 text-xs text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
+                title={isCustomViewsExpanded ? "Sbalit další pohledy" : "Rozbalit další pohledy"}
+              >
+                {isCustomViewsExpanded 
+                  ? <ChevronUp size={16} /> 
+                  : <ChevronDown size={16} />}
+              </button>
+            )}
+            
+            {/* Skryté vlastní pohledy, které se zobrazí po rozbalení */}
+            {isCustomViewsExpanded && hiddenCustomViews.map(renderCustomViewTab)}
             
             {/* Tlačítko pro vytvoření nového pohledu */}
             <button
@@ -324,8 +361,8 @@ export function JobViews({ onViewChange, activeView = "Aktivní", counts, isEsho
               <Plus size={14} />
               <span>Nový pohled</span>
             </button>
-      </TabsList>
-    </Tabs>
+          </TabsList>
+        </Tabs>
       </div>
       
       <CreateViewDialog
