@@ -912,7 +912,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     {getExpiredPortals(job).slice(0, 3).map((portal) => (
                                         <div
                                           key={portal.url}
-                                          className={`relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white ${portal.highlighted && portal.active ? 'h-10 w-10' : 'h-8 w-8'}`}
+                                          className={`relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white ${portal.highlighted ? 'h-10 w-10' : 'h-8 w-8'}`}
                                           title={portal.name}
                                         >
                                           <div className="flex items-center gap-2">

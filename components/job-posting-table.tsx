@@ -1,8 +1,22 @@
 "use client"
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons"
+
+import {      
+  JobsIcon, 
+  PraceIcon,
+  PraceZaRohemIcon,
+  JobspraceIcon,
+  CarreerIcon, 
+  IntranetIcon, 
+  AtmoskopIcon, 
+  WebpagesIcon, 
+  ExportIcon, 
+  ProfesiaIcon 
+} from "@/components/icons"
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { JobMenuAction } from "@/components/job-menu-action"
@@ -10,26 +24,30 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/h
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { User, Eye } from "lucide-react"
+import { useTableVisibility } from "@/contexts/table-visibility-context"
 
 import type { JobPosting, JobPortal } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
 
-// Import the useTableVisibility hook at the top
-import { useTableVisibility } from "@/contexts/table-visibility-context"
-
-// Add IntranetIcon to the iconMapping
+// Ikony pro portály
 const iconMapping = {
   JobsIcon,
   PraceIcon,
+  JobspraceIcon,
+  PraceZaRohemIcon,
   CarreerIcon,
   IntranetIcon,
+  LinkedInIcon: PraceIcon, // Fallback
+  AtmoskopIcon,
+  WebpagesIcon,
+  ExportIcon,
+  ProfesiaIcon
 }
 
 const formatDate = (dateString: string) => {
   return new Intl.DateTimeFormat("cs-CZ", {
     day: "numeric",
     month: "numeric",
-    year: "numeric",
   }).format(new Date(dateString))
 }
 
@@ -37,6 +55,14 @@ const formatDateWithoutYear = (dateString: string) => {
   return new Intl.DateTimeFormat("cs-CZ", {
     day: "numeric",
     month: "numeric",
+  }).format(new Date(dateString))
+}
+
+const formatDateWithYear = (dateString: string) => {
+  return new Intl.DateTimeFormat("cs-CZ", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
   }).format(new Date(dateString))
 }
 
@@ -57,20 +83,45 @@ const getStatusName = (status: JobStatus) => {
   return czechStatus || status
 }
 
-// Update the JobPostingTable component to use the context
+// Helper to get active portals
+const getActivePortals = (job: JobPosting) => {
+  return job.advertisement.active 
+    ? job.advertisement.portals
+    : []
+}
+
+// Helper to get expired portals
+const getExpiredPortals = (job: JobPosting) => {
+  return !job.advertisement.active && job.advertisement.portals.length > 0
+    ? job.advertisement.portals
+    : []
+}
+
 export function JobPostingTable({
   jobs,
   bulkActionEnabled = false,
   selectedJobs = [],
   onJobSelect,
 }: JobPostingTableProps) {
-  // Replace the local state with the context
+  // Use the table visibility context
   const { visibleColumns } = useTableVisibility()
 
-  // Remove the handleAttributesChange function since we're now using context
-
   const renderPortalIcon = (portal: JobPortal) => {
+    if (!portal.icon) {
+      return <JobsIcon className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-full" />
+    }
+    
+    const iconExists = Object.keys(iconMapping).includes(portal.icon)
+    if (!iconExists) {
+      return <JobsIcon className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-full" />
+    }
+    
     const Icon = iconMapping[portal.icon as keyof typeof iconMapping]
+    
+    if (portal.highlighted) {
+      return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-full" />
+    }
+    
     return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground rounded-full" />
   }
 
@@ -98,7 +149,7 @@ export function JobPostingTable({
             <TableHeader>
               <TableRow className="bg-gray-50/80 hover:bg-gray-50/80">
                 {visibleColumns.includes("actions") && <TableHead className="w-[30px]"></TableHead>}
-                {visibleColumns.includes("title") && <TableHead>Název pozice</TableHead>}
+                {visibleColumns.includes("title") && <TableHead className="sticky left-0 z-20 bg-gray-50/80 min-w-[240px]">Název pozice</TableHead>}
                 {visibleColumns.includes("status") && <TableHead>Status</TableHead>}
                 {visibleColumns.includes("location") && <TableHead>Lokalita</TableHead>}
                 {visibleColumns.includes("recruiter") && <TableHead>Náborář</TableHead>}
@@ -108,12 +159,6 @@ export function JobPostingTable({
                 )}
                 {visibleColumns.includes("inProgress") && (
                   <TableHead className="text-center min-w-[100px]">Ve hře</TableHead>
-                )}
-                {visibleColumns.includes("hired") && (
-                  <TableHead className="text-center min-w-[100px]">Nástup</TableHead>
-                )}
-                {visibleColumns.includes("rejected") && (
-                  <TableHead className="text-center min-w-[100px]">Zamítnutí</TableHead>
                 )}
                 {visibleColumns.includes("total") && (
                   <TableHead className="text-center min-w-[100px]">Celkem kandidátů</TableHead>
@@ -134,7 +179,7 @@ export function JobPostingTable({
                     </TableCell>
                   )}
                   {visibleColumns.includes("title") && (
-                    <TableCell className="font-medium min-w-[240px]">{job.title}</TableCell>
+                    <TableCell className="sticky left-0 z-20 bg-white font-medium min-w-[240px]">{job.title}</TableCell>
                   )}
                   {visibleColumns.includes("status") && (
                     <TableCell>
@@ -143,7 +188,7 @@ export function JobPostingTable({
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div
-                                className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`}
+                                className={`h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
                               />
                             </TooltipTrigger>
                             <TooltipContent>
@@ -169,8 +214,8 @@ export function JobPostingTable({
                               </AvatarFallback>
                             </Avatar>
                             <span className="text-sm">{job.recruiter.name}</span>
-                            {job.recruiter.additionalRecruiters && (
-                              <Badge variant="secondary">+{job.recruiter.additionalRecruiters}</Badge>
+                            {job.assignedUsers.length > 1 && (
+                              <Badge variant="secondary">+{job.assignedUsers.length - 1}</Badge>
                             )}
                           </div>
                         </DialogTrigger>
@@ -179,7 +224,7 @@ export function JobPostingTable({
                             <DialogTitle>Náboráři a zapojený uživatelé</DialogTitle>
                           </DialogHeader>
                           <div className="grid gap-4 py-4">
-                            {job.recruiter.assignedUsers.map((user) => (
+                            {job.assignedUsers.map((user) => (
                               <div
                                 key={user.id}
                                 className="flex items-center gap-4 p-4 rounded-lg border bg-card text-card-foreground shadow-sm"
@@ -206,7 +251,7 @@ export function JobPostingTable({
                   {visibleColumns.includes("advertisement") && (
                     <TableCell>
                       <div className="flex flex-col gap-1">
-                        {job.advertisement.activePortals.length > 0 && (
+                        {getActivePortals(job).length > 0 && (
                           <Tooltip>
                             <TooltipTrigger>
                               <div className="flex items-center gap-3 w-[270px]">
@@ -214,14 +259,14 @@ export function JobPostingTable({
                                   <HoverCard>
                                     <HoverCardTrigger asChild>
                                       <span className="cursor-pointer hover:text-foreground transition-colors">
-                                        Aktivní od {formatDateWithoutYear(job.advertisement.activePortals[0].publishedAt)} -{" "}
-                                        {formatDateWithoutYear(job.advertisement.activePortals[0].expiresAt)}
+                                        Aktivní od {formatDateWithoutYear(getActivePortals(job)[0].publishedAt)} -{" "}
+                                        {formatDateWithoutYear(getActivePortals(job)[0].expiresAt)}
                                       </span>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="w-[280px] p-0 z-[9999]">
                                       <div className="p-2 border-b">
                                         <h4 className="font-medium text-sm">
-                                          Aktivní portály ({job.advertisement.activePortals.length})
+                                          Aktivní portály ({getActivePortals(job).length})
                                         </h4>
                                       </div>
                                       <div className="max-h-[200px] overflow-y-auto">
@@ -235,7 +280,7 @@ export function JobPostingTable({
                                             </tr>
                                           </thead>
                                           <tbody>
-                                            {job.advertisement.activePortals.map((portal) => (
+                                            {getActivePortals(job).map((portal) => (
                                               <tr key={portal.url} className="border-b last:border-0">
                                                 <td className="p-2 text-xs">
                                                   <div className="flex items-center gap-2">
@@ -263,8 +308,8 @@ export function JobPostingTable({
                                   </HoverCard>
                                 </span>
                                 <div className="flex -space-x-1">
-                                  {job.advertisement.activePortals.map((portal) => (
-                                    <Tooltip>
+                                  {getActivePortals(job).map((portal) => (
+                                    <Tooltip key={portal.url}>
                                       <TooltipTrigger asChild>
                                         <a
                                           href={portal.url}
@@ -289,14 +334,14 @@ export function JobPostingTable({
                             </TooltipTrigger>
                             <TooltipContent>
                               <div className="text-xs">
-                                Vystaveno {formatDate(job.advertisement.activePortals[0].publishedAt)}
+                                Vystaveno {formatDateWithYear(getActivePortals(job)[0].publishedAt)}
                               </div>
                             </TooltipContent>
                           </Tooltip>
                         )}
-                        {job.advertisement.expiredPortals.length > 0 && (
+                        {getExpiredPortals(job).length > 0 && (
                           <div className="flex flex-col gap-1 mt-2">
-                            {job.advertisement.expiredPortals.map((portal) => (
+                            {getExpiredPortals(job).map((portal) => (
                               <div key={portal.url} className="flex items-center justify-start gap-2">
                                 <span className="text-sm text-[#9B0000]">
                                   <Tooltip>
@@ -340,7 +385,7 @@ export function JobPostingTable({
                         variant="secondary"
                         className="min-w-[2.5rem] justify-center bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
                       >
-                        {job.candidates.unreviewed}
+                        {job.candidates.new}
                       </Badge>
                     </TableCell>
                   )}
@@ -350,27 +395,7 @@ export function JobPostingTable({
                         variant="secondary"
                         className="min-w-[2.5rem] justify-center bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100"
                       >
-                        {job.candidates.inProgress}
-                      </Badge>
-                    </TableCell>
-                  )}
-                  {visibleColumns.includes("hired") && (
-                    <TableCell className="text-center">
-                      <Badge
-                        variant="secondary"
-                        className="min-w-[2.5rem] justify-center bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                      >
-                        {Math.floor(Math.random() * 4)} {/* Random 0-3 */}
-                      </Badge>
-                    </TableCell>
-                  )}
-                  {visibleColumns.includes("rejected") && (
-                    <TableCell className="text-center">
-                      <Badge
-                        variant="secondary"
-                        className="min-w-[2.5rem] justify-center bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100"
-                      >
-                        {Math.floor(Math.random() * 4)} {/* Random 0-3 */}
+                        {job.candidates.inProcess}
                       </Badge>
                     </TableCell>
                   )}
@@ -384,17 +409,16 @@ export function JobPostingTable({
                   {visibleColumns.includes("dateCreated") && (
                     <TableCell>
                       <span className="text-sm max-w-[240px]">
-                        {formatDate(
-                          job.advertisement.activePortals[0]?.publishedAt ||
-                            job.advertisement.expiredPortals[0]?.publishedAt ||
-                            new Date().toISOString(),
+                        {formatDateWithYear(
+                          job.advertisement.portals[0]?.publishedAt ||
+                            new Date().toISOString()
                         )}
                       </span>
                     </TableCell>
                   )}
                   {visibleColumns.includes("views") && (
                     <TableCell className="text-center">
-                      {Math.floor(Math.random() * 1000) + 50} {/* Random 50-1050 */}
+                      {job.performance?.views || 0}
                     </TableCell>
                   )}
                   {visibleColumns.includes("note") && (
@@ -420,5 +444,4 @@ export function JobPostingTable({
       </>
     </div>
   )
-}
-
+} 
