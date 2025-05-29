@@ -130,13 +130,7 @@ export const marketplaceCategories: MarketplaceCategory[] = [
         validFrom: "21.3.2024",
         validTo: "21.3.2030",
       },
-      {
-        title: "Přístup k modulu Konta kreditů",
-        perex: "Správa kreditů pro inzerci a další služby.",
-        description: "Efektivně spravujte kredity pro různé služby a inzerci v rámci platformy.",
-        validFrom: "19.7.2023",
-        validTo: "19.7.2029",
-      },
+
       {
         title: "Automatický export došlých reakcí ",
         perex: "Nechte si posílat odpovědi od kandidátů do vašeho systému. ",
@@ -144,13 +138,7 @@ export const marketplaceCategories: MarketplaceCategory[] = [
         validFrom: "7.7.2022",
         validTo: "8.7.2030",
       },
-      {
-        title: "Teamio přídavná role Náborář",
-        perex: "Rozšíření pro náborové specialisty.",
-        description: "Speciální role s rozšířenými možnostmi pro náborové specialisty ve vašem týmu.",
-        validFrom: "13.12.2022",
-        validTo: "13.12.2030",
-      },
+
       {
         title: "Uživatelské role na míru",
         perex: "Vytvořte si nové role a nastavte kolegům oprávnění podle vašich potřeb. ",
@@ -165,14 +153,7 @@ export const marketplaceCategories: MarketplaceCategory[] = [
         validFrom: "30.8.2022",
         validTo: "30.8.2026",
       },
-      {
-        title: "Náborový tým",
-        perex: "Nástroje pro efektivní spolupráci náborového týmu.",
-        description:
-          "Zlepšete koordinaci a spolupráci v rámci náborového týmu s pokročilými nástroji pro týmovou práci.",
-        validFrom: "25.1.2022",
-        validTo: "8.7.2030",
-      },
+
       {
         title: "Statistiky na míru",
         perex: "Analýza a vizulizace dat o uchazečích a jejich reakcích přesně na míru.",
