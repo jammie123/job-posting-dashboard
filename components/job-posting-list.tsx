@@ -46,7 +46,7 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye, CalendarIcon, Search, ChartBar } from "lucide-react"
+import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Sample notes
@@ -811,7 +811,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   <Tooltip>
                                     <TooltipTrigger>
                                       <div className="flex items-center gap-1.5">
-                                        <ChartBar className="h-4 w-4 text-muted-foreground" />
+                                        <MonitorSmartphoneIcon className="h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm text-muted-foreground">
                                         {job.performance.views}
                                         </span>
