@@ -46,7 +46,7 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye, CalendarIcon, Search } from "lucide-react"
+import { Eye, CalendarIcon, Search, ChartBar } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Sample notes
@@ -660,16 +660,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   {job.department && (
                                     <div className="text-primary text-sm mt-1 flex items-center gap-1">
                                       ({job.department})
-                                      <Link href={`/job/${job.id}`}>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Search className="h-4 w-4 ml-1 text-gray-400 hover:text-gray-700 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity" />
-                                          </TooltipTrigger>
-                                          <TooltipContent>
-                                            <span className="text-xs font-medium">Zobrazit náhled</span>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                      </Link>
+
                                     </div>
                                   )}
                                 </h3>
@@ -816,17 +807,27 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   </Tooltip>
                                   ))}
                                 </div>
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity">
                                   <Tooltip>
                                     <TooltipTrigger>
                                       <div className="flex items-center gap-1.5">
-                                        <Eye className="h-4 w-4 text-muted-foreground" />
+                                        <ChartBar className="h-4 w-4 text-muted-foreground" />
                                         <span className="text-sm text-muted-foreground">
                                         {job.performance.views}
                                         </span>
                                       </div>
                                     </TooltipTrigger>
                                     <TooltipContent>Celkem shlédnutí</TooltipContent>
+                                  </Tooltip>
+                                  <div className="w-px h-4 bg-gray-200" />
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <div className="flex items-center gap-1.5">
+                                        <Eye className="h-4 w-4 text-muted-foreground" />
+
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Náhled pozice</TooltipContent>
                                   </Tooltip>
                                 </div>  
                               </div>
