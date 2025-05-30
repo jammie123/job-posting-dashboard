@@ -36,7 +36,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { PostingActions } from "@/components/posting-actions"
 import { PageHeader } from "@/components/page-header"
 import { Checkbox } from "@/components/ui/checkbox"
-import { JobPostingTable } from "@/components/job-posting-table"
+import { JobPostingTable } from "./job-posting-table"
 import { PositionNote } from "@/components/position-note"
 import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-modal"
 import Link from "next/link"
@@ -46,7 +46,7 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye, CalendarIcon } from "lucide-react"
+import { Eye, CalendarIcon, Search } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Sample notes
@@ -617,7 +617,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           ) : (
             <div className="space-y-2 mt-1">
               {sortedJobs.map((job, index) => (
-                <Card key={job.id} className="w-full overflow-hidden">
+                <Card key={job.id} className="w-full overflow-hidden group">
                   <CardContent className="flex flex-col justify-between items-start p-4">
                     <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
                       <div className="flex items-start gap-4 w-full justify-between">
@@ -658,8 +658,18 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     {job.title}
                                   </Link>
                                   {job.department && (
-                                    <div className="text-primary text-sm mt-1">
+                                    <div className="text-primary text-sm mt-1 flex items-center gap-1">
                                       ({job.department})
+                                      <Link href={`/job/${job.id}`}>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Search className="h-4 w-4 ml-1 text-gray-400 hover:text-gray-700 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <span className="text-xs font-medium">Zobrazit náhled</span>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </Link>
                                     </div>
                                   )}
                                 </h3>
