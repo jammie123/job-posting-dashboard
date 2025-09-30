@@ -765,12 +765,26 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         
                         <div className="min-w-[300px] w-[300px] flex justify-end items-center shrink-0">
                           {job.status !== "Rozpracovaný" && (
-                            <div className="flex flex-col gap-3">
+                                                  <PositionNote
+                                                  recruiterName={job.recruiter.name}
+                                                  text={job.note}
+                                                  hasNote={Boolean(job.note)}
+                                                />
+
+                          )}
+                        </div>
+                        
+                      </div>
+                      
+
+                    </div>
+
+                    <div className="flex flex-col gap-3 ml-10">
                               {getActivePortals(job).length > 0 && (
                                 <div className="flex items-center gap-3">
                                   <Badge
                                     variant="secondary"
-                                    className="text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 w-[120px] justify-center"
+                                    className="text-sm font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
                                   >
                                     Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
                                   </Badge>
@@ -811,7 +825,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                       <div className="flex items-center gap-2">
                                         <Badge
                                           variant="secondary"
-                                          className="text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100 w-[120px] justify-center"
+                                          className="text-sm font-medium  text-amber-800 dark:bg-amber-900/50 dark:text-amber-100  justify-center"
                                         >
                                           Končí brzy
                                         </Badge>
@@ -880,7 +894,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                       <div className="flex items-center gap-2">
                                         <Badge
                                           variant="secondary"
-                                          className="text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100 w-[120px] justify-center"
+                                          className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
                                         >
                                           {(() => {
                                             const expiryDates = getExpiredPortals(job).map((p) => p.expiresAt)
@@ -967,28 +981,16 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                 </div>
                               )}
                             </div>
-                          )}
-                        </div>
-                        
-                      </div>
-
-                    </div>
-                    <div className="mt-4 w-full">
-                      <PositionNote
-                        recruiterName={job.recruiter.name}
-                        text={job.note}
-                        hasNote={Boolean(job.note)}
-                      />
-                    </div>
-
                   </CardContent>
                 </Card>
               ))}
             </div>
             
+            
           )}
           
         </div>
+        
       </div>
       {selectedJobForRepublish && (
         <RepublishAdvertsimentModal
