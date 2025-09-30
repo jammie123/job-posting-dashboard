@@ -22,7 +22,7 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
   // If there's no note, show the "add note" button
   if (!hasNote) {
     return (
-      <div className="flex gap-3 p-3 bg-gray-50/50 rounded-md border border-dashed border-gray-200 items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
+      <div className="flex gap-3 p-3  rounded-md border border-dashed border-gray-200 items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
         <button className="text-sm text-muted-foreground flex items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +53,7 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
   const truncatedText = text && text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
 
   return (
-    <div className="flex gap-3 p-2 bg-gray-50 rounded-md">
+    <div className="flex gap-3  rounded-md">
       <div className="flex-1 min-w-0">
         <div className="flex gap-1 justify-start items-center mb-1">
           <Avatar className="h-6 w-6">
