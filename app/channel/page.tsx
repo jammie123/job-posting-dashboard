@@ -13,6 +13,7 @@ import { AttributeSelector } from "@/components/channel/attribute-selector"
 import { XmlViewer } from "@/components/channel/xml-viewer"
 import { mockChannels } from "@/data/mock-channels"
 import { AttributeMapping, ChannelConfig } from "@/types/channel-mapping"
+import { toast } from "@/components/ui/use-toast"
 
 export default function ChannelPage() {
   const [selectedChannel, setSelectedChannel] = useState<ChannelConfig>(mockChannels[0])
@@ -20,6 +21,7 @@ export default function ChannelPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("active") // "active" nebo "inactive"
+  const [xmlAnalysisComplete, setXmlAnalysisComplete] = useState(false)
 
   // Filtrované kanály podle aktivního stavu
   const activeChannels = mockChannels.filter(channel => channel.active)
@@ -35,14 +37,15 @@ export default function ChannelPage() {
   const handleChannelChange = (channel: ChannelConfig) => {
     setSelectedChannel(channel)
     setMappings(channel.mappings)
+    setSelectedFile(null)
+    setXmlAnalysisComplete(false)
   }
 
   // Funkce pro nahrání XML souboru
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0])
-      // V reálné aplikaci by zde byla logika pro parsování XML souboru
-      // a vytvoření nového mapování na základě jeho obsahu
+      setXmlAnalysisComplete(false)
     }
   }
 
@@ -57,6 +60,48 @@ export default function ChannelPage() {
     setMappings(newMappings);
   }
 
+  // Funkce volaná po rozpoznání mapování z XML/JSON
+  const handleMappingsSuggested = (suggestedMappings: Array<{sfxField: string, importField: string}>) => {
+    setXmlAnalysisComplete(true);
+
+    // Aktualizujeme existující mapování podle navržených
+    const newMappings = [...mappings];
+    
+    suggestedMappings.forEach(suggestion => {
+      const mappingIndex = newMappings.findIndex(
+        mapping => mapping.sfxField === suggestion.sfxField
+      );
+      
+      if (mappingIndex !== -1) {
+        newMappings[mappingIndex] = {
+          ...newMappings[mappingIndex],
+          importField: suggestion.importField,
+          mapped: true
+        };
+      }
+    });
+    
+    setMappings(newMappings);
+    
+    const fileType = selectedFile?.name.endsWith('.json') ? 'JSON' : 'XML';
+    
+    // Informujeme uživatele o automatickém mapování
+    toast({
+      title: "Mapování rozpoznáno",
+      description: `Bylo rozpoznáno a automaticky namapováno ${suggestedMappings.length} atributů ze souboru ${fileType}.`,
+      duration: 3000,
+    });
+  }
+
+  // Uložit změny mapování
+  const handleSaveMapping = () => {
+    // V produkční aplikaci by zde byl API call pro uložení mapování
+    toast({
+      title: "Mapování uloženo",
+      description: "Konfigurace kanálu byla úspěšně uložena.",
+    });
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="left-menu">
@@ -68,13 +113,8 @@ export default function ChannelPage() {
         </div>
 
         <main className="container mx-auto px-6 py-8">
-          <PageHeader 
-            title="Mapování kanálů" 
-            counts={{}} 
-          />
-          <p className="text-gray-500 mb-6">
-            Nakonfigurujte mapování atributů pozice na externí pracovní portály
-          </p>
+
+
 
           <div className="grid grid-cols-4 gap-6 mb-6">
             <div className="col-span-1">
@@ -92,8 +132,12 @@ export default function ChannelPage() {
                       {activeChannels.map((channel) => (
                         <Button 
                           key={channel.id}
-                          variant={selectedChannel.id === channel.id ? "default" : "ghost"}
-                          className="w-full justify-start text-left"
+                          variant="ghost"
+                          className={`w-full justify-start text-left rounded-full ${
+                            selectedChannel.id === channel.id 
+                              ? "bg-gray-200 hover:bg-gray-300" 
+                              : ""
+                          }`}
                           onClick={() => handleChannelChange(channel)}
                         >
                           {channel.name}
@@ -110,8 +154,12 @@ export default function ChannelPage() {
                       {inactiveChannels.map((channel) => (
                         <Button 
                           key={channel.id}
-                          variant={selectedChannel.id === channel.id ? "default" : "ghost"}
-                          className="w-full justify-start text-left"
+                          variant="ghost"
+                          className={`w-full justify-start text-left rounded-full ${
+                            selectedChannel.id === channel.id 
+                              ? "bg-gray-200 hover:bg-gray-300" 
+                              : ""
+                          }`}
                           onClick={() => handleChannelChange(channel)}
                         >
                           {channel.name}
@@ -143,12 +191,12 @@ export default function ChannelPage() {
                   <div className="flex items-center gap-2">
                     <Button variant="outline" onClick={() => document.getElementById('fileInput')?.click()}>
                       <Upload className="h-4 w-4 mr-2" />
-                      Nahrát XML
+                      Nahrát soubor
                     </Button>
                     <input
                       type="file"
                       id="fileInput"
-                      accept=".xml"
+                      accept=".xml,.json"
                       onChange={handleFileUpload}
                       className="hidden"
                     />
@@ -156,7 +204,7 @@ export default function ChannelPage() {
                 </div>
 
                 <div className="mb-4">
-                  {selectedFile ? (
+                  {selectedFile && (
                     <div>
                       <div className="flex items-center p-2 bg-gray-100 rounded mb-4">
                         <span className="text-sm">Nahraný soubor: {selectedFile.name}</span>
@@ -170,12 +218,17 @@ export default function ChannelPage() {
                         </Button>
                       </div>
                       <div className="mb-6">
-                        <XmlViewer xmlFile={selectedFile} />
+                        <XmlViewer 
+                          xmlFile={selectedFile} 
+                          onMappingsSuggested={handleMappingsSuggested}
+                        />
                       </div>
                     </div>
-                  ) : (
+                  )}
+
+                  {!selectedFile && (
                     <div className="text-sm text-gray-500 mb-4">
-                      Nahrajte XML soubor s atributy nebo upravte mapování ručně.
+                      Nahrajte XML nebo JSON soubor pro automatické rozpoznání mapování, nebo upravte mapování ručně.
                     </div>
                   )}
                 </div>
@@ -229,7 +282,7 @@ export default function ChannelPage() {
 
               <div className="flex justify-end gap-2 mt-4">
                 <Button variant="outline">Zrušit</Button>
-                <Button>Uložit mapování</Button>
+                <Button onClick={handleSaveMapping}>Uložit mapování</Button>
               </div>
             </div>
           </div>

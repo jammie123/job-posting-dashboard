@@ -62,3 +62,6 @@ isViewmode == true
 <H3>Místo výkonu práce:</h3>{value} "Československé armády 408/51, 500 03 Hradec Králové"
 
 isViewmode == false then currentstate
+
+
+make updates (isViewmode) in all components in folder new-position-v3/components

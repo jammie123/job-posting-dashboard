@@ -1,6 +1,7 @@
 "use client"
 
 import type React from "react"
+import type { JobAttribute } from "@/components/show-job-attributes"
 
 import { useState } from "react"
 import { LayoutGrid, Table } from "lucide-react"
@@ -26,22 +27,23 @@ interface SettingTableViewProps {
   trigger?: React.ReactNode
 }
 
-//Mock data
+// Order mirrors table rendering preference: actions, title, unreviewed, inProgress, invited, total, then others
 const defaultAttributes: JobAttribute[] = [
   { id: "actions", label: "Akce" },
   { id: "title", label: "Název pozice" },
-  { id: "status", label: "Status" },
+  { id: "unreviewed", label: "Neposouzený" },
+  { id: "inProgress", label: "Ve hře" },
+  { id: "invited", label: "Pozvaný" },
+  { id: "total", label: "Celkem" },
+  { id: "status", label: "Stav" },
   { id: "location", label: "Lokalita" },
   { id: "recruiter", label: "Náborář" },
   { id: "advertisement", label: "Inzerce" },
-  { id: "unreviewed", label: "Neposouzený" },
-  { id: "inProgress", label: "Ve hře" },
-  { id: "hired", label: "Nástup" },
-  { id: "rejected", label: "Zamítnutí" },
-  { id: "total", label: "Celkem kandidátů" },
   { id: "dateCreated", label: "Datum vytvoření" },
   { id: "views", label: "Shlédnutí" },
   { id: "note", label: "Poznámka" },
+  { id: "hired", label: "Nástup" },
+  { id: "rejected", label: "Zamítnutí" },
 ]
 
 // Update the component to use the context

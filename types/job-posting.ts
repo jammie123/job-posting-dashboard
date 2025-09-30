@@ -30,6 +30,7 @@ export interface JobPosting {
   title: string
   location: string
   department?: string
+  note?: string
   recruiter: UserInfo
   assignedUsers: UserInfo[]
   candidates: {

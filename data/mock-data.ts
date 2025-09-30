@@ -169,7 +169,6 @@ export const marketplaceCategories: MarketplaceCategory[] = [
     ],
   },
 
-
   {
     title: "Zabezpečení",
     items: [
@@ -252,7 +251,6 @@ export const marketplaceCategories: MarketplaceCategory[] = [
           },
         ],
       },
-
     ],
   },
 ]
