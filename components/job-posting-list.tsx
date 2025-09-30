@@ -631,7 +631,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             ) : (
                               <JobMenuAction job={job} />
                             )}
-                            <div className="min-w-[500px] space-y-1">
+                            <div className="min-w-[300px] space-y-1">
                               <div className="flex items-baseline gap-2 ">
                                 <Tooltip>
                                   <TooltipTrigger>
@@ -740,9 +740,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-6">
+                          <div className="flex items-center gap-2">
                             <div
-                              className={`flex flex-col items-center gap-1 hover:bg-gray-100 px-4 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                              className={`flex flex-col items-center gap-1 hover:bg-gray-100 px-8 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
                             >
                               {getRandomNewCandidates(job.id) && (
                                 <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
@@ -752,11 +752,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             <span className="text-2xl font-semibold"> {job.candidates.new}</span>
                             <span className="text-xs text-muted-foreground">Nový</span>
                             </div>
-                            <div className="flex flex-col border-l px-4 items-center gap-1 hover:bg-gray-100 p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                            <div className="flex flex-col border-l px-8 items-center gap-1 hover:bg-gray-100 p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
                             <span className="text-2xl font-semibold "> {job.candidates.inProcess}</span>
                               <span className="text-xs ">Ve hře</span>
                             </div>
-                            <div className="flex flex-col border-l px-4 border-gray-200 items-center gap-1 hover:bg-gray-100  p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                            <div className="flex flex-col border-l px-8 border-gray-200 items-center gap-1 hover:bg-gray-100  p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
                               <span className="text-2xl font-semibold"> {job.candidates.total}</span>
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
