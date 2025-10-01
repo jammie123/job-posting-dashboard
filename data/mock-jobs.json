@@ -729,6 +729,36 @@
           "highlighted": {
             "name": "SuperMax"
           }
+        },
+        {
+          "name": "prace za rohem",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-09-20",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-02",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
+          }
         }
       ]
     },
@@ -815,6 +845,21 @@
             "clicks": 53,
             "applications": 9
           }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-02",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
+          }
         }
       ]
     },
@@ -826,13 +871,13 @@
   },
   {
     "id": "JOB-013",
-    "status": "Ukončený",
-    "title": "Frontend Developer",
+    "status": "aktivní",
+    "title": "Frontend Developer 02",
     "location": "Brno",
     "department": "Sales",
     "recruiter": {
       "id": "REC-002",
-      "name": "Tomáš Novák",
+      "name": "Anna Kovářová",
       "role": "Technical Recruiter"
     },
     "assignedUsers": [
@@ -853,8 +898,8 @@
       "total": 15
     },
     "advertisement": {
-      "active": false,
-      "status": "Archivovaný",
+      "active": true,
+      "status": "Vystavený",
       "portals": [
         {
           "name": "startupjobs.cz",
@@ -867,6 +912,21 @@
             "views": 250,
             "clicks": 90,
             "applications": 10
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-02",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
           }
         }
       ]

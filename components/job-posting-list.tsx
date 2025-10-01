@@ -657,8 +657,8 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
               {sortedJobs.map((job, index) => (
                 <Card key={job.id} className="w-full overflow-hidden group">
                   <CardContent className="flex flex-col justify-between items-start p-4 w-full">
-                    <div className="flex flex-row items-start gap-1 flex-1 justify-start w-full">
-                      <div className="flex items-start gap-4 justify-start w-full">
+                    <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
+                      <div className="flex items-start gap-4 justify-between w-full">
                         <div className="flex items-center gap-12 ">
                           <div className="flex items-start gap-3">
                             {bulkActionEnabled ? (
@@ -791,15 +791,15 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                   +{getRandomNewCandidates(job.id)}
                                 </div>
                               )}
-                              <span className="text-xl font-semibold"> {job.candidates.new}</span>
+                              <span className="text-2xl font-semibold"> {job.candidates.new}</span>
                               <span className="text-xs text-muted-foreground">Nový</span>
                             </div>
                             <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                              <span className="text-xl font-semibold "> {job.candidates.inProcess}</span>
+                              <span className="text-2xl font-semibold "> {job.candidates.inProcess}</span>
                               <span className="text-xs ">Ve hře</span>
                             </div>
                             <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                              <span className="text-xl font-semibold"> {job.candidates.total}</span>
+                              <span className="text-2xl font-semibold"> {job.candidates.total}</span>
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
                           </div>
@@ -847,10 +847,10 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                                 )}
                   
                                                 {getActivePortals(job).filter((portal) => isExpiringSoon(portal.expiresAt)).length > 0 && (
-                                                  <div className="flex items-center gap-3 ">
+                                                  <div className="flex items-center gap-3  w-[400px] justify-end">
                                                     <HoverCard>
                                                       <HoverCardTrigger>
-                                                        <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-2  ">
                                                           <Badge
                                                             variant="secondary"
                                                             className="text-sm font-medium  text-amber-800 dark:bg-amber-900/50 dark:text-amber-100  justify-center"
@@ -1065,7 +1065,13 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
 
                     </div>
                     
-
+                    <div className="mt-4 w-full">
+                      <PositionNote
+                        recruiterName={job.recruiter.name}
+                        text={job.note}
+                        hasNote={Boolean(job.note)}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               ))}

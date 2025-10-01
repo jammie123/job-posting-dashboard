@@ -19,32 +19,8 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
     .map((part) => part[0])
     .join("")
 
-  // If there's no note, show the "add note" button
-  if (!hasNote) {
-    return (
-      <div className="flex gap-3 p-3  rounded-md border border-dashed border-gray-200 items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
-        <button className="text-sm text-muted-foreground flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-plus-circle"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v8" />
-            <path d="M8 12h8" />
-          </svg>
-          Přidat poznámku
-        </button>
-      </div>
-    )
-  }
+  // If there's no note, render nothing (hide add note button)
+  if (!hasNote) return null
 
   // Format the date to show how long ago it was created
   const formattedDate = createdAt ? formatDistanceToNow(createdAt, { addSuffix: true, locale: cs }) : ""
