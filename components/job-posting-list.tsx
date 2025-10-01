@@ -97,6 +97,50 @@ const getDaysUntilExpiry = (expiresAt: string): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }
 
+// Date helpers for per-portal status evaluation
+const toMidnight = (date: Date) => {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+const parseDateToMidnight = (dateString: string): Date => {
+  const d = new Date(dateString)
+  return toMidnight(d)
+}
+
+const isSameDay = (a: Date, b: Date): boolean => {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+const getEffectiveEndDate = (portal: JobPortal): Date => {
+  const expires = parseDateToMidnight(portal.expiresAt)
+  const cancel = portal.cancelAt ? parseDateToMidnight(portal.cancelAt) : null
+  if (cancel) {
+    return cancel.getTime() < expires.getTime() ? cancel : expires
+  }
+  return expires
+}
+
+const isPortalActive = (portal: JobPortal): boolean => {
+  const today = toMidnight(new Date())
+  const start = parseDateToMidnight(portal.publishedAt)
+  const end = getEffectiveEndDate(portal)
+  return start.getTime() <= today.getTime() && today.getTime() <= end.getTime()
+}
+
+const isPortalExpired = (portal: JobPortal): boolean => {
+  const today = toMidnight(new Date())
+  const end = getEffectiveEndDate(portal)
+  return end.getTime() < today.getTime()
+}
+
+const isPortalExpiredYesterday = (portal: JobPortal): boolean => {
+  const yesterday = toMidnight(new Date())
+  yesterday.setDate(yesterday.getDate() - 1)
+  return isSameDay(getEffectiveEndDate(portal), yesterday)
+}
+
 // Random data pro demonstraci
 const getRandomNewCandidates = (jobId: string): number | null => {
   if (Number.parseInt(jobId.substring(2, 5), 16) % 3 === 0) {
@@ -368,13 +412,11 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
 
   // Helper funkce pro určení stavu inzerátu
   const getAdvertisementStatus = (job: JobPosting): string => {
-    if (job.advertisement.active) {
-      return "Vystavený";
-    } else if (job.advertisement.portals.length > 0) {
-      return "Ukončený";
-    } else {
-      return "Nevystavený";
-    }
+    const portals = job.advertisement.portals || []
+    const hasActivePortal = portals.some((p) => isPortalActive(p))
+    if (hasActivePortal) return "Vystavený"
+    if (portals.length > 0) return "Ukončený"
+    return "Nevystavený"
   }
 
   const filteredJobs = jobPostings.filter((job) => {
@@ -539,17 +581,17 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     "Archivní": jobPostings.filter((job) => job.status === "Archivní").length,
   }
 
-  // Rozdělení portálů na aktivní a neaktivní
+  // Rozdělení portálů na aktivní a ukončené na základě dat
   const getActivePortals = (job: JobPosting) => {
-    return job.advertisement.active
-      ? job.advertisement.portals
-      : []
+    return (job.advertisement.portals || []).filter((p) => isPortalActive(p))
   }
 
   const getExpiredPortals = (job: JobPosting) => {
-    return !job.advertisement.active && job.advertisement.portals.length > 0
-      ? job.advertisement.portals
-      : []
+    return (job.advertisement.portals || []).filter((p) => isPortalExpired(p))
+  }
+
+  const getExpiredYesterdayPortals = (job: JobPosting) => {
+    return (job.advertisement.portals || []).filter((p) => isPortalExpiredYesterday(p))
   }
 
   // Funkce pro ořezání dlouhého textu
@@ -873,99 +915,143 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                                   </div>
                                                 )}
                   
-                                                {getExpiredPortals(job).length > 0 && (
-                                                  <div className="flex items-center gap-3 justify-end">
-                                                    <HoverCard>
-                                                      <HoverCardTrigger>
-                                                        <div className="flex items-center gap-2">
-                                                          <Badge
-                                                            variant="secondary"
-                                                            className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
-                                                          >
-                                                            {(() => {
-                                                              const expiryDates = getExpiredPortals(job).map((p) => p.expiresAt)
-                                                              const allSameDate = expiryDates.every((date) => date === expiryDates[0])
-                                                              if (allSameDate && expiryDates.length > 0) {
-                                                                return `Ukončeno ${formatDate(expiryDates[0])}`
-                                                              }
-                                                              return `Ukončeno`
-                                                            })()}
-                                                          </Badge>
-                                                          <div className="flex -space-x-3 w-[200px]">
-                                                            {getExpiredPortals(job).slice(0, 3).map((portal) => (
-                                                              <div
-                                                                key={portal.url}
-                                                                className={portal.highlighted ? 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10' : 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10'}
-                                                                title={portal.name}
-                                                              >
-                                                                {renderPortalIcon(portal, portal.highlighted ? 'h-10 w-10' : 'h-10 w-10')}
-                                                              </div>
-                                                            ))}
-                                                            {getExpiredPortals(job).length > 3 && (
-                                                              <div
-                                                                className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
-                                                                title="More portals"
-                                                              >
-                                                                +{getExpiredPortals(job).length - 3}
-                                                              </div>
-                                                            )}
-                                                          </div>
+                                                {(() => {
+                                                  // First, show those that expired exactly yesterday
+                                                  const yesterdayExpired = getExpiredYesterdayPortals(job)
+                                                  if (yesterdayExpired.length > 0) {
+                                                    const expiredDate = getEffectiveEndDate(yesterdayExpired[0])
+                                                    return (
+                                                      <div className="flex items-center gap-3 justify-end">
+                                                        <Badge
+                                                          variant="secondary"
+                                                          className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                        >
+                                                          {`Ukončeno ${formatDate(expiredDate.toISOString())}`}
+                                                        </Badge>
+                                                        <div className="flex -space-x-3 w-[200px]">
+                                                          {yesterdayExpired.slice(0, 3).map((portal) => (
+                                                            <div
+                                                              key={portal.url}
+                                                              className={portal.highlighted ? 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10' : 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10'}
+                                                              title={portal.name}
+                                                            >
+                                                              {renderPortalIcon(portal, portal.highlighted ? 'h-10 w-10' : 'h-10 w-10')}
+                                                            </div>
+                                                          ))}
+                                                          {yesterdayExpired.length > 3 && (
+                                                            <div
+                                                              className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
+                                                              title="More portals"
+                                                            >
+                                                              +{yesterdayExpired.length - 3}
+                                                            </div>
+                                                          )}
                                                         </div>
-                                                      </HoverCardTrigger>
-                                                      <HoverCardContent className="w-[280px] p-0">
-                                                        <div className="p-2 border-b">
-                                                          <h4 className="font-medium text-sm">
-                                                            Ukončené portály ({getExpiredPortals(job).length})
-                                                          </h4>
-                                                        </div>
-                                                        <div className="max-h-[200px] overflow-y-auto">
-                                                          <table className="w-full">
-                                                            <thead className="sticky top-0 bg-white">
-                                                              <tr className="border-b">
-                                                                <th className="p-2 text-left text-xs font-medium">Portál</th>
-                                                                <th className="p-2 text-left text-xs font-medium">Ukončeno</th>
-                                                                <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
-                                                              </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                              {getExpiredPortals(job).map((portal) => (
-                                                                <tr key={portal.url} className="border-b last:border-0">
-                                                                  <td className="p-2 text-xs">
-                                                                    <div className="flex items-center gap-2">
-                                                                      <div className={`rounded-full overflow-hidden ${portal.highlighted ? 'h-6 w-6' : 'h-5 w-5'}`}>{renderPortalIcon(portal, portal.highlighted ? 'h-6 w-6' : 'h-5 w-5')}</div>
-                                                                      <div className="flex flex-col">
-                                                                        <span title={portal.name}>{truncateText(portal.name)}</span>
-                                                                        {portal.highlighted && (
-                                                                          <span className="text-[10px] font-medium text-[#A866FF]" title={portal.highlighted.name}>
-                                                                            {truncateText(portal.highlighted.name, 15)}
-                                                                          </span>
-                                                                        )}
-                                                                      </div>
-                                                                    </div>
-                                                                  </td>
-                                                                  <td className="p-2 text-xs">{formatDate(portal.expiresAt)}</td>
-                                                                  <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
-                                                                </tr>
+                                                      </div>
+                                                    )
+                                                  }
+                                                  return null
+                                                })()}
+
+                                                {(() => {
+                                                  const allExpired = getExpiredPortals(job)
+                                                  const yesterdayExpired = getExpiredYesterdayPortals(job)
+                                                  const otherExpired = allExpired.filter((p) => !isPortalExpiredYesterday(p))
+                                                  if (otherExpired.length === 0) return null
+                                                  return (
+                                                    <div className="flex items-center gap-3 justify-end">
+                                                      <HoverCard>
+                                                        <HoverCardTrigger>
+                                                          <div className="flex items-center gap-2">
+                                                            <Badge
+                                                              variant="secondary"
+                                                              className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                            >
+                                                              {(() => {
+                                                                const expiryDates = otherExpired.map((p) => p.expiresAt)
+                                                                const allSameDate = expiryDates.every((date) => date === expiryDates[0])
+                                                                if (allSameDate && expiryDates.length > 0) {
+                                                                  return `Ukončeno ${formatDate(expiryDates[0])}`
+                                                                }
+                                                                return `Ukončeno`
+                                                              })()}
+                                                            </Badge>
+                                                            <div className="flex -space-x-3 w-[200px]">
+                                                              {otherExpired.slice(0, 3).map((portal) => (
+                                                                <div
+                                                                  key={portal.url}
+                                                                  className={portal.highlighted ? 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10' : 'relative flex items-center justify-center rounded-full border border-[#9B0000]/10 bg-white h-10 w-10'}
+                                                                  title={portal.name}
+                                                                >
+                                                                  {renderPortalIcon(portal, portal.highlighted ? 'h-10 w-10' : 'h-10 w-10')}
+                                                                </div>
                                                               ))}
-                                                            </tbody>
-                                                          </table>
-                                                        </div>
-                                                        <div className="border-t p-2">
-                                                          <Button
-                                                            className="w-full"
-                                                            size="sm"
-                                                            onClick={() => {
-                                                              setSelectedJobForRepublish(job)
-                                                              setIsRepublishModalOpen(true)
-                                                            }}
-                                                          >
-                                                            Znovu vystavit inzerát
-                                                          </Button>
-                                                        </div>
-                                                      </HoverCardContent>
-                                                    </HoverCard>
-                                                  </div>
-                                                )}
+                                                              {otherExpired.length > 3 && (
+                                                                <div
+                                                                  className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
+                                                                  title="More portals"
+                                                                >
+                                                                  +{otherExpired.length - 3}
+                                                                </div>
+                                                              )}
+                                                            </div>
+                                                          </div>
+                                                        </HoverCardTrigger>
+                                                        <HoverCardContent className="w-[280px] p-0">
+                                                          <div className="p-2 border-b">
+                                                            <h4 className="font-medium text-sm">
+                                                              Ukončené portály ({otherExpired.length})
+                                                            </h4>
+                                                          </div>
+                                                          <div className="max-h-[200px] overflow-y-auto">
+                                                            <table className="w-full">
+                                                              <thead className="sticky top-0 bg-white">
+                                                                <tr className="border-b">
+                                                                  <th className="p-2 text-left text-xs font-medium">Portál</th>
+                                                                  <th className="p-2 text-left text-xs font-medium">Ukončeno</th>
+                                                                  <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
+                                                                </tr>
+                                                              </thead>
+                                                              <tbody>
+                                                                {otherExpired.map((portal) => (
+                                                                  <tr key={portal.url} className="border-b last:border-0">
+                                                                    <td className="p-2 text-xs">
+                                                                      <div className="flex items-center gap-2">
+                                                                        <div className={`rounded-full overflow-hidden ${portal.highlighted ? 'h-6 w-6' : 'h-5 w-5'}`}>{renderPortalIcon(portal, portal.highlighted ? 'h-6 w-6' : 'h-5 w-5')}</div>
+                                                                        <div className="flex flex-col">
+                                                                          <span title={portal.name}>{truncateText(portal.name)}</span>
+                                                                          {portal.highlighted && (
+                                                                            <span className="text-[10px] font-medium text-[#A866FF]" title={portal.highlighted.name}>
+                                                                              {truncateText(portal.highlighted.name, 15)}
+                                                                            </span>
+                                                                          )}
+                                                                        </div>
+                                                                      </div>
+                                                                    </td>
+                                                                    <td className="p-2 text-xs">{formatDate(portal.expiresAt)}</td>
+                                                                    <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
+                                                                  </tr>
+                                                                ))}
+                                                              </tbody>
+                                                            </table>
+                                                          </div>
+                                                          <div className="border-t p-2">
+                                                            <Button
+                                                              className="w-full"
+                                                              size="sm"
+                                                              onClick={() => {
+                                                                setSelectedJobForRepublish(job)
+                                                                setIsRepublishModalOpen(true)
+                                                              }}
+                                                            >
+                                                              Znovu vystavit inzerát
+                                                            </Button>
+                                                          </div>
+                                                        </HoverCardContent>
+                                                      </HoverCard>
+                                                    </div>
+                                                  )
+                                                })()}
 
                                               </div>
                                               
@@ -975,7 +1061,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                         </div>
 
                       </div>
-                      dfdfvdfvdf
+                      
 
                     </div>
                     
