@@ -1065,7 +1065,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
 
                     </div>
                     
-                    <div className="mt-4 w-full">
+                    <div className="mt-4 w-full ml-11">
                       <PositionNote
                         recruiterName={job.recruiter.name}
                         text={job.note}
