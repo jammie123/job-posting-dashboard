@@ -523,18 +523,18 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     }
   })
 
-const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
+const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
     console.log(`Rendering portal icon for ${portal.name}`, portal);
 
     if (!portal.icon) {
       console.warn(`Portál ${portal.name} nemá definovanou ikonu. Použije se výchozí JobsIcon.`);
-    return <JobsIcon width={sizePx} height={sizePx} className={`text-muted-foreground hover:text-foreground rounded-full`} />;
+      return <JobsIcon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
     }
 
     const iconExists = Object.keys(iconMapping).includes(portal.icon);
     if (!iconExists) {
       console.warn(`Ikona "${portal.icon}" pro portál ${portal.name} není v mapování. Použije se výchozí JobsIcon.`);
-    return <JobsIcon width={sizePx} height={sizePx} className={`text-muted-foreground hover:text-foreground rounded-full`} />;
+      return <JobsIcon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
     }
 
     const Icon = iconMapping[portal.icon as keyof typeof iconMapping];
@@ -543,11 +543,11 @@ const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
     if (portal.highlighted) {
       console.log(`Portal ${portal.name} is highlighted:`, portal.highlighted);
       // Pokud má portál atribut highlighted, aplikujeme větší velikost a zlatý okraj
-    return <Icon width={sizePx} height={sizePx} className={`text-muted-foreground hover:text-foreground rounded-full`} />;
+      return <Icon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
     }
 
     // Standardní ikona bez zvýraznění
-  return <Icon width={sizePx} height={sizePx} className={`text-muted-foreground hover:text-foreground rounded-full`} />;
+    return <Icon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
   }
 
   const handleBulkActionToggle = (enabled: boolean) => {
