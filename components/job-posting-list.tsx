@@ -807,30 +807,30 @@ const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
 
                         <div className="min-w-[300px] w-[400px] flex justify-end items-center shrink-0">
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-2 ml-10 w-[400px] ">
+                                                <div className="flex flex-col gap-3 ml-10 w-[400px] ">
                                                 {getActivePortals(job).length > 0 && (
-                                                  <div className="flex items-center justify-end gap-3">
+                                                  <div className="flex items-start flex-col justify-start gap-1">
                                                     <Badge
                                                       variant="secondary"
-                                                      className="text-sm font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
+                                                      className="text-sm p-0 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
                                                     >
                                                       Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
                                                     </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-right">
+                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
                                                       {getActivePortals(job).map((p) => p.name).join(", ")}
                                                     </div>
                                                   </div>
                                                 )}
                   
                                                 {getActivePortals(job).filter((portal) => isExpiringSoon(portal.expiresAt)).length > 0 && (
-                                                  <div className="flex items-center gap-3 w-[400px] justify-end">
+                                                  <div className="flex p-0 items-start gap-1 w-[400px] justify-start">
                                                     <Badge
                                                       variant="secondary"
                                                       className="text-sm font-medium  text-amber-800 dark:bg-amber-900/50 dark:text-amber-100  justify-center"
                                                     >
                                                       Končí brzy
                                                     </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-right">
+                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
                                                       {getActivePortals(job)
                                                         .filter((portal) => isExpiringSoon(portal.expiresAt))
                                                         .map((p) => p.name)
@@ -845,14 +845,14 @@ const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
                                                   if (yesterdayExpired.length > 0) {
                                                     const expiredDate = getEffectiveEndDate(yesterdayExpired[0])
                                                     return (
-                                                      <div className="flex items-center gap-3 justify-end">
+                                                      <div className="flex items-start gap-1 justify-start align-start">
                                                         <Badge
                                                           variant="secondary"
                                                           className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
                                                         >
                                                           {`Ukončeno ${formatDate(expiredDate.toISOString())}`}
                                                         </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-right">
+                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
                                                       {yesterdayExpired.map((p) => p.name).join(", ")}
                                                     </div>
                                                       </div>
@@ -867,10 +867,10 @@ const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
                                                   const otherExpired = allExpired.filter((p) => !isPortalExpiredYesterday(p))
                                                   if (otherExpired.length === 0) return null
                                                   return (
-                                                    <div className="flex items-center gap-3 justify-end">
+                                                    <div className="flex items-start flex-col gap-1 justify-start">
                                                       <Badge
                                                         variant="secondary"
-                                                        className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                        className="text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
                                                       >
                                                         {(() => {
                                                           const expiryDates = otherExpired.map((p) => p.expiresAt)
@@ -881,7 +881,7 @@ const renderPortalIcon = (portal: JobPortal, sizePx: number = 24) => {
                                                           return `Ukončeno`
                                                         })()}
                                                       </Badge>
-                                                      <div className="text-xs text-muted-foreground w-[200px] text-right">
+                                                      <div className="text-xs text-muted-foreground w-[200px] text-left">
                                                         {otherExpired.map((p) => p.name).join(", ")}
                                                       </div>
                                                     </div>
