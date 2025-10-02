@@ -1,7 +1,7 @@
 import type React from "react"
 export function JobsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clip-path="url(#clip0_10437_627)">
     <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" fill="#19325A"/>
     <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" stroke="#C2C8CE"/>
@@ -25,7 +25,7 @@ export function JobsIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function PraceIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clipPath="url(#clip0_10437_633)">
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" fill="#CA2026"/>
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" stroke="#C2C8CE"/>
@@ -50,7 +50,7 @@ export function PraceIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function CarreerIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clipPath="url(#clip0_10437_727)">
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" fill="#FFF5E1"/>
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" stroke="#DDDDDD"/>
@@ -71,7 +71,7 @@ export function CarreerIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function IntranetIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
     <g clipPath="url(#clip0_10437_724)">
     <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" fill="#EFF9FF"/>
     <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" stroke="#C2C8CE"/>
@@ -90,7 +90,7 @@ export function IntranetIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function JobspraceIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clipPath="url(#clip0_10437_638)">
 <path d="M26 16.0195C26 21.5423 21.5228 26.0195 16 26.0195H10C4.47715 26.0195 9.66416e-08 21.5423 0 16.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18C22.4183 0.0194702 26 3.60119 26 8.01947V16.0195Z" fill="#19325A"/>
 <path d="M0.519531 13.0195H25.4795V17.4995C25.4795 21.9178 21.8978 25.4995 17.4795 25.4995H8.51952C4.10125 25.4995 0.519531 21.9177 0.519531 17.4995V13.0195Z" fill="#CA2026"/>
@@ -121,7 +121,7 @@ export function JobspraceIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function ProfesiaIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0">
+<svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0">
 <g clipPath="url(#clip0_10437_686)">
 <path d="M18 0.00933838C22.4183 0.00933838 26 3.59106 26 8.00934V18.0093C26 22.4276 22.4183 26.0093 18 26.0093H8C3.58172 26.0093 1.61069e-07 22.4276 0 18.0093V8.00934C0 3.59106 3.58172 0.00933854 8 0.00933838H18Z" fill="white"/>
 <path d="M18 0.00933838C22.4183 0.00933838 26 3.59106 26 8.00934V18.0093C26 22.4276 22.4183 26.0093 18 26.0093H8C3.58172 26.0093 1.61069e-07 22.4276 0 18.0093V8.00934C0 3.59106 3.58172 0.00933854 8 0.00933838H18Z" stroke="#C2C8CE"/>
@@ -144,7 +144,7 @@ export function ProfesiaIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function AtmoskopIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clipPath="url(#clip0_10437_695)">
 <rect y="0.0194702" width="26" height="26" rx="13" fill="white"/>
 <path d="M2.44128 5.41644C6.62966 -0.414987 14.7523 -1.74693 20.5837 2.44146C26.4152 6.62985 27.7471 14.7525 23.5587 20.5839C19.3703 26.4154 11.2477 27.7473 5.41625 23.5589C-0.41517 19.3705 -1.74711 11.2479 2.44128 5.41644Z" fill="url(#paint0_linear_10437_695)"/>
@@ -187,7 +187,7 @@ export function AtmoskopIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function IntranetIcon2(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="40" height="40" viewBox="0 0 21 21" strokeWidth="0" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg width="35" height="35" viewBox="0 0 21 21" strokeWidth="0" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path d="M42 0.0292358C46.4183 0.0292365 50 3.61096 50 8.02924V42.0292C50 46.4475 46.4183 50.0292 42 50.0292H8C3.58172 50.0292 0 46.4475 0 42.0292V8.02924C7.08705e-07 3.61096 3.58172 0.0292358 8 0.0292358H42Z" fill="#EFF9FF"/>
       <path d="M42 0.0292358C46.4183 0.0292365 50 3.61096 50 8.02924V42.0292C50 46.4475 46.4183 50.0292 42 50.0292H8C3.58172 50.0292 0 46.4475 0 42.0292V8.02924C7.08705e-07 3.61096 3.58172 0.0292358 8 0.0292358H42Z" stroke="#C2C8CE"/>
       <path d="M14.0335 22.2086C14.6139 21.923 15.2805 21.6724 16.0047 21.4551C16.9116 21.1831 17.9431 20.9532 19.0679 20.7736C18.4899 21.4086 18.0631 22.1837 17.8445 23.0419C17.3951 23.1429 16.9723 23.2529 16.5794 23.3708C15.5154 23.69 14.7273 24.0502 14.2274 24.4047C13.7016 24.7777 13.6797 25.0032 13.6797 25.0293C13.6797 25.0553 13.7016 25.2808 14.2274 25.6538C14.7273 26.0083 15.5154 26.3685 16.5794 26.6877C16.6851 26.7194 16.793 26.7506 16.9029 26.7811C17.3552 26.9068 17.6797 27.311 17.6797 27.7805C17.6797 28.4228 17.087 28.9042 16.4672 28.7355C16.3097 28.6927 16.1555 28.6486 16.0047 28.6034C15.2805 28.3861 14.6139 28.1355 14.0335 27.8499C14.8715 31.1216 17.1333 33.823 20.1196 35.2547C20.5634 35.4674 20.8298 35.9451 20.7333 36.4277C20.6119 37.0349 19.9772 37.3945 19.4154 37.1342C14.8479 35.0185 11.6797 30.3939 11.6797 25.0293C11.6797 17.6655 17.6492 11.6959 25.013 11.6959C29.8167 11.6959 34.0271 14.2363 36.3741 18.0468C36.7333 18.6301 36.3556 19.361 35.6799 19.4737C35.2489 19.5455 34.8235 19.3343 34.5894 18.9654C33.2099 16.7914 31.1106 15.1193 28.6267 14.2842C28.9237 14.7846 29.1914 15.3407 29.4299 15.9369C29.6616 16.5162 29.8704 17.1452 30.0538 17.816C30.2233 18.4361 29.7421 19.0293 29.0993 19.0293C28.6301 19.0293 28.2257 18.7054 28.0997 18.2534C27.9418 17.6871 27.7652 17.1604 27.5729 16.6797C27.1544 15.6334 26.6811 14.8539 26.2067 14.3522C25.7343 13.8527 25.3306 13.6959 25.013 13.6959C24.6954 13.6959 24.2917 13.8527 23.8193 14.3522C23.3449 14.8539 22.8716 15.6334 22.4531 16.6797C22.158 17.4174 21.8999 18.2632 21.6895 19.1948C20.8322 19.4137 20.058 19.8403 19.4237 20.4178C19.6841 18.7388 20.0844 17.2164 20.5962 15.9369C20.8346 15.3407 21.1023 14.7846 21.3993 14.2842C17.7867 15.4987 14.9875 18.4841 14.0335 22.2086Z" fill="#135377"/>
@@ -198,7 +198,7 @@ export function IntranetIcon2(props: React.SVGProps<SVGSVGElement>) {
 
 export function WebpagesIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0" >
+<svg width="35" height="35" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0" >
 <g clipPath="url(#clip0_10437_724)">
 <path d="M13 0.0194702C17.4183 0.0194702 21 3.60119 21 8.01947V13.0195C21 17.4377 17.4183 21.0195 13 21.0195H8C3.58172 21.0195 8.05346e-08 17.4377 0 13.0195V8.01947C0 3.60119 3.58172 0.0194703 8 0.0194702H13Z" fill="#EFF9FF"/>
 <path d="M13 0.0194702C17.4183 0.0194702 21 3.60119 21 8.01947V13.0195C21 17.4377 17.4183 21.0195 13 21.0195H8C3.58172 21.0195 8.05346e-08 17.4377 0 13.0195V8.01947C0 3.60119 3.58172 0.0194703 8 0.0194702H13Z" stroke="#C2C8CE"/>
@@ -217,7 +217,7 @@ export function WebpagesIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function SectionsIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0" >
+<svg width="35" height="35" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0" >
 <g clipPath="url(#clip0_10437_730)">
 <path d="M13 0.0194702C17.4183 0.0194702 21 3.60119 21 8.01947V13.0195C21 17.4377 17.4183 21.0195 13 21.0195H8C3.58172 21.0195 8.05346e-08 17.4377 0 13.0195V8.01947C0 3.60119 3.58172 0.0194703 8 0.0194702H13Z" fill="#F6F0FF"/>
 <path d="M13 0.0194702C17.4183 0.0194702 21 3.60119 21 8.01947V13.0195C21 17.4377 17.4183 21.0195 13 21.0195H8C3.58172 21.0195 8.05346e-08 17.4377 0 13.0195V8.01947C0 3.60119 3.58172 0.0194703 8 0.0194702H13Z" stroke="#C2C8CE"/>
@@ -235,7 +235,7 @@ export function SectionsIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function ExportIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0">
+<svg width="35" height="35" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg" strokeWidth="0">
 <g clipPath="url(#clip0_10437_733)">
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" fill="#E8F5E3"/>
 <path d="M18 0.0194702C22.4183 0.0194702 26 3.60119 26 8.01947V18.0195C26 22.4377 22.4183 26.0195 18 26.0195H8C3.58172 26.0195 1.61069e-07 22.4377 0 18.0195V8.01947C0 3.60119 3.58172 0.0194704 8 0.0194702H18Z" stroke="#C2C8CE"/>
@@ -254,7 +254,7 @@ export function ExportIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function PraceZaRohemIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-<svg width="40" height="40" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+<svg width="35" height="35" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
 <g clipPath="url(#clip0_10488_3437)">
 <rect width="26" height="26" rx="13" fill="white"/>
 <g clipPath="url(#clip1_10488_3437)">

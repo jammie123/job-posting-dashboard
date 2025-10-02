@@ -21,29 +21,29 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
 
   // If there's no note, show the "add note" button
   if (!hasNote) {
-    return (
-      <div className="flex gap-3 p-3  rounded-md border border-dashed border-gray-200 items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
-        <button className="text-sm text-muted-foreground flex items-center gap-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-plus-circle"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 8v8" />
-            <path d="M8 12h8" />
-          </svg>
-          Přidat poznámku
-        </button>
-      </div>
-    )
+    // return (
+    //   <div className="flex gap-3 p-3  w-[97%]  rounded-md border border-dashed border-gray-200 items-center justify-center cursor-pointer hover:bg-gray-100 transition-colors">
+    //     <button className="text-sm text-muted-foreground flex items-center gap-2">
+    //       <svg
+    //         xmlns="http://www.w3.org/2000/svg"
+    //         width="16"
+    //         height="16"
+    //         viewBox="0 0 24 24"
+    //         fill="none"
+    //         stroke="currentColor"
+    //         strokeWidth="2"
+    //         strokeLinecap="round"
+    //         strokeLinejoin="round"
+    //         className="lucide lucide-plus-circle"
+    //       >
+    //         <circle cx="12" cy="12" r="10" />
+    //         <path d="M12 8v8" />
+    //         <path d="M8 12h8" />
+    //       </svg>
+    //       Přidat poznámku
+    //     </button>
+    //   </div>
+    // )
   }
 
   // Format the date to show how long ago it was created
@@ -52,21 +52,23 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
   // Truncate text if it exceeds maxLength
   const truncatedText = text && text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
 
+  if (hasNote) {
   return (
-    <div className="flex gap-3  rounded-md">
+    <div className="flex gap-3  w-[97%] border-t border-gray-200 mt-4">
       <div className="flex-1 min-w-0">
-        <div className="flex gap-1 justify-start items-center mb-1">
+        <div className="flex gap-1 justify-start items-center pt-4 mb-1">
           <Avatar className="h-6 w-6">
             <AvatarFallback className="text-xs font-medium uppercase bg-primary/10 text-primary">
               {initials}
             </AvatarFallback>
           </Avatar>
-          <p className="text-xs text-muted-foreground line-clamp-2">
+          <p className="text-sm text-muted-foreground line-clamp-2">
             {truncatedText} <span className="text-xs text-muted-foreground">{formattedDate}</span>
           </p>
         </div>
       </div>
     </div>
   )
+}
 }
 
