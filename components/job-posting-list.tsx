@@ -901,7 +901,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                               ? `Ukončeno ${formatDate(expiryDates[0])}`
                                                               : 'Ukončeno')
                                                         const cls = isOld
-                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-50'
+                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-20'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
                                                         return (
                                                           <Badge variant="secondary" className={cls}>
