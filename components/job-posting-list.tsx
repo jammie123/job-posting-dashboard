@@ -111,6 +111,20 @@ const truncatePortalName = (name: string, max: number = 10): string => {
   return name.length > max ? name.substring(0, max) + "..." : name
 }
 
+// Array deduplication helper by key
+const uniqueBy = <T,>(items: T[], getKey: (item: T) => string): T[] => {
+  const seen = new Set<string>()
+  const result: T[] = []
+  for (const item of items) {
+    const key = getKey(item)
+    if (!seen.has(key)) {
+      seen.add(key)
+      result.push(item)
+    }
+  }
+  return result
+}
+
 // Humanized past difference (for expired labels)
 const diffDate = (dateString: string): string => {
   const end = parseDateToMidnight(dateString)
@@ -899,13 +913,14 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                 })()}
 
                                                 {(() => {
-                                                  const allExpired = getExpiredPortals(job)
+                                                  // De-duplicate expired portals by unique key (name+url+expiresAt)
+                                                  const allExpired = uniqueBy(getExpiredPortals(job), (p) => `${p.name}|${p.url || ''}|${p.expiresAt}`)
                                                   const otherExpired = allExpired.filter((p) => !isPortalExpiredYesterday(p))
                                                   if (otherExpired.length === 0) return null
 
                                                   // Group other expired portals by effective end date (by day)
                                                   const groups: Record<string, JobPortal[]> = {}
-                                                  otherExpired.forEach((p) => {
+                                                  uniqueBy(otherExpired, (p) => `${p.name}|${p.url || ''}|${p.expiresAt}`).forEach((p) => {
                                                     const key = getEffectiveEndDate(p).toISOString().slice(0, 10) // YYYY-MM-DD
                                                     if (!groups[key]) groups[key] = []
                                                     groups[key].push(p)
@@ -916,7 +931,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
                                                   // If multiple different dates, show date on each row next to chip
                                                   if (groupKeys.length > 1) {
-                                                    const sortedPortals = otherExpired
+                                                    const sortedPortals = uniqueBy(otherExpired, (p) => `${p.name}|${p.url || ''}|${p.expiresAt}`)
                                                       .slice()
                                                       .sort((a, b) => getEffectiveEndDate(b).getTime() - getEffectiveEndDate(a).getTime())
                                                     return (
