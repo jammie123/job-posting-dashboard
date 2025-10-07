@@ -901,7 +901,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                               ? `Ukončeno ${formatDate(expiryDates[0])}`
                                                               : 'Ukončeno')
                                                         const cls = isOld
-                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-20'
+                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-80'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
                                                         return (
                                                           <Badge variant="secondary" className={cls}>
@@ -909,16 +909,23 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           </Badge>
                                                         )
                                                       })()}
-                                                      <div className="flex flex-wrap gap-1 w-[300px]">
-                                                        {otherExpired.map((portal) => (
-                                                          <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
-                                                            <span className="inline-flex items-center gap-1">
-                                                              {renderPortalIcon(portal, "h-4 w-4")}
-                                                              {truncatePortalName(portal.name)}
-                                                            </span>
-                                                          </span>
-                                                        ))}
-                                                      </div>
+                                                      {(() => {
+                                                        const latest2 = otherExpired[0]
+                                                        const daysSince2 = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest2).getTime()) / (1000 * 60 * 60 * 24)))
+                                                        const isOld2 = daysSince2 >= 180
+                                                        return (
+                                                          <div className="flex flex-wrap gap-1 w-[300px]">
+                                                            {otherExpired.map((portal) => (
+                                                              <span key={portal.url} className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex ${isOld2 ? 'opacity-60' : ''}`}>
+                                                                <span className="inline-flex items-center gap-1">
+                                                                  {renderPortalIcon(portal, "h-4 w-4")}
+                                                                  {truncatePortalName(portal.name)}
+                                                                </span>
+                                                              </span>
+                                                            ))}
+                                                          </div>
+                                                        )
+                                                      })()}
                                                     </div>
                                                   )
                                                 })()}
