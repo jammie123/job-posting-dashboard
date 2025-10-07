@@ -823,7 +823,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-3 ml-10 w-[400px] ">
                                                 {getActivePortals(job).length > 0 && (
-                                                  <div className="flex items-start flex-col justify-start gap-1">
+                                                  <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                     <Badge
                                                       variant="secondary"
                                                       className="text-sm p-0 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
@@ -888,7 +888,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   const otherExpired = allExpired.filter((p) => !isPortalExpiredYesterday(p))
                                                   if (otherExpired.length === 0) return null
                                                   return (
-                                                    <div className="flex items-start flex-col gap-1 justify-start">
+                                                    <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                       {(() => {
                                                         const latest = otherExpired[0]
                                                         const daysSince = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest).getTime()) / (1000 * 60 * 60 * 24)))
