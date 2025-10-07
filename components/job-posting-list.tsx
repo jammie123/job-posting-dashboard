@@ -921,6 +921,12 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                       .sort((a, b) => getEffectiveEndDate(b).getTime() - getEffectiveEndDate(a).getTime())
                                                     return (
                                                       <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
+                                                        <Badge
+                                                          variant="secondary"
+                                                          className="text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                        >
+                                                          Ukončeno
+                                                        </Badge>
                                                         {sortedPortals.map((portal) => {
                                                           const end = getEffectiveEndDate(portal)
                                                           const isOldRow = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - end.getTime()) / (1000 * 60 * 60 * 24))) >= 180
