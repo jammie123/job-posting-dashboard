@@ -914,6 +914,33 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   // Sort groups by date desc (newest expiry first)
                                                   const groupKeys = Object.keys(groups).sort((a, b) => (a > b ? -1 : 1))
 
+                                                  // If multiple different dates, show date on each row next to chip
+                                                  if (groupKeys.length > 1) {
+                                                    const sortedPortals = otherExpired
+                                                      .slice()
+                                                      .sort((a, b) => getEffectiveEndDate(b).getTime() - getEffectiveEndDate(a).getTime())
+                                                    return (
+                                                      <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
+                                                        {sortedPortals.map((portal) => {
+                                                          const end = getEffectiveEndDate(portal)
+                                                          const isOldRow = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - end.getTime()) / (1000 * 60 * 60 * 24))) >= 180
+                                                          return (
+                                                            <div key={portal.url} className="flex items-center gap-2">
+                                                              <span className={`text-xs ${isOldRow ? 'text-gray-500 opacity-80' : 'text-red-800'}`}>{`Ukončeno ${formatDate(end.toISOString())}`}</span>
+                                                              <span className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex ${isOldRow ? 'opacity-80' : ''}`}>
+                                                                <span className="inline-flex items-center gap-1">
+                                                                  {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                  {truncatePortalName(portal.name)}
+                                                                </span>
+                                                              </span>
+                                                            </div>
+                                                          )
+                                                        })}
+                                                      </div>
+                                                    )
+                                                  }
+
+                                                  // Otherwise keep a single label and grouped chips
                                                   return (
                                                     <div className="flex items-start flex-col gap-2 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                       {groupKeys.map((key) => {
