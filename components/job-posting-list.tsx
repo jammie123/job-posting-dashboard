@@ -97,6 +97,14 @@ const getDaysUntilExpiry = (expiresAt: string): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }
 
+// CZ humanized remaining days
+const formatRemainingDaysCz = (days: number): string => {
+  if (days === 1) return "za den"
+  if (days === 2) return "za dva dny"
+  if (days === 3 || days === 4) return `za ${days} dny`
+  return `za ${days} dní`
+}
+
 // Date helpers for per-portal status evaluation
 const toMidnight = (date: Date) => {
   const d = new Date(date)
@@ -659,7 +667,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                   <CardContent className="flex flex-col justify-between items-start p-4 w-full">
                     <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
                       <div className="flex items-start gap-4 justify-between w-full">
-                        <div className="flex items-center gap-12 ">
+                        <div className="flex items-center gap-12 w-[300px]">
                           <div className="flex items-start gap-3">
                             {bulkActionEnabled ? (
                               <Checkbox
@@ -816,28 +824,28 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                     >
                                                       Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
                                                     </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
-                                                      {getActivePortals(job).map((p) => p.name).join(", ")}
+                                                    <div className="flex flex-wrap gap-1 w-[300px]">
+                                                      {getActivePortals(job).map((portal) => {
+                                                        const daysLeft = getDaysUntilExpiry(portal.expiresAt)
+                                                        const isSoon = daysLeft > 0 && daysLeft <= 7
+                                                        const cls = isSoon
+                                                          ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
+                                                          : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
+                                                        return (
+                                                          <span key={portal.url} className={cls}>
+                                                            <span className="inline-flex flex  items-center gap-1">
+                                                              {renderPortalIcon(portal, "h-4 w-4")}
+                                                              {portal.name}
+                                                            </span>
+                                                            {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
+                                                          </span>
+                                                        )
+                                                      })}
                                                     </div>
                                                   </div>
                                                 )}
                   
-                                                {getActivePortals(job).filter((portal) => isExpiringSoon(portal.expiresAt)).length > 0 && (
-                                                  <div className="flex p-0 items-start gap-1 w-[400px] justify-start">
-                                                    <Badge
-                                                      variant="secondary"
-                                                      className="text-sm font-medium  text-amber-800 dark:bg-amber-900/50 dark:text-amber-100  justify-center"
-                                                    >
-                                                      Končí brzy
-                                                    </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
-                                                      {getActivePortals(job)
-                                                        .filter((portal) => isExpiringSoon(portal.expiresAt))
-                                                        .map((p) => p.name)
-                                                        .join(", ")}
-                                                    </div>
-                                                  </div>
-                                                )}
+                                                
                   
                                                 {(() => {
                                                   // First, show those that expired exactly yesterday
@@ -852,8 +860,15 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         >
                                                           {`Ukončeno ${formatDate(expiredDate.toISOString())}`}
                                                         </Badge>
-                                                    <div className="text-xs text-muted-foreground w-[200px] text-left">
-                                                      {yesterdayExpired.map((p) => p.name).join(", ")}
+                                                    <div className="flex flex-wrap gap-1 w-[300px]">
+                                                      {yesterdayExpired.map((portal) => (
+                                                        <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
+                                                          <span className="inline-flex items-center gap-1 flex">
+                                                            {renderPortalIcon(portal, "h-4 w-4")}
+                                                            {portal.name}
+                                                          </span>
+                                                        </span>
+                                                      ))}
                                                     </div>
                                                       </div>
                                                     )
@@ -868,21 +883,35 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   if (otherExpired.length === 0) return null
                                                   return (
                                                     <div className="flex items-start flex-col gap-1 justify-start">
-                                                      <Badge
-                                                        variant="secondary"
-                                                        className="text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
-                                                      >
-                                                        {(() => {
-                                                          const expiryDates = otherExpired.map((p) => p.expiresAt)
-                                                          const allSameDate = expiryDates.every((date) => date === expiryDates[0])
-                                                          if (allSameDate && expiryDates.length > 0) {
-                                                            return `Ukončeno ${formatDate(expiryDates[0])}`
-                                                          }
-                                                          return `Ukončeno`
-                                                        })()}
-                                                      </Badge>
-                                                      <div className="text-xs text-muted-foreground w-[200px] text-left">
-                                                        {otherExpired.map((p) => p.name).join(", ")}
+                                                      {(() => {
+                                                        const latest = otherExpired[0]
+                                                        const daysSince = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest).getTime()) / (1000 * 60 * 60 * 24)))
+                                                        const isOld = daysSince >= 180
+                                                        const expiryDates = otherExpired.map((p) => p.expiresAt)
+                                                        const allSameDate = expiryDates.every((date) => date === expiryDates[0])
+                                                        const label = isOld
+                                                          ? 'Ukončeno dávno'
+                                                          : (allSameDate && expiryDates.length > 0
+                                                              ? `Ukončeno ${formatDate(expiryDates[0])}`
+                                                              : 'Ukončeno')
+                                                        const cls = isOld
+                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-50'
+                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
+                                                        return (
+                                                          <Badge variant="secondary" className={cls}>
+                                                            {label}
+                                                          </Badge>
+                                                        )
+                                                      })()}
+                                                      <div className="flex flex-wrap gap-1 w-[300px]">
+                                                        {otherExpired.map((portal) => (
+                                                          <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
+                                                            <span className="inline-flex items-center gap-1">
+                                                              {renderPortalIcon(portal, "h-4 w-4")}
+                                                              {portal.name}
+                                                            </span>
+                                                          </span>
+                                                        ))}
                                                       </div>
                                                     </div>
                                                   )

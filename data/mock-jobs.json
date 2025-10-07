@@ -489,7 +489,7 @@
           "url": "https://jobs.cz/567890",
           "icon": "JobsIcon",
           "publishedAt": "2025-09-01",
-          "expiresAt": "2025-09-20",
+          "expiresAt": "2024-09-20",
           "cancelAt": "2025-09-20",
           "performance": {
             "views": 312,
@@ -720,7 +720,7 @@
           "url": "https://prace.cz/jobs/741",
           "icon": "PraceIcon",
           "publishedAt": "2025-09-18",
-          "expiresAt": "2025-09-20",
+          "expiresAt": "2025-10-08",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -750,7 +750,7 @@
           "url": "https://prace.cz/jobs/741",
           "icon": "ProfesiaIcon",
           "publishedAt": "2025-09-18",
-          "expiresAt": "2025-10-02",
+          "expiresAt": "2024-10-02",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -906,7 +906,7 @@
           "url": "https://startupjobs.cz/job/frontend-dev",
           "icon": "StartupJobsIcon",
           "publishedAt": "2025-09-01",
-          "expiresAt": "2025-09-10",
+          "expiresAt": "2024-09-10",
           "cancelAt": "2025-09-10",
           "performance": {
             "views": 250,
@@ -918,7 +918,7 @@
           "name": "Profesia",
           "url": "https://prace.cz/jobs/741",
           "icon": "ProfesiaIcon",
-          "publishedAt": "2025-09-18",
+          "publishedAt": "2024-09-18",
           "expiresAt": "2025-10-02",
           "performance": {
             "views": 98,
