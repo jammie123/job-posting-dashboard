@@ -105,6 +105,12 @@ const formatRemainingDaysCz = (days: number): string => {
   return `za ${days} dní`
 }
 
+// Truncate helper for portal labels
+const truncatePortalName = (name: string, max: number = 10): string => {
+  if (!name) return ""
+  return name.length > max ? name.substring(0, max) + "..." : name
+}
+
 // Date helpers for per-portal status evaluation
 const toMidnight = (date: Date) => {
   const d = new Date(date)
@@ -835,7 +841,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           <span key={portal.url} className={cls}>
                                                             <span className="inline-flex flex  items-center gap-1">
                                                               {renderPortalIcon(portal, "h-4 w-4")}
-                                                              {portal.name}
+                                                              {truncatePortalName(portal.name)}
                                                             </span>
                                                             {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
                                                           </span>
@@ -865,7 +871,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
                                                           <span className="inline-flex items-center gap-1 flex">
                                                             {renderPortalIcon(portal, "h-4 w-4")}
-                                                            {portal.name}
+                                                            {truncatePortalName(portal.name)}
                                                           </span>
                                                         </span>
                                                       ))}
@@ -908,7 +914,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
                                                             <span className="inline-flex items-center gap-1">
                                                               {renderPortalIcon(portal, "h-4 w-4")}
-                                                              {portal.name}
+                                                              {truncatePortalName(portal.name)}
                                                             </span>
                                                           </span>
                                                         ))}
