@@ -111,6 +111,22 @@ const truncatePortalName = (name: string, max: number = 10): string => {
   return name.length > max ? name.substring(0, max) + "..." : name
 }
 
+// Humanized past difference (for expired labels)
+const diffDate = (dateString: string): string => {
+  const end = parseDateToMidnight(dateString)
+  const today = toMidnight(new Date())
+  const diffDays = Math.max(0, Math.ceil((today.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+  if (diffDays <= 1) return "před 1 dnem"
+  if (diffDays < 5) return `před ${diffDays} dny`
+  if (diffDays < 30) return `před ${diffDays} dny`
+  const months = Math.floor(diffDays / 30)
+  if (months === 1) return "před měsícem"
+  if (months < 12) return `před ${months} měsíci`
+  const years = Math.floor(months / 12)
+  if (years === 1) return "před rokem"
+  return `před ${years} lety`
+}
+
 // Date helpers for per-portal status evaluation
 const toMidnight = (date: Date) => {
   const d = new Date(date)
@@ -629,7 +645,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
           counts={statusCounts}
           activeFilters={activeFilters}
         />
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1400px]">
           <JobFilters
             searchValue={searchQuery}
             onSearchChange={handleSearchChange}
@@ -796,9 +812,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center">
                             <div
-                              className={`flex flex-col w-[100px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
                             >
                               {getRandomNewCandidates(job.id) && (
                                 <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
@@ -896,7 +912,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         const expiryDates = otherExpired.map((p) => p.expiresAt)
                                                         const allSameDate = expiryDates.every((date) => date === expiryDates[0])
                                                         const label = isOld
-                                                          ? 'Ukončeno dávno'
+                                                          ? `Ukončeno ${diffDate(expiryDates[0])}`
                                                           : (allSameDate && expiryDates.length > 0
                                                               ? `Ukončeno ${formatDate(expiryDates[0])}`
                                                               : 'Ukončeno')
@@ -914,12 +930,12 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         const daysSince2 = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest2).getTime()) / (1000 * 60 * 60 * 24)))
                                                         const isOld2 = daysSince2 >= 180
                                                         return (
-                                                          <div className="flex flex-wrap gap-1 w-[300px]">
+                                                          <div className= {isOld2 ? 'flex flex-wrap gap-1 w-[300px] -space-x-4' : 'flex flex-wrap gap-1 w-[300px] space-x-0'}>
                                                             {otherExpired.map((portal) => (
-                                                              <span key={portal.url} className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex ${isOld2 ? 'opacity-60' : ''}`}>
+                                                              <span key={portal.url} className={`${isOld2 ? 'opacity-80 text-xs px-2 py-0.5 text-gray-600 flex' : 'text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex'}`}>
                                                                 <span className="inline-flex items-center gap-1">
                                                                   {renderPortalIcon(portal, "h-4 w-4")}
-                                                                  {truncatePortalName(portal.name)}
+                                                                  {isOld2 ? "" : truncatePortalName(portal.name)}
                                                                 </span>
                                                               </span>
                                                             ))}
