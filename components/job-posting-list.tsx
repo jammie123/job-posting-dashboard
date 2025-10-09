@@ -685,11 +685,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
           ) : (
             <div className="space-y-2 mt-1">
               {sortedJobs.map((job, index) => (
-                <Card key={job.id} className="w-full overflow-hidden group min-h-[180px]">
-                  <CardContent className="flex flex-col justify-between items-start p-4 w-full relative">
+                <Card key={job.id} className="w-full overflow-hidden group p-0 min-h-[150px]">
+                  <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
                     <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
                       <div className="flex items-start gap-4 justify-between w-full">
-                        <div className="flex items-center gap-12 w-[300px]">
+                        <div className="flex items-center gap-12 w-[300px] p-4 ">
                           <div className="flex items-start gap-3">
                             {bulkActionEnabled ? (
                               <Checkbox
@@ -817,7 +817,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center">
+                          <div className="flex items-center p-4">
                             <div
                               className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
                             >
@@ -840,9 +840,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           </div>
                         )}
 
-                        <div className="min-w-[300px] w-[400px] flex justify-end items-center shrink-0">
+                        <div className="w-[400px] min-h-[150px] pl-4 flex justify-start items-center shrink-0 p-3 border-l border-gray-200 bg-gray-50">
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-3 ml-10 w-[400px] ">
+                                                <div className="flex flex-col gap-3 w-full">
                                                 {getActivePortals(job).length > 0 && (
                                                   <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                     <Badge
@@ -874,75 +874,61 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                   
                                                 
                   
-                                                {(() => {
-                                                  // First, show those that expired exactly yesterday
-                                                  const yesterdayExpired = getExpiredYesterdayPortals(job)
-                                                  if (yesterdayExpired.length > 0) {
-                                                    const expiredDate = getEffectiveEndDate(yesterdayExpired[0])
-                                                    return (
-                                                      <div className="flex items-start gap-1 justify-start align-start">
-                                                        <Badge
-                                                          variant="secondary"
-                                                          className="text-sm font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
-                                                        >
-                                                          {`Ukončeno ${formatDate(expiredDate.toISOString())}`}
-                                                        </Badge>
-                                                    <div className="flex flex-wrap gap-1 w-[300px]">
-                                                      {yesterdayExpired.map((portal) => (
-                                                        <span key={portal.url} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
-                                                          <span className="inline-flex items-center gap-1 flex">
-                                                            {renderPortalIcon(portal, "h-4 w-4")}
-                                                            {truncatePortalName(portal.name)}
-                                                          </span>
-                                                        </span>
-                                                      ))}
-                                                    </div>
-                                                      </div>
-                                                    )
-                                                  }
-                                                  return null
-                                                })()}
+                                                {(() => null)()}
 
                                                 {(() => {
-                                                  const allExpired = getExpiredPortals(job)
-                                                  const yesterdayExpired = getExpiredYesterdayPortals(job)
-                                                  const otherExpired = allExpired.filter((p) => !isPortalExpiredYesterday(p))
-                                                  if (otherExpired.length === 0) return null
+                                                  const expiredPortals = getExpiredPortals(job)
+                                                  if (expiredPortals.length === 0) return null
                                                   return (
                                                     <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                       {(() => {
-                                                        const latest = otherExpired[0]
-                                                        const daysSince = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest).getTime()) / (1000 * 60 * 60 * 24)))
-                                                        const isOld = daysSince >= 180
-                                                        const expiryDates = otherExpired.map((p) => p.expiresAt)
-                                                        const allSameDate = expiryDates.every((date) => date === expiryDates[0])
-                                                        const label = isOld
-                                                          ? `Ukončeno ${diffDate(expiryDates[0])}`
-                                                          : (allSameDate && expiryDates.length > 0
-                                                              ? `Ukončeno ${formatDate(expiryDates[0])}`
-                                                              : 'Ukončeno')
-                                                        const cls = isOld
-                                                          ? 'text-sm p-0 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-80'
-                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
+                                                        const byDate: Record<string, JobPortal[]> = {}
+                                                        expiredPortals.forEach((p) => {
+                                                          const key = getEffectiveEndDate(p).toISOString().slice(0, 10)
+                                                          if (!byDate[key]) byDate[key] = []
+                                                          byDate[key].push(p)
+                                                        })
+                                                        const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
+                                                        const label = sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : 'Ukončeno'
                                                         return (
-                                                          <Badge variant="secondary" className={cls}>
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className="text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                          >
                                                             {label}
                                                           </Badge>
                                                         )
                                                       })()}
                                                       {(() => {
-                                                        const latest2 = otherExpired[0]
-                                                        const daysSince2 = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - getEffectiveEndDate(latest2).getTime()) / (1000 * 60 * 60 * 24)))
-                                                        const isOld2 = daysSince2 >= 180
+                                                        const byDate: Record<string, JobPortal[]> = {}
+                                                        expiredPortals.forEach((p) => {
+                                                          const key = getEffectiveEndDate(p).toISOString().slice(0, 10)
+                                                          if (!byDate[key]) byDate[key] = []
+                                                          byDate[key].push(p)
+                                                        })
+                                                        const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
                                                         return (
-                                                          <div className= {isOld2 ? 'flex flex-wrap gap-1 w-[300px] -space-x-4' : 'flex flex-wrap gap-1 w-[300px] space-x-0'}>
-                                                            {otherExpired.map((portal) => (
-                                                              <span key={portal.url} className={`${isOld2 ? 'opacity-80 text-xs px-2 py-0.5 text-gray-600 flex' : 'text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex'}`}>
-                                                                <span className="inline-flex items-center gap-1">
-                                                                  {renderPortalIcon(portal, "h-4 w-4")}
-                                                                  {isOld2 ? "" : truncatePortalName(portal.name)}
-                                                                </span>
-                                                              </span>
+                                                          <div className="flex w-full gap-2 flex-wrap">
+                                                            {sortedKeys.map((dateKey, idx) => (
+                                                              <>
+                                                                {idx > 0 && (
+                                                                  <div
+                                                                    key={`sep-${dateKey}`}
+                                                                    data-orientation="vertical"
+                                                                    role="none"
+                                                                    data-slot="separator"
+                                                                    className="w-px h-5 bg-border shrink-0"
+                                                                  />
+                                                                )}
+                                                                {byDate[dateKey].map((portal) => (
+                                                                  <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
+                                                                    <span className="inline-flex items-center gap-1">
+                                                                      {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                      {truncatePortalName(portal.name)}
+                                                                    </span>
+                                                                  </span>
+                                                                ))}
+                                                              </>
                                                             ))}
                                                           </div>
                                                         )
