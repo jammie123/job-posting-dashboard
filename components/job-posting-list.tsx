@@ -847,7 +847,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                     <Badge
                                                       variant="secondary"
-                                                      className="text-sm p-0 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
+                                                      className="text-sm p-0 bg-gray-100/50 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
                                                     >
                                                       Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
                                                     </Badge>
@@ -890,10 +890,19 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
                                                         const label = sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : 'Ukončeno'
+                                                        const todayMidnight = toMidnight(new Date())
+                                                        const allOlderThan90 = expiredPortals.every((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 90
+                                                        })
+                                                        const labelClass = allOlderThan90
+                                                          ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
+                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'
                                                         return (
                                                           <Badge
                                                             variant="secondary"
-                                                            className="text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center"
+                                                            className={labelClass}
                                                           >
                                                             {label}
                                                           </Badge>
