@@ -42,9 +42,6 @@
             "views": 432,
             "clicks": 78,
             "applications": 12
-          },
-          "highlighted": {
-            "name": "JobTips"
           }
         },
         {
@@ -57,10 +54,8 @@
             "views": 432,
             "clicks": 78,
             "applications": 12
-          },
-          "highlighted": {
-            "name": "prace za rohem"
           }
+
         },
         {
           "name": "prace.cz",
@@ -186,10 +181,8 @@
             "views": 345,
             "clicks": 62,
             "applications": 10
-          },
-          "highlighted": {
-            "name": "inzerátu"
           }
+
         },
         {
           "name": "Atmoskop",
@@ -495,9 +488,6 @@
             "views": 312,
             "clicks": 58,
             "applications": 8
-          },
-          "highlighted": {
-            "name": "JobTips"
           }
         }
       ]
@@ -710,17 +700,15 @@
             "views": 156,
             "clicks": 42,
             "applications": 7
-          },
-          "highlighted": {
-            "name": "inzerátu"
           }
+
         },
         {
           "name": "prace.cz",
           "url": "https://prace.cz/jobs/741",
           "icon": "PraceIcon",
           "publishedAt": "2025-09-18",
-          "expiresAt": "2025-10-11",
+          "expiresAt": "2025-11-11",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -740,9 +728,6 @@
             "views": 98,
             "clicks": 27,
             "applications": 4
-          },
-          "highlighted": {
-            "name": "SuperMax"
           }
         },
         {
@@ -755,9 +740,6 @@
             "views": 98,
             "clicks": 27,
             "applications": 4
-          },
-          "highlighted": {
-            "name": "SuperMax"
           }
         }
       ]
@@ -856,9 +838,6 @@
             "views": 98,
             "clicks": 27,
             "applications": 4
-          },
-          "highlighted": {
-            "name": "SuperMax"
           }
         }
       ]
@@ -919,7 +898,7 @@
           "url": "https://prace.cz/jobs/741",
           "icon": "ProfesiaIcon",
           "publishedAt": "2024-09-18",
-          "expiresAt": "2025-10-02",
+          "expiresAt": "2025-12-02",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -1032,10 +1011,8 @@
             "views": 120,
             "clicks": 30,
             "applications": 5
-          },
-          "highlighted": {
-            "name": "Prace.cz"
           }
+
         }
       ]
     },

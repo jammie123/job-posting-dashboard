@@ -863,6 +863,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                             <span className="inline-flex flex  items-center gap-1">
                                                               {renderPortalIcon(portal, "h-4 w-4")}
                                                               {truncatePortalName(portal.name)}
+                                                              {portal.highlighted && portal.highlighted.name && (
+                                                                <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                                                              )}
                                                             </span>
                                                             {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
                                                           </span>
@@ -931,14 +934,17 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                     className="w-px h-5 bg-border shrink-0"
                                                                   />
                                                                 )}
-                                                                {byDate[dateKey].map((portal) => (
-                                                                  <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
-                                                                    <span className="inline-flex items-center gap-1">
-                                                                      {renderPortalIcon(portal, 'h-4 w-4')}
-                                                                      {truncatePortalName(portal.name)}
+                                                                  {byDate[dateKey].map((portal) => (
+                                                                    <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
+                                                                      <span className="inline-flex items-center gap-1">
+                                                                        {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                        {truncatePortalName(portal.name)}
+                                                                        {portal.highlighted && portal.highlighted.name && (
+                                                                          <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                                                                        )}
+                                                                      </span>
                                                                     </span>
-                                                                  </span>
-                                                                ))}
+                                                                  ))}
                                                               </>
                                                             ))}
                                                           </div>
