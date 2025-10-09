@@ -39,6 +39,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { JobPostingTable } from "./job-posting-table"
 import { PositionNote } from "@/components/position-note"
 import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-modal"
+import { AdvertismentDetailDialog } from "@/components/advertisment-detail-dialog"
 import Link from "next/link"
 
 import { JobMenuAction } from "@/components/job-menu-action"
@@ -685,12 +686,12 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
           ) : (
             <div className="space-y-2 mt-1">
               {sortedJobs.map((job, index) => (
-                <Card key={job.id} className="w-full overflow-hidden group p-0 min-h-[150px]">
+                <Card key={job.id} className="w-full overflow-hidden group p-0 ">
                   <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
-                    <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
-                      <div className="flex items-start gap-4 justify-between w-full">
+                    <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
+                      <div className="flex items-stretch gap-4 justify-between w-full ">
                         <div className="flex items-center gap-12 w-[300px] p-4 ">
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-3 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
                                 checked={selectedJobs.includes(job.id)}
@@ -817,9 +818,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-center p-4">
+                          <div className="flex items-start p-4 min-h-full">
                             <div
-                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100  cursor-pointer`}
                             >
                               {getRandomNewCandidates(job.id) && (
                                 <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
@@ -829,18 +830,18 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               <span className="text-2xl font-semibold"> {job.candidates.new}</span>
                               <span className="text-xs text-muted-foreground">Nový</span>
                             </div>
-                            <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                            <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100  relative transition-all duration-100   cursor-pointer">
                               <span className="text-2xl font-semibold "> {job.candidates.inProcess}</span>
                               <span className="text-xs ">Ve hře</span>
                             </div>
-                            <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100  relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                            <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100  relative transition-all duration-100  cursor-pointer">
                               <span className="text-2xl font-semibold"> {job.candidates.total}</span>
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
                           </div>
                         )}
 
-                        <div className="w-[400px] min-h-[150px] pl-4 flex justify-start items-center shrink-0 p-3 border-l border-gray-200 bg-gray-50">
+                        <div className="w-[400px] pl-4 flex justify-start items-center shrink-0 p-3 border-l border-gray-200 bg-gray-50">
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-3 w-full">
                                                 {getActivePortals(job).length > 0 && (
@@ -851,27 +852,33 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                     >
                                                       Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
                                                     </Badge>
-                                                    <div className="flex flex-wrap gap-1 w-[300px]">
-                                                      {getActivePortals(job).map((portal) => {
-                                                        const daysLeft = getDaysUntilExpiry(portal.expiresAt)
-                                                        const isSoon = daysLeft > 0 && daysLeft <= 7
-                                                        const cls = isSoon
-                                                          ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
-                                                          : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
-                                                        return (
-                                                          <span key={portal.url} className={cls}>
-                                                            <span className="inline-flex flex  items-center gap-1">
-                                                              {renderPortalIcon(portal, "h-4 w-4")}
-                                                              {truncatePortalName(portal.name)}
-                                                              {portal.highlighted && portal.highlighted.name && (
-                                                                <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
-                                                              )}
-                                                            </span>
-                                                            {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
-                                                          </span>
-                                                        )
-                                                      })}
-                                                    </div>
+                                                    <AdvertismentDetailDialog
+                                                      portals={job.advertisement.portals}
+                                                      mode="hover"
+                                                      trigger={
+                                                        <div className="flex flex-wrap gap-1 w-[300px]">
+                                                          {getActivePortals(job).map((portal) => {
+                                                            const daysLeft = getDaysUntilExpiry(portal.expiresAt)
+                                                            const isSoon = daysLeft > 0 && daysLeft <= 7
+                                                            const cls = isSoon
+                                                              ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
+                                                              : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
+                                                            return (
+                                                              <span key={portal.url} className={cls}>
+                                                                <div className="inline-flex flex  items-center gap-1">
+                                                                  {renderPortalIcon(portal, "h-4 w-4")}
+                                                                  {truncatePortalName(portal.name)}
+                                                                  {portal.highlighted && portal.highlighted.name && (
+                                                                    <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name} `}</span>
+                                                                  )}
+                                                                </div>
+                                                                {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
+                                                              </span>
+                                                            )
+                                                          })}
+                                                        </div>
+                                                      }
+                                                    />
                                                   </div>
                                                 )}
                   
@@ -905,12 +912,25 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'
                                                         return (
-                                                          <Badge
-                                                            variant="secondary"
-                                                            className={labelClass}
-                                                          >
-                                                            {label}
-                                                          </Badge>
+                                                          <div className="flex items-start justify-between flex-row w-full mb-2 gap-2">
+
+                                                            <Badge
+                                                              variant="secondary"
+                                                              className={labelClass}
+                                                            >
+                                                              {label}
+                                                            </Badge>
+
+                                                            {job.isFreeTeamio && (
+                                                              <Badge
+                                                                variant="secondary"
+                                                                className="text-xs bg-amber-100/30 border border-amber-300 font-normal text-amber-800"
+                                                              >
+                                                                Archivování za 90 dní
+                                                              </Badge>
+                                                            )}
+
+                                                          </div>
                                                         )
                                                       })()}
                                                       {(() => {
@@ -922,32 +942,38 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
                                                         return (
-                                                          <div className="flex w-full gap-2 flex-wrap">
-                                                            {sortedKeys.map((dateKey, idx) => (
-                                                              <>
-                                                                {idx > 0 && (
-                                                                  <div
-                                                                    key={`sep-${dateKey}`}
-                                                                    data-orientation="vertical"
-                                                                    role="none"
-                                                                    data-slot="separator"
-                                                                    className="w-px h-5 bg-border shrink-0"
-                                                                  />
-                                                                )}
-                                                                  {byDate[dateKey].map((portal) => (
-                                                                    <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
-                                                                      <span className="inline-flex items-center gap-1">
-                                                                        {renderPortalIcon(portal, 'h-4 w-4')}
-                                                                        {truncatePortalName(portal.name)}
-                                                                        {portal.highlighted && portal.highlighted.name && (
-                                                                          <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
-                                                                        )}
+                                                          <AdvertismentDetailDialog
+                                                            portals={expiredPortals}
+                                                            mode="hover"
+                                                            trigger={
+                                                              <div className="flex w-full gap-2 flex-wrap">
+                                                                {sortedKeys.map((dateKey, idx) => (
+                                                                  <>
+                                                                    {idx > 0 && (
+                                                                      <div
+                                                                        key={`sep-${dateKey}`}
+                                                                        data-orientation="vertical"
+                                                                        role="none"
+                                                                        data-slot="separator"
+                                                                        className="w-px h-5 bg-border shrink-0"
+                                                                      />
+                                                                    )}
+                                                                    {byDate[dateKey].map((portal) => (
+                                                                      <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
+                                                                        <span className="inline-flex items-center gap-1">
+                                                                          {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                          {truncatePortalName(portal.name)}
+                                                                          {portal.highlighted && portal.highlighted.name && (
+                                                                            <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                                                                          )}
+                                                                        </span>
                                                                       </span>
-                                                                    </span>
-                                                                  ))}
-                                                              </>
-                                                            ))}
-                                                          </div>
+                                                                    ))}
+                                                                  </>
+                                                                ))}
+                                                              </div>
+                                                            }
+                                                          />
                                                         )
                                                       })()}
                                                     </div>

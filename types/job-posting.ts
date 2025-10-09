@@ -31,6 +31,7 @@ export interface JobPosting {
   location: string
   department?: string
   note?: string
+  isFreeTeamio?: boolean
   recruiter: UserInfo
   assignedUsers: UserInfo[]
   candidates: {
