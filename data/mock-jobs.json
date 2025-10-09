@@ -1280,18 +1280,99 @@
       "status": "Vystavený",
       "portals": [
         {
-          "name": "prace.cz",
-          "url": "https://prace.cz/123456",
-          "icon": "PraceIcon",
-          "publishedAt": "2025-09-13",
-          "expiresAt": "2025-09-30",
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/1",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2024-09-22",
           "performance": {
-            "views": 120,
-            "clicks": 30,
-            "applications": 5
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
           },
           "highlighted": {
-            "name": "Prace.cz"
+            "name": "JobTips"
+          }
+        },
+        {
+          "name": "prace za rohem",
+          "url": "https://praceza.rohem.cz/2",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-10-11",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          },
+          "highlighted": {
+            "name": "prace za rohem"
+          }
+        },
+        {
+          "name": "prace.cz",
+          "url": "https://prace.cz/3",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-21",
+          "expiresAt": "2025-11-21",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          }
+        },
+
+        {
+          "name": "Kariérky",
+          "url": "https://karierky.cz/jobs/1",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2024-09-28",
+          "performance": {
+            "views": 175,
+            "clicks": 38,
+            "applications": 5
+          }
+        },
+        {
+          "name": "jobs.cz",
+          "url": "https://jobs.cz/1",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-09-22",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          },
+          "highlighted": {
+            "name": "JobTips"
+          }
+        },
+
+
+        {
+          "name": "Kariérky",
+          "url": "https://karierky.cz/jobs/1",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2024-09-28",
+          "performance": {
+            "views": 175,
+            "clicks": 38,
+            "applications": 5
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://export.jobs/id/1",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-09-27",
+          "performance": {
+            "views": 156,
+            "clicks": 32,
+            "applications": 4
           }
         }
       ]
