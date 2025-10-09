@@ -889,13 +889,15 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           byDate[key].push(p)
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
-                                                        const label = sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : 'Ukončeno'
                                                         const todayMidnight = toMidnight(new Date())
                                                         const allOlderThan90 = expiredPortals.every((p) => {
                                                           const end = getEffectiveEndDate(p)
                                                           const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
                                                           return daysAgo > 90
                                                         })
+                                                        const label = allOlderThan90
+                                                          ? 'Ukončeno před 90 dny'
+                                                          : (sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : 'Ukončeno')
                                                         const labelClass = allOlderThan90
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'

@@ -150,7 +150,7 @@
     "department": "Sales",
     "note": "dlouhý / krátký týden – 12h směny od 06:00 – 18:00 mzda je: základ 34k + 10%...",
     "recruiter": {
-      "id": "REC-002",
+      "id": "REC-001",
       "name": "Anna Kovářová",
       "role": "HR Specialist"
     },
@@ -261,7 +261,7 @@
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
-      "role": "Senior Recruiter"
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
@@ -410,7 +410,7 @@
     "department": "Centrála",
     "note": "LM",
     "recruiter": {
-      "id": "REC-002",
+      "id": "REC-001",
       "name": "Anna Kovářová",
       "role": "HR Specialist"
     },
@@ -518,7 +518,7 @@
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
-      "role": "Senior Recruiter"
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
@@ -583,7 +583,7 @@
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
-      "role": "Senior Recruiter"
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
@@ -720,7 +720,7 @@
           "url": "https://prace.cz/jobs/741",
           "icon": "PraceIcon",
           "publishedAt": "2025-09-18",
-          "expiresAt": "2025-10-08",
+          "expiresAt": "2025-10-11",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -944,9 +944,9 @@
     "location": "Remote",
     "department": "Sales",
     "recruiter": {
-      "id": "REC-003",
-      "name": "Eva Štěpánková",
-      "role": "Recruitment Consultant"
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
@@ -997,9 +997,9 @@
     "location": "Ostrava",
     "department": "Centrála",
     "recruiter": {
-      "id": "REC-004",
+      "id": "REC-001",
       "name": "Anna Kovářová",
-      "role": "HR Recruiter"
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
@@ -1052,9 +1052,9 @@
     "location": "Olomouc",
     "department": "Servis",
     "recruiter": {
-      "id": "REC-005",
+      "id": "REC-001",
       "name": "Anna Kovářová",
-      "role": "IT Recruiter"
+      "role": "HR Specialist"
     },
     "assignedUsers": [
       {
