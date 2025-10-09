@@ -685,8 +685,8 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
           ) : (
             <div className="space-y-2 mt-1">
               {sortedJobs.map((job, index) => (
-                <Card key={job.id} className="w-full overflow-hidden group">
-                  <CardContent className="flex flex-col justify-between items-start p-4 w-full">
+                <Card key={job.id} className="w-full overflow-hidden group min-h-[180px]">
+                  <CardContent className="flex flex-col justify-between items-start p-4 w-full relative">
                     <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
                       <div className="flex items-start gap-4 justify-between w-full">
                         <div className="flex items-center gap-12 w-[300px]">
@@ -792,6 +792,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                 </div>
                                 <p className="text-sm text-muted-foreground flex">{job.location}</p>
                               </div>
+                              <PositionNote
+                        recruiterName={job.recruiter.name}
+                        text={job.note}
+                        hasNote={Boolean(job.note)}
+                      />
 
                             </div>
 
@@ -958,13 +963,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
                     </div>
                     
-                    <div className="mt-4 w-full ml-11">
-                      <PositionNote
-                        recruiterName={job.recruiter.name}
-                        text={job.note}
-                        hasNote={Boolean(job.note)}
-                      />
-                    </div>
+
                   </CardContent>
                 </Card>
               ))}

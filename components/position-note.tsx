@@ -29,11 +29,20 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
   const truncatedText = text && text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
 
   return (
-    <div className="flex gap-3  rounded-md">
+    <div className="flex gap-3 bg-gray-100/80 p-2 rounded-md absolute top-[80px] left-[52px] w-fit  ">
       <div className="flex-1 min-w-0">
         <div className="flex gap-1 justify-start items-center mb-1">
-<div className="w-[24px] border border-1 border-gray-400 rounded-full mr-2"></div>
-          <p className="text-sm text-muted-foreground line-clamp-2 ">
+        <Avatar className="h-6 w-6">
+                                              <AvatarFallback className="text-xs font-medium uppercase">
+                                                <div className="aspect-square h-full w-full flex items-center justify-center">
+                                                  {recruiterName
+                                                    .split(" ")
+                                                    .map((part) => part[0])
+                                                    .join("")}
+                                                </div>
+                                              </AvatarFallback>
+                                            </Avatar>
+          <p className="text-sm text-muted-foreground line-clamp-1 ">
             {truncatedText} <span className="text-xs text-muted-foreground">{formattedDate}</span>
           </p>
         </div>
