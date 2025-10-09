@@ -935,67 +935,97 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   // Sort groups by date desc (newest expiry first)
                                                   const groupKeys = Object.keys(groups).sort((a, b) => (a > b ? -1 : 1))
 
-                                                  // If multiple different dates, show date on each row next to chip
-                                                  if (groupKeys.length > 1) {
-                                                    const sortedPortals = uniqueBy(otherExpired, (p) => `${p.name}|${p.url || ''}|${p.expiresAt}`)
-                                                      .slice()
-                                                      .sort((a, b) => getEffectiveEndDate(b).getTime() - getEffectiveEndDate(a).getTime())
-                                                    return (
-                                                      <div className="flex items-start flex-col gap-1 justify-start">
-                                                        <Badge
-                                                          variant="secondary"
-                                                          className="text-sm p-0 font-medium bg-gray-100/30 text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-start text-left"
-                                                        >
-                                                          Ukončeno
-                                                        </Badge>
-                                                        {sortedPortals.map((portal) => {
-                                                          const end = getEffectiveEndDate(portal)
-                                                          const isOldRow = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - end.getTime()) / (1000 * 60 * 60 * 24))) >= 180
-                                                          return (
-                                                            <div key={portal.url} className="flex items-center gap-2">
-                                                              <span className={`text-xs ${isOldRow ? 'text-gray-500 opacity-80' : 'text-gray-500 '}`}>{`Ukončeno ${formatDate(end.toISOString())}`}</span>
-                                                              <span className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex ${isOldRow ? 'opacity-80' : ''}`}>
-                                                                <span className="inline-flex items-center gap-1">
-                                                                  {renderPortalIcon(portal, 'h-4 w-4')}
-                                                                  {truncatePortalName(portal.name)}
-                                                                </span>
-                                                              </span>
-                                                            </div>
-                                                          )
-                                                        })}
-                                                      </div>
-                                                    )
-                                                  }
+                                                  // Partition groups into recent (<90 days) and old (>=90 days)
+                                                  const todayMidnight = toMidnight(new Date())
+                                                  const recentKeys = groupKeys.filter((key) => {
+                                                    const d = parseDateToMidnight(key)
+                                                    const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - d.getTime()) / (1000 * 60 * 60 * 24)))
+                                                    return daysAgo < 90
+                                                  })
+                                                  const oldKeys = groupKeys.filter((key) => !recentKeys.includes(key))
+                                                  const oldPortals: JobPortal[] = []
+                                                  oldKeys.forEach((key) => { oldPortals.push(...groups[key]) })
 
-                                                  // Otherwise keep a single label and grouped chips
-                                                  return (
-                                                    <div className="flex items-start flex-col gap-2 justify-start ">
-                                                      {groupKeys.map((key) => {
-                                                        const dateObj = parseDateToMidnight(key)
-                                                        const isOldGroup = Math.max(0, Math.ceil((toMidnight(new Date()).getTime() - dateObj.getTime()) / (1000 * 60 * 60 * 24))) >= 180
-                                                        return (
-                                                          <div key={key} className="flex flex-col gap-1">
-                                                            <Badge
-                                                              variant="secondary"
-                                                              className={isOldGroup
-                                                                ? 'text-sm p-0 bg-gray-100/30 font-medium text-gray-500 dark:text-gray-400 justify-center opacity-80'
-                                                                : 'text-sm p-0 bg-gray-100/30 font-medium text-gray-500 dark:bg-red-900/50 dark:text-red-100 justify-start text-left'}
-                                                            >
-                                                              {`Ukončeno ${formatDate(key)}`}
-                                                            </Badge>
-                                                            <div className="flex flex-wrap gap-1 w-[300px]">
-                                                              {groups[key].map((portal) => (
-                                                                <span key={portal.url} className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex ${isOldGroup ? 'opacity-80' : ''}`}>
+                                                  const renderRecent = () => {
+                                                    if (recentKeys.length > 1) {
+                                                      const recentPortals = recentKeys.flatMap((key) => groups[key])
+                                                      const sortedPortals = uniqueBy(recentPortals, (p) => `${p.name}|${p.url || ''}|${p.expiresAt}`)
+                                                        .slice()
+                                                        .sort((a, b) => getEffectiveEndDate(b).getTime() - getEffectiveEndDate(a).getTime())
+                                                      return (
+                                                        <div className="flex items-start flex-col gap-1 justify-start">
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className="text-sm p-0 font-medium bg-gray-100/30 text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-start text-left"
+                                                          >
+                                                            Ukončeno
+                                                          </Badge>
+                                                          {sortedPortals.map((portal) => {
+                                                            const end = getEffectiveEndDate(portal)
+                                                            return (
+                                                              <div key={portal.url} className="flex items-center gap-2">
+                                                                <span className="text-xs text-gray-500">{`Ukončeno ${formatDate(end.toISOString())}`}</span>
+                                                                <span className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex">
                                                                   <span className="inline-flex items-center gap-1">
                                                                     {renderPortalIcon(portal, 'h-4 w-4')}
                                                                     {truncatePortalName(portal.name)}
                                                                   </span>
                                                                 </span>
-                                                              ))}
-                                                            </div>
+                                                              </div>
+                                                            )
+                                                          })}
+                                                        </div>
+                                                      )
+                                                    }
+                                                    if (recentKeys.length === 1) {
+                                                      const key = recentKeys[0]
+                                                      return (
+                                                        <div className="flex flex-col gap-1">
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className={'text-sm p-0 bg-gray-100/30 font-medium text-gray-500 dark:bg-red-900/50 dark:text-red-100 justify-start text-left'}
+                                                          >
+                                                            {`Ukončeno ${formatDate(key)}`}
+                                                          </Badge>
+                                                          <div className="flex flex-wrap gap-1 w-[300px]">
+                                                            {groups[key].map((portal) => (
+                                                              <span key={portal.url} className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex`}>
+                                                                <span className="inline-flex items-center gap-1">
+                                                                  {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                  {truncatePortalName(portal.name)}
+                                                                </span>
+                                                              </span>
+                                                            ))}
                                                           </div>
-                                                        )
-                                                      })}
+                                                        </div>
+                                                      )
+                                                    }
+                                                    return null
+                                                  }
+
+                                                  return (
+                                                    <div className="flex items-start flex-col gap-2 justify-start ">
+                                                      {renderRecent()}
+                                                      {oldPortals.length > 0 && (
+                                                        <div className="flex flex-col gap-1">
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className={'text-sm p-0 bg-gray-100/30 font-medium text-gray-500 justify-start text-left'}
+                                                          >
+                                                            Ukončeno před 3 měsíci
+                                                          </Badge>
+                                                          <div className="flex flex-wrap gap-1 w-[300px]">
+                                                            {oldPortals.map((portal) => (
+                                                              <span key={portal.url} className={`text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex`}>
+                                                                <span className="inline-flex items-center gap-1">
+                                                                  {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                  {truncatePortalName(portal.name)}
+                                                                </span>
+                                                              </span>
+                                                            ))}
+                                                          </div>
+                                                        </div>
+                                                      )}
                                                     </div>
                                                   )
                                                 })()}
