@@ -60,20 +60,20 @@ interface AdvertismentDetailDialogProps {
 export function AdvertismentDetailDialog({ portals, trigger, title = "Detail inzerce", mode = "dialog" }: AdvertismentDetailDialogProps) {
   const content = (
     <div className="bg-card">
-      <Table className="w-[400px]">
+      <Table className="">
         <TableHeader>
           <TableRow className="border-b">
             <TableHead className="">Portál</TableHead>
-            <TableHead className="w-[100px] max-w-[100px]">Vyprší</TableHead>
+            <TableHead className=" min-w-[100px]">Vyprší</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {portals.map((portal) => (
             <TableRow key={portal.url} className="border-b last:border-b-0 py-1">
-              <TableCell className="h-[32px] py-0">
+              <TableCell className="h-[32px] min-w-[250px] py-0">
                 <div className="flex items-center gap-1 py-1">
                   {renderPortalIcon(portal)}
-                  <div className="truncate max-w-[200px] py-1" title={portal.name}>{portal.name}</div>
+                  <div className="truncate py-1" title={portal.name}>{portal.name}</div>
                 </div>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground py-1 w-[150px] max-w-[200px]">

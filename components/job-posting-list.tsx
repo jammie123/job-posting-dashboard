@@ -219,7 +219,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     }
   ])
   const [activeView, setActiveView] = useState("Aktivní")
-  const [currentSort, setCurrentSort] = useState<SortOption>("created-desc")
+  const [currentSort, setCurrentSort] = useState<SortOption>("expires-desc")
   const [bulkActionEnabled, setBulkActionEnabled] = useState(false)
   const [selectedJobs, setSelectedJobs] = useState<string[]>([])
   const [viewType, setViewType] = useState<"cards" | "table">("cards")
@@ -690,7 +690,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                   <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
                     <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
                       <div className="flex items-stretch gap-4 justify-between w-full ">
-                        <div className="flex items-center gap-12 w-[300px] p-4 ">
+                        <div className="flex items-start w-[450px] p-4 ">
                           <div className="flex items-start gap-3 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
@@ -702,23 +702,12 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                 aria-label={`Vybrat pozici ${job.title}`}
                               />
                             ) : (
-                              <JobMenuAction job={job} />
+                              
+                              <JobMenuAction job={job}  />
                             )}
                             <div className="min-w-[400px] space-y-1">
                               <div className="flex items-baseline gap-2 ">
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <div
-                                      className={`ml-1 h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
-                                    />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    {job.status === "Aktivní"
-                                      ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
-                                      : job.status
-                                    }
-                                  </TooltipContent>
-                                </Tooltip>
+
                                 <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
                                   <Link
                                     href={`/job/${job.id}`}
@@ -803,7 +792,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
                           </div>
 
-                          <div className="flex items-center gap-2"></div>
+                       
                           
                         </div>
                         
@@ -841,7 +830,23 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           </div>
                         )}
 
-                        <div className="w-[400px] pl-4 flex justify-start items-center shrink-0 p-3 border-l border-gray-200 bg-gray-50">
+                        <div className={(() => {
+                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 ";
+                          const expired = getExpiredPortals(job);
+                          const activeCount = getActivePortals(job).length;
+                          // Green when there is at least one active portal
+                          if (activeCount >= 1) return base + "bg-gradient-to-r from-green-50/80 to-white border-l-green-500/20";
+                          // No active and no expired -> neutral gray
+                          if (expired.length === 0) return base + "bg-gray-50/80";
+                          const today = toMidnight(new Date());
+                          const allOlderThan90 = expired.every(p => {
+                            const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
+                            return daysAgo > 90;
+                          });
+                          if (allOlderThan90) return base + "bg-gray-50";
+                          // All expired but some within 90 days -> soft red gradient
+                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20";
+                        })()}>
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-3 w-full">
                                                 {getActivePortals(job).length > 0 && (
@@ -869,7 +874,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                   {renderPortalIcon(portal, "h-4 w-4")}
                                                                   {truncatePortalName(portal.name)}
                                                                   {portal.highlighted && portal.highlighted.name && (
-                                                                    <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name} `}</span>
+                                                                    <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
                                                                   )}
                                                                 </div>
                                                                 {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
@@ -912,7 +917,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'
                                                         return (
-                                                          <div className="flex items-start justify-between flex-row w-full mb-2 gap-2">
+                                                          <div className="flex items-start justify-between flex-row w-full mb-0 gap-2">
 
                                                             <Badge
                                                               variant="secondary"
