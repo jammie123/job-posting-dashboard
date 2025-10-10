@@ -57,7 +57,7 @@ interface AdvertismentDetailDialogProps {
   mode?: "dialog" | "hover"
 }
 
-export function AdvertismentDetailDialog({ portals, trigger, title = "Detail inzerce", mode = "dialog" }: AdvertismentDetailDialogProps) {
+export function AdvertismentDetailDialog({ portals, trigger, title = "", mode = "dialog" }: AdvertismentDetailDialogProps) {
   const content = (
     <div className="bg-card">
       <Table className="">

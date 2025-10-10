@@ -849,7 +849,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
-                          if (activeCount >= 1) return base + "bg-gradient-to-r from-green-50/80 to-white border-l-green-500/20";
+                          if (activeCount >= 1) return base + "bg-gradient-to-r from-green-50/80 to-white border-l-green-500/20 hover:bg-green-200/50";
                           // No active and no expired -> neutral gray
                           if (expired.length === 0) return base + "bg-gray-50/80";
                           const today = toMidnight(new Date());
@@ -859,7 +859,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           });
                           if (allOlderThan90) return base + "bg-gray-50";
                           // All expired but some within 90 days -> soft red gradient
-                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20";
+                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20 hover:bg-red-200/50";
                         })()}>
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
@@ -868,7 +868,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-3 w-[85%]">
                                                 {getActivePortals(job).length > 0 && (
-                                                  <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
+                                                  <div className="flex items-start flex-col justify-start gap-1 p-3 ">
                                                     <Badge
                                                       variant="secondary"
                                                       className="text-sm p-0 bg-gray-100/50 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
@@ -913,7 +913,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   const expiredPortals = getExpiredPortals(job)
                                                   if (expiredPortals.length === 0) return null
                                                   return (
-                                                    <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
+                                                    <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md">
                                                       {(() => {
                                                         const byDate: Record<string, JobPortal[]> = {}
                                                         expiredPortals.forEach((p) => {
@@ -933,16 +933,16 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           : (sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : `Ukončeno ${formatDateWithYear(sortedKeys[0])} `)
                                                         const labelClass = allOlderThan90
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
-                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'
+                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
                                                         return (
                                                           <div className="flex items-start justify-between flex-row w-full mb-0 gap-2">
 
-                                                            <Badge
-                                                              variant="secondary"
+                                                            <span
+                                                       
                                                               className={labelClass}
                                                             >
                                                               {label}
-                                                            </Badge>
+                                                            </span>
 
                                                             {job.isFreeTeamio && (
                                                               <Badge
