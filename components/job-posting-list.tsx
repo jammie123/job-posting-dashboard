@@ -930,7 +930,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         })
                                                         const label = allOlderThan90
                                                           ? 'Ukončeno před 90 dny'
-                                                          : (sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : 'Ukončeno')
+                                                          : (sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : `Ukončeno ${formatDateWithYear(sortedKeys[0])} `)
                                                         const labelClass = allOlderThan90
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center bg-gray-100/50'
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center bg-gray-100/50'
@@ -969,18 +969,15 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                             portals={expiredPortals}
                                                             mode="hover"
                                                             trigger={
-                                                              <div className="flex w-full gap-2 flex-wrap">
+                                                              <div className="flex w-full gap-2 items-start flex-col">
                                                                 {sortedKeys.map((dateKey, idx) => (
                                                                   <>
                                                                     {idx > 0 && (
-                                                                      <div
-                                                                        key={`sep-${dateKey}`}
-                                                                        data-orientation="vertical"
-                                                                        role="none"
-                                                                        data-slot="separator"
-                                                                        className="w-px h-5 bg-border shrink-0"
-                                                                      />
+                                                                      <span key={`sep-${dateKey}`} className="text-[10px] text-gray-500 px-1">
+                                                                        {formatDateWithYear(dateKey)}
+                                                                      </span>
                                                                     )}
+                                                                    <div className="flex w-full gap-2 items-center flex-wrap">
                                                                     {byDate[dateKey].map((portal) => (
                                                                       <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
                                                                         <span className="inline-flex items-center gap-1">
@@ -992,6 +989,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                         </span>
                                                                       </span>
                                                                     ))}
+                                                                    </div>
                                                                   </>
                                                                 ))}
                                                               </div>
