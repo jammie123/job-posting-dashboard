@@ -781,6 +781,10 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                   </Dialog>
                                 </div>
                                 <p className="text-sm text-muted-foreground flex">{job.location}</p>
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                  <Eye className="h-4 w-4" />
+                                  <span>{job.performance.views}</span>
+                                </div>
                               </div>
                               <PositionNote
                         recruiterName={job.recruiter.name}
@@ -929,7 +933,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                             {job.isFreeTeamio && (
                                                               <Badge
                                                                 variant="secondary"
-                                                                className="text-xs bg-amber-100/30 border border-amber-300 font-normal text-amber-800"
+                                                                className="text-xs bg-red-100/30 border border-red-100 font-medium text-red-800"
                                                               >
                                                                 Archivování za 90 dní
                                                               </Badge>
