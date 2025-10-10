@@ -948,6 +948,9 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         }
                                                         const minPublished = new Date(Math.min(...portals.map(p => new Date(p.publishedAt).getTime())))
                                                         const maxExpires = new Date(Math.max(...portals.map(p => new Date(p.expiresAt).getTime())))
+                                                        if (minPublished.getFullYear() === maxExpires.getFullYear()) {
+                                                          return `${formatDate(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
+                                                        }
                                                         return `${formatDateWithYear(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
                                                       })()}
                                                     </span>
