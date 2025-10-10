@@ -627,37 +627,84 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
   const renderPortals = (job: JobPosting) => {
     const portals = job.advertisement.portals || []
+
+    const activePortals = portals.filter((p) => isPortalActive(p))
+    const expiredPortals = portals.filter((p) => isPortalExpired(p))
+
+    const renderPortalChip = (portal: JobPortal) => {
+      const active = isPortalActive(portal)
+      const soon = isExpiringSoon(portal.expiresAt)
+      const expired = isPortalExpired(portal)
+      const daysLeft = getDaysUntilExpiry(portal.expiresAt)
+      const dot = expired ? 'bg-red-500' : (soon ? 'bg-amber-500' : (active ? 'bg-green-500' : 'bg-gray-300'))
+      const wrapper = soon
+        ? 'border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-200/50 transition-all duration-100'
+        : 'border border-gray-200 bg-gray-100/50 text-gray-700 hover:bg-gray-200/50 transition-all duration-100'
+      return (
+        <span key={portal.url} className={`text-xs rounded px-2 py-1 flex w-fit ${wrapper}`}>
+          <span className="inline-flex items-center gap-1 relative">
+            <span className={`h-[9px] w-[9px] rounded-full ${dot} absolute -bottom-[3px] -left-[3px] border border-[1.5px] shadow-sm border-white`} />
+            {renderPortalIcon(portal, 'h-4 w-4')}
+            {truncatePortalName(portal.name)}
+            {portal.highlighted && portal.highlighted.name && (
+              <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+            )}
+            {soon && (
+              <span className="ml-2 text-amber-700">končí {formatRemainingDaysCz(daysLeft)}</span>
+            )}
+          </span>
+        </span>
+      )
+    }
+
     return (
-      <div className="flex flex-wrap gap-1 w-[300px]">
-        {portals.map((portal) => {
-          const active = isPortalActive(portal)
-          const soon = isExpiringSoon(portal.expiresAt)
-          const expired = isPortalExpired(portal)
-          const daysLeft = getDaysUntilExpiry(portal.expiresAt)
-          // Prioritize soon-expiring (amber) over active (green)
-          const dot = expired ? 'bg-red-500' : (soon ? 'bg-amber-500' : (active ? 'bg-green-500' : 'bg-gray-300'))
+      <div className="flex flex-col gap-5 w-[300px]">
+        {activePortals.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            <div className="text-xs font-medium text-green-800 min-w-[150px]">
+              {(() => {
+                const minPublished = new Date(Math.min(...activePortals.map(p => new Date(p.publishedAt).getTime())))
+                const maxExpires = new Date(Math.max(...activePortals.map(p => new Date(p.expiresAt).getTime())))
+                if (minPublished.getFullYear() === maxExpires.getFullYear()) {
+                  return `Běží ${formatDate(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
+                }
+                return `Běží ${formatDateWithYear(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
+              })()}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {activePortals.map(renderPortalChip)}
+            </div>
+          </div>
+        )}
+
+        {expiredPortals.length > 0 && (() => {
+          const groups: Record<string, { label: string; portals: JobPortal[]; sortKey: number }> = {}
+          expiredPortals.forEach((p) => {
+            const end = getEffectiveEndDate(p)
+            const key = `${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`
+            if (!groups[key]) {
+              groups[key] = {
+                label: `Ukončeno ${formatDateWithYear(end.toISOString())}`,
+                portals: [],
+                sortKey: end.getTime(),
+              }
+            }
+            groups[key].portals.push(p)
+          })
+          const sortedKeys = Object.keys(groups).sort((a, b) => groups[b].sortKey - groups[a].sortKey)
           return (
-            <span
-              key={portal.url}
-              className={`text-xs rounded px-2 py-1 flex w-fit ${soon
-                ? 'border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-200/50 transition-all duration-100'
-                : 'border border-gray-200 bg-gray-100/50 text-gray-700 hover:bg-gray-200/50 transition-all duration-100'
-              }`}
-            >
-              <span className="inline-flex items-center gap-1 relative">
-                <span className={`h-[9px] w-[9px] rounded-full ${dot} absolute -bottom-[3px] -left-[3px] border border-[1.5px] shadow-sm border-white`} />
-                {renderPortalIcon(portal, 'h-4 w-4')}
-                {truncatePortalName(portal.name)}
-                {portal.highlighted && portal.highlighted.name && (
-                  <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
-                )}
-                {soon && (
-                  <span className="ml-2 text-amber-700">končí {formatRemainingDaysCz(daysLeft)}</span>
-                )}
-              </span>
-            </span>
+            <div className="flex flex-col gap-2">
+              {sortedKeys.map((k) => (
+                <div key={k} className="flex flex-wrap gap-1">
+                  <div className="text-xs font-medium text-gray-600 min-w-[150px] pt-1">{groups[k].label}</div>
+                  <div className="flex flex-wrap gap-1">
+                    {groups[k].portals.map(renderPortalChip)}
+                  </div>
+                </div>
+              ))}
+            </div>
           )
-        })}
+        })()}
       </div>
     )
   }
@@ -727,7 +774,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                   <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
                     <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
                       <div className="flex items-stretch gap-4 justify-between w-full ">
-                        <div className="flex items-start w-[450px] p-4 ">
+                        <div className="flex items-start w-[360px] p-4 ">
                           <div className="flex items-start gap-3 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
@@ -882,7 +929,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         )}
 
                         <div className={(() => {
-                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
+                          const base = "w-[400px] flex justify-start items-start shrink-0 p-5 border-l border-gray-200 relative ";
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
@@ -903,57 +950,13 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             <span>{job.performance.views}</span>
                           </div>
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-3 w-[85%]">
+                                                <div className="flex flex-col gap-3 w-full">
                                                   <AdvertismentDetailDialog
                                                     portals={job.advertisement.portals}
                                                     mode="hover"
                                                     title="Detail inzerce"
                                                     trigger={
-                                                      <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md  ">
-                                                        <span
-                                                      className={(() => {
-                                                        const activeCount = getActivePortals(job).length
-                                                        const expired = getExpiredPortals(job)
-                                                        const hasActive = activeCount > 0
-                                                        const hasExpired = expired.length > 0
-                                                        const today = toMidnight(new Date())
-                                                        const allOlderThan60 = !hasActive && hasExpired && expired.every(p => {
-                                                          const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)))
-                                                          return daysAgo > 60
-                                                        })
-                                                        const color = allOlderThan60
-                                                          ? 'text-gray-500'
-                                                          : hasActive
-                                                            ? 'text-green-800'
-                                                            : hasExpired
-                                                              ? 'text-red-800'
-                                                              : 'text-gray-700'
-                                                        return `text-sm p-0 font-medium ${color} justify-center`
-                                                      })()}
-                                                    >
-                                                      {(() => {
-                                                        const portals = job.advertisement.portals || []
-                                                        if (portals.length === 0) return ""
-                                                        const activeCount = getActivePortals(job).length
-                                                        const expired = getExpiredPortals(job)
-                                                        const hasActive = activeCount > 0
-                                                        const hasExpired = expired.length > 0
-                                                        const today = toMidnight(new Date())
-                                                        const allOlderThan60 = !hasActive && hasExpired && expired.every(p => {
-                                                          const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)))
-                                                          return daysAgo > 60
-                                                        })
-                                                        if (allOlderThan60) {
-                                                          return "Ukončeno déle než 2 měsíci"
-                                                        }
-                                                        const minPublished = new Date(Math.min(...portals.map(p => new Date(p.publishedAt).getTime())))
-                                                        const maxExpires = new Date(Math.max(...portals.map(p => new Date(p.expiresAt).getTime())))
-                                                        if (minPublished.getFullYear() === maxExpires.getFullYear()) {
-                                                          return `${formatDate(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
-                                                        }
-                                                        return `${formatDateWithYear(minPublished.toISOString())} - ${formatDateWithYear(maxExpires.toISOString())}`
-                                                      })()}
-                                                    </span>
+                                                      <div className="flex items-start flex-col justify-start gap-1 rounded-md  ">
                                                         {renderPortals(job)}
                                                       </div>
                                                     }
