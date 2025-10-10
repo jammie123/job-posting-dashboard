@@ -47,7 +47,7 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon } from "lucide-react"
+import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon, Megaphone } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Notes now come from job data (job.note)
@@ -811,7 +811,8 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             </div>
                           </div>
                         ) : (
-                          <div className="flex items-start p-4 min-h-full">
+                          <div className="flex flex-col gap-2 min-h-full p-4">
+                          <div className="flex items-start ">
                             <div
                               className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100  cursor-pointer`}
                             >
@@ -832,10 +833,19 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
                           </div>
+                          {job.isBanned && (
+                            <div className="w-full pt-2 mt-2">
+                               <div className="flex items-center justify-center gap-2 text-sm text-gray-700 opacity-70 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
+                                <Megaphone className="h-4 w-4 text-amber-500" />
+                                <span className="text-sm text-amber-500">Zviditelněte svou pozici</span>
+                              </div>
+                            </div>
+                          )}
+                          </div>
                         )}
 
                         <div className={(() => {
-                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 ";
+                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
@@ -851,8 +861,12 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           // All expired but some within 90 days -> soft red gradient
                           return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20";
                         })()}>
+                          <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
+                            <Eye className="h-3.5 w-3.5" />
+                            <span>{job.performance.views}</span>
+                          </div>
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-3 w-full">
+                                                <div className="flex flex-col gap-3 w-[85%]">
                                                 {getActivePortals(job).length > 0 && (
                                                   <div className="flex items-start flex-col justify-start gap-1 p-3 rounded-md hover:bg-gray-100 transition-all duration-100 ">
                                                     <Badge

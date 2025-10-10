@@ -5,6 +5,7 @@
     "title": "Senior React Developer",
     "location": "Praha",
     "department": "Centrála",
+    "isBanned": true,
     "note": "základ 31 - 38 000 Kč + 10%VS + 10% KPI",
     "recruiter": {
       "id": "REC-001",
@@ -869,6 +870,7 @@
     "status": "Aktivní",
     "title": "HR Generalist",
     "location": "Ostrava",
+    "isBanned": true,
     "department": "Centrála",
     "recruiter": {
       "id": "REC-001",
