@@ -843,20 +843,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
                         <div className={(() => {
                           const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
-                          const expired = getExpiredPortals(job);
-                          const activeCount = getActivePortals(job).length;
-                          // Green when there is at least one active portal
-                          if (activeCount >= 1) return base + "bg-gradient-to-r from-green-50/80 to-white border-l-green-500/20 hover:bg-green-200/50";
-                          // No active and no expired -> neutral gray
-                          if (expired.length === 0) return base + "bg-gray-50/80";
-                          const today = toMidnight(new Date());
-                          const allOlderThan60 = expired.every(p => {
-                            const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
-                            return daysAgo > 60;
-                          });
-                          if (allOlderThan60) return base + "bg-gray-50";
-                          // All expired but some within 90 days -> soft red gradient
-                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20 hover:bg-red-200/50 pb-4";
+                          return base + "bg-gray-100";
                         })()}>
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
