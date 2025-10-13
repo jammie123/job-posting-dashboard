@@ -61,24 +61,24 @@
           "name": "Kariérní stránky",
           "url": "https://example.com/JOB-001/career",
           "icon": "WebpagesIcon",
-          "publishedAt": "2025-09-05",
-          "expiresAt": "2025-09-28",
+          "publishedAt": "2025-06-05",
+          "expiresAt": "2025-07-28",
           "performance": { "views": 175, "clicks": 38, "applications": 5 }
         },
         {
           "name": "Prace.cz",
           "url": "https://example.com/JOB-001/prace",
           "icon": "PraceIcon",
-          "publishedAt": "2025-09-01",
-          "expiresAt": "2025-09-30",
+          "publishedAt": "2025-06-01",
+          "expiresAt": "2025-07-30",
           "performance": { "views": 223, "clicks": 49, "applications": 6 }
         },
         {
           "name": "Práce za rohem",
           "url": "https://example.com/JOB-001/pzr",
           "icon": "PraceZaRohemIcon",
-          "publishedAt": "2025-09-01",
-          "expiresAt": "2025-09-29",
+          "publishedAt": "2025-06-01",
+          "expiresAt": "2025-07-29",
           "performance": { "views": 184, "clicks": 43, "applications": 5 }
         }
       ]
@@ -360,40 +360,40 @@
           "name": "Export pozic",
           "url": "https://example.com/JOB-006/export",
           "icon": "ExportIcon",
-          "publishedAt": "2025-08-25",
-          "expiresAt": "2025-09-20",
+          "publishedAt": "2025-05-25",
+          "expiresAt": "2025-06-20",
           "performance": { "views": 150, "clicks": 28, "applications": 4 }
         },
         {
           "name": "Jobote",
           "url": "https://example.com/JOB-006/jobote",
           "icon": "IntranetIcon",
-          "publishedAt": "2025-08-25",
-          "expiresAt": "2025-09-20",
+          "publishedAt": "2025-05-25",
+          "expiresAt": "2025-06-20",
           "performance": { "views": 110, "clicks": 22, "applications": 3 }
         },
         {
           "name": "Kariérní stránky",
           "url": "https://example.com/JOB-006/career",
           "icon": "WebpagesIcon",
-          "publishedAt": "2025-08-26",
-          "expiresAt": "2025-09-19",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
           "performance": { "views": 120, "clicks": 25, "applications": 3 }
         },
         {
           "name": "Prace.cz",
           "url": "https://example.com/JOB-006/prace",
           "icon": "PraceIcon",
-          "publishedAt": "2025-08-25",
-          "expiresAt": "2025-09-20",
+          "publishedAt": "2025-05-25",
+          "expiresAt": "2025-06-20",
           "performance": { "views": 312, "clicks": 58, "applications": 8 }
         },
         {
           "name": "Práce za rohem",
           "url": "https://example.com/JOB-006/pzr",
           "icon": "PraceZaRohemIcon",
-          "publishedAt": "2025-08-27",
-          "expiresAt": "2025-09-18",
+          "publishedAt": "2025-05-27",
+          "expiresAt": "2025-06-18",
           "performance": { "views": 140, "clicks": 26, "applications": 3 }
         }
       ]

@@ -646,7 +646,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
           counts={statusCounts}
           activeFilters={activeFilters}
         />
-        <div className="container mx-auto px-4 max-w-[1400px]">
+        <div className="container mx-auto px-4 max-w-[1500px]">
           <JobFilters
             searchValue={searchQuery}
             onSearchChange={handleSearchChange}
@@ -705,7 +705,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               
                               <JobMenuAction job={job}  />
                             )}
-                            <div className="min-w-[400px] space-y-1">
+                            <div className="min-w-[450px] space-y-1">
                               <div className="flex items-baseline gap-2 ">
 
                                 <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
@@ -781,10 +781,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                   </Dialog>
                                 </div>
                                 <p className="text-sm text-muted-foreground flex">{job.location}</p>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                  <Eye className="h-4 w-4" />
-                                  <span>{job.performance.views}</span>
-                                </div>
+
                               </div>
                               <PositionNote
                         recruiterName={job.recruiter.name}
@@ -845,7 +842,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         )}
 
                         <div className={(() => {
-                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
+                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
@@ -853,20 +850,20 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           // No active and no expired -> neutral gray
                           if (expired.length === 0) return base + "bg-gray-50/80";
                           const today = toMidnight(new Date());
-                          const allOlderThan90 = expired.every(p => {
+                          const allOlderThan60 = expired.every(p => {
                             const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
-                            return daysAgo > 90;
+                            return daysAgo > 60;
                           });
-                          if (allOlderThan90) return base + "bg-gray-50";
+                          if (allOlderThan60) return base + "bg-gray-50";
                           // All expired but some within 90 days -> soft red gradient
-                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20 hover:bg-red-200/50";
+                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20 hover:bg-red-200/50 pb-4";
                         })()}>
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
                             <span>{job.performance.views}</span>
                           </div>
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-3 w-[85%]">
+                                                <div className="flex flex-col gap-3 w-full">
                                                 {getActivePortals(job).length > 0 && (
                                                   <div className="flex items-start flex-col justify-start gap-1 p-3 ">
                                                     <Badge
@@ -879,7 +876,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                       portals={job.advertisement.portals}
                                                       mode="hover"
                                                       trigger={
-                                                        <div className="flex flex-wrap gap-1 w-[300px]">
+                                                        <div className="flex flex-wrap gap-1 w-full">
                                                           {getActivePortals(job).map((portal) => {
                                                             const daysLeft = getDaysUntilExpiry(portal.expiresAt)
                                                             const isSoon = daysLeft > 0 && daysLeft <= 7
@@ -923,6 +920,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
                                                         const todayMidnight = toMidnight(new Date())
+                                                        const olderThan60Count = expiredPortals.filter((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 60
+                                                        }).length
                                                         const allOlderThan90 = expiredPortals.every((p) => {
                                                           const end = getEffectiveEndDate(p)
                                                           const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
@@ -936,23 +938,20 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
                                                         return (
                                                           <div className="flex items-start justify-between flex-row w-full mb-0 gap-2">
-
-                                                            <span
-                                                       
-                                                              className={labelClass}
-                                                            >
+                                                            <span className={labelClass}>
                                                               {label}
                                                             </span>
+                                                            <div className="flex items-center gap-2">
 
-                                                            {job.isFreeTeamio && (
-                                                              <Badge
-                                                                variant="secondary"
-                                                                className="text-xs bg-red-100/30 border border-red-100 font-medium text-red-800"
-                                                              >
-                                                                Archivování za 90 dní
-                                                              </Badge>
-                                                            )}
-
+                                                              {job.isFreeTeamio && (
+                                                                <Badge
+                                                                  variant="secondary"
+                                                                  className="text-xs bg-red-100/30 border border-red-100 font-medium text-red-800"
+                                                                >
+                                                                  Archivování za 90 dní
+                                                                </Badge>
+                                                              )}
+                                                            </div>
                                                           </div>
                                                         )
                                                       })()}
@@ -964,34 +963,63 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           byDate[key].push(p)
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
+                                                        const todayMidnight = toMidnight(new Date())
+                                                        const olderThan60CountInner = expiredPortals.filter((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 60
+                                                        }).length
                                                         return (
                                                           <AdvertismentDetailDialog
                                                             portals={expiredPortals}
                                                             mode="hover"
                                                             trigger={
                                                               <div className="flex w-full gap-2 items-start flex-col">
+
                                                                 {sortedKeys.map((dateKey, idx) => (
                                                                   <>
-                                                                    {idx > 0 && (
-                                                                      <span key={`sep-${dateKey}`} className="text-[10px] text-gray-500 px-1">
-                                                                        {formatDateWithYear(dateKey)}
-                                                                      </span>
-                                                                    )}
-                                                                    <div className="flex w-full gap-2 items-center flex-wrap">
-                                                                    {byDate[dateKey].map((portal) => (
-                                                                      <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
-                                                                        <span className="inline-flex items-center gap-1">
-                                                                          {renderPortalIcon(portal, 'h-4 w-4')}
-                                                                          {truncatePortalName(portal.name)}
-                                                                          {portal.highlighted && portal.highlighted.name && (
-                                                                            <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
-                                                                          )}
-                                                                        </span>
-                                                                      </span>
-                                                                    ))}
-                                                                    </div>
+                                                                    {(() => {
+                                                                      const groupEnd = parseDateToMidnight(dateKey)
+                                                                      const daysAgoGroup = Math.max(0, Math.ceil((todayMidnight.getTime() - groupEnd.getTime()) / (1000 * 60 * 60 * 24)))
+                                                                      if (idx > 0 && daysAgoGroup <= 60) {
+                                                                        return (
+                                                                          <span key={`sep-${dateKey}`} className="text-[10px] text-gray-500 px-1">
+                                                                            {formatDateWithYear(dateKey)}
+                                                                          </span>
+                                                                        )
+                                                                      }
+                                                                      return null
+                                                                    })()}
+                                                                    {(() => {
+                                                                      const visiblePortals = byDate[dateKey].filter((portal) => {
+                                                                        const end = getEffectiveEndDate(portal)
+                                                                        const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                                        return daysAgo <= 60
+                                                                      })
+                                                                      if (visiblePortals.length === 0) return null
+                                                                      return (
+                                                                        <div className="flex w-full gap-2 items-center flex-wrap">
+                                                                          {visiblePortals.map((portal) => (
+                                                                            <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
+                                                                              <span className="inline-flex items-center gap-1">
+                                                                                {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                                {truncatePortalName(portal.name)}
+                                                                                {portal.highlighted && portal.highlighted.name && (
+                                                                                  <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                                                                                )}
+                                                                              </span>
+                                                                            </span>
+                                                                          ))}
+                                                                        </div>
+                                                                      )
+                                                                    })()}
                                                                   </>
                                                                 ))}
+                                                                                                                                {olderThan60CountInner > 0 && (
+                                                                  <span className="text-[11px]  text-gray-600 mt-1">
+                                                                    {`${olderThan60CountInner} ukončených míst více než 60 dní`}
+                                                                  </span>
+                                                                )}
                                                               </div>
                                                             }
                                                           />
