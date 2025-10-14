@@ -30,8 +30,8 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
 
   return (
     <div className="flex gap-3 pt-[16px] top-[80px] left-[52px]">
-      <div className="flex min-w-0  bg-gray-100/80 p-2 rounded-md ">
-        <div className="flex gap-1 justify-start items-center mb-1">
+      <div className="flex min-w-0  bg-gray-100/80 p-1 rounded-md ">
+        <div className="flex gap-1 justify-start items-center">
         <Avatar className="h-6 w-6">
                                               <AvatarFallback className="text-xs font-medium uppercase">
                                                 <div className="aspect-square h-full w-full flex items-center justify-center">
