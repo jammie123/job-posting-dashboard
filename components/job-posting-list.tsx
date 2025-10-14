@@ -106,6 +106,13 @@ const formatRemainingDaysCz = (days: number): string => {
   return `za ${days} dní`
 }
 
+// Uppercase days for headline (DEN/DNY/DNÍ)
+const formatRemainingDaysUpper = (days: number): string => {
+  if (days === 1) return "1 DEN"
+  if (days >= 2 && days <= 4) return `${days} DNY`
+  return `${days} DNÍ`
+}
+
 // Truncate helper for portal labels
 const truncatePortalName = (name: string, max: number = 10): string => {
   if (!name) return ""
@@ -690,7 +697,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                   <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
                     <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
                       <div className="flex items-stretch gap-4 justify-between w-full ">
-                        <div className="flex items-start w-[450px] p-4 ">
+                        <div className="flex items-start w-[350px] p-4 ">
                           <div className="flex items-start gap-3 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
@@ -705,7 +712,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               
                               <JobMenuAction job={job}  />
                             )}
-                            <div className="min-w-[450px] space-y-1">
+                            <div className="min-w-[350px] space-y-1">
                               <div className="flex items-baseline gap-2 ">
 
                                 <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
@@ -842,7 +849,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         )}
 
                         <div className={(() => {
-                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
+                          const base = "w-[400px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
                           return base + "bg-gray-100";
                         })()}>
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
@@ -851,43 +858,68 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           </div>
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-3 w-full">
-                                                {getActivePortals(job).length > 0 && (
-                                                  <div className="flex items-start flex-col justify-start gap-1 p-3 ">
-                                                    <Badge
-                                                      variant="secondary"
-                                                      className="text-sm p-0 bg-gray-100/50 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
-                                                    >
-                                                      Běží do {formatDate(getActivePortals(job)[0].expiresAt)}
-                                                    </Badge>
-                                                    <AdvertismentDetailDialog
-                                                      portals={job.advertisement.portals}
-                                                      mode="hover"
-                                                      trigger={
-                                                        <div className="flex flex-wrap gap-1 w-full">
-                                                          {getActivePortals(job).map((portal) => {
-                                                            const daysLeft = getDaysUntilExpiry(portal.expiresAt)
-                                                            const isSoon = daysLeft > 0 && daysLeft <= 7
-                                                            const cls = isSoon
-                                                              ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
-                                                              : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
-                                                            return (
-                                                              <span key={portal.url} className={cls}>
-                                                                <div className="inline-flex flex  items-center gap-1">
-                                                                  {renderPortalIcon(portal, "h-4 w-4")}
-                                                                  {truncatePortalName(portal.name)}
-                                                                  {portal.highlighted && portal.highlighted.name && (
-                                                                    <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
-                                                                  )}
-                                                                </div>
-                                                                {isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
-                                                              </span>
-                                                            )
-                                                          })}
-                                                        </div>
-                                                      }
-                                                    />
-                                                  </div>
-                                                )}
+                                                {getActivePortals(job).length > 0 && (() => {
+                                                  const activePortals = getActivePortals(job)
+                                                  const sameExpires = activePortals.every(p => p.expiresAt === activePortals[0].expiresAt)
+                                                  const minPublished = activePortals
+                                                    .map(p => new Date(p.publishedAt))
+                                                    .reduce((min, d) => (d.getTime() < min.getTime() ? d : min), new Date(activePortals[0].publishedAt))
+                                                  const maxExpires = activePortals
+                                                    .map(p => new Date(p.expiresAt))
+                                                    .reduce((max, d) => (d.getTime() > max.getTime() ? d : max), new Date(activePortals[0].expiresAt))
+                                                  const daysLeftHeadline = getDaysUntilExpiry(activePortals[0].expiresAt)
+                                                  return (
+                                                    <div className="flex items-start flex-col justify-start p-3 ">
+                                                      {sameExpires ? (
+                                                        <>
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className="text-sm p-0 bg-gray-100/50 font-medium text-amber-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
+                                                          >
+                                                            {`Běží ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                          </Badge>
+                                                          <span className="text-xs text-amber-800 font-normal">
+                                                            {`Končí za ${formatRemainingDaysUpper(daysLeftHeadline)}`}
+                                                          </span>
+                                                        </>
+                                                      ) : (
+                                                        <Badge
+                                                          variant="secondary"
+                                                          className="text-sm p-0 bg-gray-100/50 font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center"
+                                                        >
+                                                          {`Běží ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                        </Badge>
+                                                      )}
+                                                      <AdvertismentDetailDialog
+                                                        portals={job.advertisement.portals}
+                                                        mode="hover"
+                                                        trigger={
+                                                          <div className="flex flex-wrap gap-1 w-full mt-2">
+                                                            {activePortals.map((portal) => {
+                                                              const daysLeft = getDaysUntilExpiry(portal.expiresAt)
+                                                              const isSoon = daysLeft > 0 && daysLeft <= 7
+                                                              const cls = isSoon
+                                                                ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
+                                                                : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
+                                                              return (
+                                                                <span key={portal.url} className={cls}>
+                                                                  <div className="inline-flex flex  items-center gap-1">
+                                                                    {renderPortalIcon(portal, "h-4 w-4")}
+                                                                    {truncatePortalName(portal.name)}
+                                                                    {portal.highlighted && portal.highlighted.name && (
+                                                                      <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
+                                                                    )}
+                                                                  </div>
+                                                                  {!sameExpires && isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
+                                                                </span>
+                                                              )
+                                                            })}
+                                                          </div>
+                                                        }
+                                                      />
+                                                    </div>
+                                                  )
+                                                })()}
                   
                                                 
                   
