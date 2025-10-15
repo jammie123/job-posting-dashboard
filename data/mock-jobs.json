@@ -244,64 +244,7 @@
       "applications": 8
     }
   },
-  {
-    "id": "JOB-007",
-    "status": "Aktivní",
-    "title": "Senior Data Scientist",
-    "location": "Praha",
-    "department": "Centrála",
-    "isFreeTeamio": true,
-    "note": "Skropekova liniovy manazer, preposlat opaleckovane na VP 75",
-    "recruiter": {
-      "id": "REC-001",
-      "name": "Anna Kovářová",
-      "role": "HR Specialist"
-    },
-    "assignedUsers": [
-      {
-        "id": "USR-001",
-        "name": "Anna Kovářová",
-        "role": "Senior Recruiter"
-      },
-      {
-        "id": "USR-008",
-        "name": "Jan Procházka",
-        "role": "Data Science Lead"
-      }
-    ],
-    "candidates": {
-      "new": 6,
-      "inProcess": 4,
-      "total": 12
-    },
-    "advertisement": {
-      "active": true,
-      "status": "Vystavený",
-      "portals": [
-        {
-          "name": "Jobs.cz",
-          "url": "https://example.com/JOB-007/jobs",
-          "icon": "JobsIcon",
-          "publishedAt": "2025-09-18",
-          "expiresAt": "2025-10-30",
-          "performance": { "views": 385, "clicks": 85, "applications": 12 }
-        },
-        {
-          "name": "Kariérní stránky",
-          "url": "https://example.com/JOB-007/career",
-          "icon": "WebpagesIcon",
-          "publishedAt": "2025-09-18",
-          "expiresAt": "2025-10-28",
-          "performance": { "views": 150, "clicks": 28, "applications": 4 }
-        }
-      ]
-    },
-    "performance": {
-      "views": 695,
-      "clicks": 150,
-      "applications": 20
-    }
-  },
+
   {
     "id": "JOB-008",
     "status": "Rozpracovaný",

@@ -707,6 +707,22 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             )}
                             <div className="min-w-[350px] space-y-1">
                               <div className="flex items-baseline gap-2 ">
+                              <div className="flex items-center gap-2 ">
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <div
+                                      className={`ml-1 h-[10px] w-[10px] rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                    />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {job.status === "Aktivní" 
+                                      ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                      : job.status
+                                    }
+                                  </TooltipContent>
+                                </Tooltip>
+
+                              </div>
 
                                 <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
                                   <Link
@@ -842,11 +858,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         )}
 
                         <div className={(() => {
-                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l border-gray-200 relative ";
+                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l bg-gray-50 border-gray-200 relative ";
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
-                          if (activeCount >= 1) return base + "bg-gradient-to-r from-green-50/80 to-white border-l-green-500/20 hover:bg-green-200/50";
+                          if (activeCount >= 1) return base + "";
                           // No active and no expired -> neutral gray
                           if (expired.length === 0) return base + "bg-gray-50/80";
                           const today = toMidnight(new Date());
@@ -856,7 +872,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           });
                           if (allOlderThan60) return base + "bg-gray-50";
                           // All expired but some within 90 days -> soft red gradient
-                          return base + "bg-gradient-to-r from-red-50/80 to-white border-l-red-500/20 hover:bg-red-200/50 pb-4";
+                          return base + "";
                         })()}>
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
