@@ -373,7 +373,7 @@
           "url": "https://example.com/JOB-010/jobs",
           "icon": "JobsIcon",
           "publishedAt": "2025-09-28",
-          "expiresAt": "2025-10-20",
+          "expiresAt": "2025-10-18",
           "performance": { "views": 156, "clicks": 42, "applications": 7 }
         },
         {
@@ -459,6 +459,14 @@
       "status": "Vystavený",
       "portals": [
         {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-012/jobs",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-10-17",
+          "performance": { "views": 289, "clicks": 53, "applications": 9 }
+        },
+        {
           "name": "Jobs.cz",
           "url": "https://example.com/JOB-012/jobs",
           "icon": "JobsIcon",
@@ -466,6 +474,7 @@
           "expiresAt": "2025-11-05",
           "performance": { "views": 289, "clicks": 53, "applications": 9 }
         },
+
         {
           "name": "Kariérní stránky",
           "url": "https://example.com/JOB-012/career",

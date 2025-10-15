@@ -927,8 +927,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                     <div className="flex items-start flex-col justify-start gap-1 p-3 ">
                                                       {sameExpires ? (
                                                         <>
-                                                          <span className="text-sm p-0  font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center">
-                                                            {`Běží ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                          <span className="text-sm p-0  font-medium text-amber-700 dark:bg-green-900/50 dark:text-green-100  justify-center">
+                                                            {`Brzy skončí ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                          </span>
+                                                          <span className="text-xs p-0  font-normal text-amber-700 dark:bg-green-900/50 dark:text-green-100  justify-center">
+                                                            {`Končí ${formatRemainingDaysCz(daysLeftHeadline)}`}
                                                           </span>
              
                                                         </>
