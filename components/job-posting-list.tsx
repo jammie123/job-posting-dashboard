@@ -743,6 +743,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             )}
                             <div className="min-w-[350px] space-y-1 mt-1">
                               <div className="flex items-baseline gap-2 ">
+                              {/*
                               <div className="flex items-center gap-2 ">
                                 <Tooltip>
                                   <TooltipTrigger>
@@ -751,16 +752,16 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                     />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    {job.status === "Aktivní" 
+                                    {job.status === "Aktivní"
                                       ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
                                       : job.status
                                     }
                                   </TooltipContent>
                                 </Tooltip>
-
                               </div>
+                              */}
 
-                                <h3 className="font-medium flex gap-2 items-baseline leading-tight w-full">
+                                <h3 className="font-semibold flex gap-2 items-baseline leading-tight w-full">
                                   <Link
                                     href={`/job/${job.id}`}
                                     className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
@@ -777,7 +778,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                     <Tooltip delayDuration={300}>
                                       <TooltipTrigger>
                                         <DialogTrigger asChild>
-                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 ml-5 mt-1">
+                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80  mt-1">
                                             <Avatar className="h-6 w-6">
                                               <AvatarFallback className="text-xs font-medium uppercase">
                                                 <div className="aspect-square h-full w-full flex items-center justify-center">
