@@ -546,9 +546,45 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         const bExpiresAt = b.advertisement.portals[0]?.expiresAt || ""
         return new Date(aExpiresAt).getTime() - new Date(bExpiresAt).getTime()
       case "expires-desc":
-        const aExpiryDate = a.advertisement.portals[0]?.expiresAt || ""
-        const bExpiryDate = b.advertisement.portals[0]?.expiresAt || ""
-        return new Date(bExpiryDate).getTime() - new Date(aExpiryDate).getTime()
+        const today = toMidnight(new Date())
+        const getLatestEnd = (job: JobPosting) => {
+          const portals = job.advertisement.portals || []
+          if (portals.length === 0) return new Date(0)
+          let latest = new Date(0)
+          portals.forEach((p) => {
+            const end = getEffectiveEndDate(p)
+            if (end.getTime() > latest.getTime()) latest = end
+          })
+          return latest
+        }
+        const hasActive = (job: JobPosting) => (job.advertisement.portals || []).some(p => isPortalActive(p))
+        const allExpired = (job: JobPosting) => (job.advertisement.portals || []).every(p => isPortalExpired(p))
+        const mostRecentExpiredDays = (job: JobPosting) => {
+          const portals = (job.advertisement.portals || []).filter(p => isPortalExpired(p))
+          if (portals.length === 0) return Number.POSITIVE_INFINITY
+          let maxEnd = new Date(0)
+          portals.forEach(p => {
+            const end = getEffectiveEndDate(p)
+            if (end.getTime() > maxEnd.getTime()) maxEnd = end
+          })
+          return Math.max(0, Math.ceil((today.getTime() - maxEnd.getTime()) / (1000 * 60 * 60 * 24)))
+        }
+        const category = (job: JobPosting) => {
+          if (hasActive(job)) return 0 // active first
+          if (allExpired(job)) {
+            const days = mostRecentExpiredDays(job)
+            if (days <= 60) return 1 // fully expired, recent (<60d)
+            return 2 // fully expired, older (>60d)
+          }
+          return 3 // fallback (no portals or mixed), last
+        }
+        const catA = category(a)
+        const catB = category(b)
+        if (catA !== catB) return catA - catB
+        // within the same category, order by latest end date descending ("datum ukončení nejpozději")
+        const aLatest = getLatestEnd(a).getTime()
+        const bLatest = getLatestEnd(b).getTime()
+        return bLatest - aLatest
       default:
         return 0
     }

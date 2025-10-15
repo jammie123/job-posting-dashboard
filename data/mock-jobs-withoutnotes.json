@@ -6,7 +6,6 @@
     "location": "Praha",
     "department": "Centrála",
     "isBanned": true,
-    "note": "základ 31 - 38 000 Kč + 10%VS + 10% KPI",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -64,7 +63,6 @@
     "title": "Java Backend Developer",
     "location": "Praha",
     "department": "Centrála",
-    "note": "hledáme až 16x přípravářů (pak 9 lakýrníků) pro lakovnu. Fix 37 000 Kč + 10...",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -108,7 +106,6 @@
     "title": "Project Manager",
     "location": "Ostrava",
     "department": "Servis",
-    "note": "VP 141, LM",
     "recruiter": {
       "id": "REC-003",
       "name": "Anna Kovářová",
@@ -157,7 +154,6 @@
     "title": "DevOps Engineer",
     "location": "Praha",
     "department": "Centrála",
-    "note": "LM",
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -201,7 +197,7 @@
     "title": "Frontend Developer",
     "location": "Brno",
     "department": "Sales",
-    "note": "VO 046",
+    
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -251,7 +247,7 @@
     "title": "Product Manager",
     "location": "Praha",
     "department": "Sales",
-    "note": "Hledáme od 25/9, SUPERMAX",
+
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
@@ -291,7 +287,7 @@
     "title": "Business Analyst",
     "location": "Praha",
     "department": "Servis",
-    "note": "Hledáme od 24/9",
+
     "recruiter": {
       "id": "REC-001",
       "name": "Anna Kovářová",
