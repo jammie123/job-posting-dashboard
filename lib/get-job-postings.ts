@@ -1,5 +1,5 @@
 import type { JobPostingsData } from "@/types/job-posting"
-import jobPostingsData from '@/data/mock-jobs.json'
+import jobPostingsData from '@/data/mock-jobs_bigcompany.json'
 
 export async function getJobPostings(): Promise<JobPostingsData> {
   // Nyní přímo používáme importovaná data

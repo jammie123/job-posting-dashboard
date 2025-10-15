@@ -1,0 +1,1692 @@
+[
+  {
+    "id": "JOB-001",
+    "status": "Aktivní",
+    "title": "Application administrator - L2 support",
+    "location": "Praha",
+    "department": "Centrála",
+    "isBanned": true,
+    "note": "základ 31 - 38 000 Kč + 10%VS + 10% KPI",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-002",
+        "name": "Petr Novák",
+        "role": "HR Manager"
+      }
+    ],
+    "candidates": {
+      "new": 5,
+      "inProcess": 3,
+      "total": 14
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Archivovaný",
+      "portals": [
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-001/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-05-30",
+          "performance": {
+            "views": 432,
+            "clicks": 78,
+            "applications": 12
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-001/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-06-05",
+          "expiresAt": "2025-11-28",
+          "performance": {
+            "views": 175,
+            "clicks": 38,
+            "applications": 5
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-001/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-11-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-001/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-11-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-001/jobote",
+          "icon": "IntranetIcon2",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-11-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-001/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2025-11-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 699,
+      "clicks": 132,
+      "applications": 20
+    }
+  },
+  {
+    "id": "JOB-003",
+    "status": "Rozpracovaný",
+    "title": "Market Analyst, Trading (junior/senior)",
+    "location": "Praha",
+    "department": "Centrála",
+    "note": "hledáme až 16x přípravářů (pak 9 lakýrníků) pro lakovnu. Fix 37 000 Kč + 10...",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-003/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Atmoskop.cz",
+          "url": "https://example.com/JOB-003/atmoskop",
+          "icon": "AtmoskopIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-003/careers-section",
+          "icon": "CareersSectionIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-003/jobote",
+          "icon": "JoboteIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-003/teamio",
+          "icon": "TeamioIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-003/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-003/jobs",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-15",
+          "expiresAt": "2025-10-04",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-004",
+    "status": "Archivní",
+    "title": "Koordinátor/ka majetkových činností pro elektrárnu",
+    "location": "Ostrava",
+    "department": "Servis",
+    "note": "VP 141, LM",
+    "recruiter": {
+      "id": "REC-003",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-005",
+        "name": "Lucie Svobodová",
+        "role": "HR Specialist"
+      },
+      {
+        "id": "USR-006",
+        "name": "Tomáš Novotný",
+        "role": "Department Head"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 2,
+      "total": 20
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-004/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 180,
+            "clicks": 35,
+            "applications": 7
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-004/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-004/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-004/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Práce za rohem",
+          "url": "https://example.com/JOB-004/pzr",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-004/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-004/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-004/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-004/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-08-22",
+          "expiresAt": "2025-09-09",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 901,
+      "clicks": 170,
+      "applications": 35
+    }
+  },
+  {
+    "id": "JOB-005",
+    "status": "Aktivní",
+    "title": "Specialista/Specialistka technické bezpečnosti",
+    "location": "Praha",
+    "department": "Centrála",
+    "note": "LM",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-003",
+        "name": "Martin Horák",
+        "role": "HR Specialist"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 1,
+      "total": 5
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-005/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 100,
+            "clicks": 22,
+            "applications": 3
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-005/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-005/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Práce za rohem",
+          "url": "https://example.com/JOB-005/pzr",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-005/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-005/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-005/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-005/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-005/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-03",
+          "expiresAt": "2025-09-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 245,
+      "clicks": 47,
+      "applications": 5
+    }
+  },
+  {
+    "id": "JOB-006",
+    "status": "Aktivní",
+    "title": "Algorithmic Trader /Analyst",
+    "location": "Brno",
+    "department": "Sales",
+    "note": "VO 046",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-007",
+        "name": "Michal Dvořák",
+        "role": "Tech Lead"
+      }
+    ],
+    "candidates": {
+      "new": 4,
+      "inProcess": 2,
+      "total": 8
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-006/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 120,
+            "clicks": 25,
+            "applications": 3
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-006/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-006/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-006/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Atmoskop.cz",
+          "url": "https://example.com/JOB-006/atmoskop",
+          "icon": "AtmoskopIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-006/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-006/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-05-26",
+          "expiresAt": "2025-06-19",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 312,
+      "clicks": 58,
+      "applications": 8
+    }
+  },
+  {
+    "id": "JOB-008",
+    "status": "Rozpracovaný",
+    "title": "ÚDRŽBÁŘ/ÚDRŽBÁŘKA – ELEKTROTECHNIK/ ELEKTROTECHNIČKA",
+    "location": "Praha",
+    "department": "Sales",
+    "note": "Hledáme od 25/9, SUPERMAX",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-009",
+        "name": "Tereza Černá",
+        "role": "Product Director"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Nevystavený",
+      "portals": [
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-008/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-008/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-008/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-008/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-008/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-008/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-008/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-008/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-009",
+    "status": "Archivní",
+    "title": "Pracovník/pracovnice lisovny",
+    "location": "Praha",
+    "department": "Servis",
+    "note": "Hledáme od 24/9",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-010",
+        "name": "Lukáš Kučera",
+        "role": "Business Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 15
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Ukončený",
+      "portals": [
+        {
+          "name": "Jobs.cz",
+          "url": "https://jobs.cz/741258",
+          "icon": "JobsIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "cancelAt": "2023-08-15",
+          "performance": {
+            "views": 478,
+            "clicks": 89,
+            "applications": 15
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-009/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-009/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-009/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-009/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-009/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-009/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Práce za rohem",
+          "url": "https://example.com/JOB-009/pzr",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2023-07-15",
+          "expiresAt": "2023-08-15",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 478,
+      "clicks": 89,
+      "applications": 15
+    }
+  },
+  {
+    "id": "JOB-010",
+    "status": "Aktivní",
+    "title": "Project manager rozvoje",
+    "location": "Remote",
+    "department": "Centrála",
+    "note": "Hledáme od 22/9",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-011",
+        "name": "Pavel Svoboda",
+        "role": "Mobile Development Lead"
+      }
+    ],
+    "candidates": {
+      "new": 3,
+      "inProcess": 2,
+      "total": 7
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-010/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 156,
+            "clicks": 42,
+            "applications": 7
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-010/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-010/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-010/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-010/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-010/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-010/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-010/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-28",
+          "expiresAt": "2025-10-20",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 254,
+      "clicks": 69,
+      "applications": 11
+    }
+  },
+  {
+    "id": "JOB-011",
+    "status": "Rozpracovaný",
+    "title": "TRAINEE PRO CHEMICKÝ REŽIM LEDVICE",
+    "location": "Praha",
+    "department": "Servis",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 0
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Nevystavený",
+      "portals": [
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-011/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-011/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-011/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-011/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-011/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-18",
+          "expiresAt": "2025-10-18",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 0,
+      "clicks": 0,
+      "applications": 0
+    }
+  },
+  {
+    "id": "JOB-012",
+    "status": "Aktivní",
+    "title": "Technik údržby & dispečer/ka – Zajistěte bezchybný chod hotelu",
+    "location": "Brno",
+    "department": "Centrála",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "Senior Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-001",
+        "name": "Anna Kovářová",
+        "role": "Senior Recruiter"
+      },
+      {
+        "id": "USR-012",
+        "name": "Monika Horáková",
+        "role": "QA Team Lead"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 4,
+      "total": 9
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-012/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 289,
+            "clicks": 53,
+            "applications": 9
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-012/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-05-03",
+          "performance": {
+            "views": 150,
+            "clicks": 28,
+            "applications": 5
+          }
+        },
+        {
+          "name": "Práce za rohem",
+          "url": "https://example.com/JOB-012/pzr",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-012/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-012/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-012/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-012/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-012/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-12",
+          "expiresAt": "2025-11-05",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 289,
+      "clicks": 53,
+      "applications": 9
+    }
+  },
+  {
+    "id": "JOB-013",
+    "status": "aktivní",
+    "title": "PROVOZNÍ ELEKTROMONTÉR/KA do Přeštic",
+    "location": "Brno",
+    "department": "Sales",
+    "recruiter": {
+      "id": "REC-002",
+      "name": "Anna Kovářová",
+      "role": "Technical Recruiter"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-002",
+        "name": "Tomáš Novák",
+        "role": "Technical Recruiter"
+      },
+      {
+        "id": "USR-004",
+        "name": "Lucie Malá",
+        "role": "Engineering Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 15
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "startupjobs.cz",
+          "url": "https://startupjobs.cz/job/frontend-dev",
+          "icon": "StartupJobsIcon",
+          "publishedAt": "2025-09-01",
+          "expiresAt": "2024-09-10",
+          "cancelAt": "2025-09-10",
+          "performance": {
+            "views": 250,
+            "clicks": 90,
+            "applications": 10
+          }
+        },
+        {
+          "name": "Profesia",
+          "url": "https://prace.cz/jobs/741",
+          "icon": "ProfesiaIcon",
+          "publishedAt": "2024-09-18",
+          "expiresAt": "2025-12-02",
+          "performance": {
+            "views": 98,
+            "clicks": 27,
+            "applications": 4
+          },
+          "highlighted": {
+            "name": "SuperMax"
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 250,
+      "clicks": 90,
+      "applications": 10
+    }
+  },
+  {
+    "id": "JOB-014",
+    "status": "Ukončený",
+    "title": "Marketing Specialist",
+    "location": "Remote",
+    "department": "Sales",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-003",
+        "name": "Eva Štěpánková",
+        "role": "Recruitment Consultant"
+      },
+      {
+        "id": "USR-007",
+        "name": "David Černý",
+        "role": "Marketing Director"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 8
+    },
+    "advertisement": {
+      "active": false,
+      "status": "Archivovaný",
+      "portals": [
+        {
+          "name": "prace.cz",
+          "url": "https://prace.cz/job/marketing-specialist",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "cancelAt": "2025-09-12",
+          "performance": {
+            "views": 180,
+            "clicks": 45,
+            "applications": 6
+          }
+        },
+        {
+          "name": "Prace.cz",
+          "url": "https://example.com/JOB-014/prace",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-014/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-014/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-014/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Práce za rohem",
+          "url": "https://example.com/JOB-014/pzr",
+          "icon": "PraceZaRohemIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-014/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobs.cz",
+          "url": "https://example.com/JOB-014/jobs",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-014/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-05",
+          "expiresAt": "2025-09-12",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 180,
+      "clicks": 45,
+      "applications": 6
+    }
+  },
+  {
+    "id": "JOB-015",
+    "status": "Aktivní",
+    "title": "HR Generalist",
+    "location": "Ostrava",
+    "isBanned": true,
+    "department": "Centrála",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-004",
+        "name": "Michaela Dvořáková",
+        "role": "HR Recruiter"
+      },
+      {
+        "id": "USR-009",
+        "name": "Radek Sýkora",
+        "role": "HR Manager"
+      }
+    ],
+    "candidates": {
+      "new": 0,
+      "inProcess": 0,
+      "total": 5
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "prace.cz",
+          "url": "https://prace.cz/123456",
+          "icon": "PraceIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-10-17",
+          "performance": {
+            "views": 120,
+            "clicks": 30,
+            "applications": 5
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 120,
+      "clicks": 30,
+      "applications": 5
+    }
+  },
+  {
+    "id": "JOB-016",
+    "status": "Aktivní",
+    "title": "IT Support Specialist",
+    "location": "Olomouc",
+    "department": "Servis",
+    "recruiter": {
+      "id": "REC-001",
+      "name": "Anna Kovářová",
+      "role": "HR Specialist"
+    },
+    "assignedUsers": [
+      {
+        "id": "USR-005",
+        "name": "Petr Král",
+        "role": "IT Recruiter"
+      },
+      {
+        "id": "USR-010",
+        "name": "Martin Jelínek",
+        "role": "IT Manager"
+      }
+    ],
+    "candidates": {
+      "new": 2,
+      "inProcess": 3,
+      "total": 6
+    },
+    "advertisement": {
+      "active": true,
+      "status": "Vystavený",
+      "portals": [
+        {
+          "name": "Jobs.cz",
+          "url": "https://jobs.cz/987654",
+          "icon": "JobsIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 120,
+            "clicks": 30,
+            "applications": 5
+          }
+        },
+        {
+          "name": "Teamio",
+          "url": "https://example.com/JOB-016/teamio",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní sekce",
+          "url": "https://example.com/JOB-016/careers-section",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Intranet",
+          "url": "https://example.com/JOB-016/intranet",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Jobote",
+          "url": "https://example.com/JOB-016/jobote",
+          "icon": "IntranetIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Export pozic",
+          "url": "https://example.com/JOB-016/export",
+          "icon": "ExportIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        },
+        {
+          "name": "Kariérní stránky",
+          "url": "https://example.com/JOB-016/career",
+          "icon": "WebpagesIcon",
+          "publishedAt": "2025-09-13",
+          "expiresAt": "2025-09-30",
+          "performance": {
+            "views": 0,
+            "clicks": 0,
+            "applications": 0
+          }
+        }
+      ]
+    },
+    "performance": {
+      "views": 95,
+      "clicks": 20,
+      "applications": 6
+    }
+  }
+]

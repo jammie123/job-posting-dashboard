@@ -29,8 +29,8 @@ export function PositionNote({ recruiterName, createdAt, text, maxLength = 200, 
   const truncatedText = text && text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
 
   return (
-    <div className="flex gap-3 pt-[16px] top-[80px] left-[52px]">
-      <div className="flex min-w-0  bg-gray-100/80 p-1 rounded-md ">
+    <div className="flex gap-3 pt-[16px] top-[80px] left-[52px] ml-4">
+    <div className="flex min-w-0  bg-gray-100/80 p-1 rounded-md ">
         <div className="flex gap-1 justify-start items-center">
         <Avatar className="h-6 w-6">
                                               <AvatarFallback className="text-xs font-medium uppercase">

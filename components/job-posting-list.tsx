@@ -691,7 +691,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                     <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
                       <div className="flex items-stretch gap-4 justify-between w-full ">
                         <div className="flex items-start w-[350px] p-4 ">
-                          <div className="flex items-start gap-3 min-h-full">
+                          <div className="flex items-start gap-2 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
                                 checked={selectedJobs.includes(job.id)}
@@ -705,7 +705,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               
                               <JobMenuAction job={job}  />
                             )}
-                            <div className="min-w-[350px] space-y-1">
+                            <div className="min-w-[350px] space-y-1 mt-1">
                               <div className="flex items-baseline gap-2 ">
                               <div className="flex items-center gap-2 ">
                                 <Tooltip>
@@ -724,19 +724,14 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
 
                               </div>
 
-                                <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
+                                <h3 className="font-medium flex gap-2 items-baseline leading-tight w-full">
                                   <Link
                                     href={`/job/${job.id}`}
                                     className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
                                   >
                                     {job.title}
                                   </Link>
-                                  {job.department && (
-                                    <div className="text-primary text-sm mt-1 flex items-center gap-1">
-                                      ({job.department})
-
-                                    </div>
-                                  )}
+                                 
                                 </h3>
 
                               </div>
@@ -746,7 +741,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                     <Tooltip delayDuration={300}>
                                       <TooltipTrigger>
                                         <DialogTrigger asChild>
-                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">
+                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80 ml-5 mt-1">
                                             <Avatar className="h-6 w-6">
                                               <AvatarFallback className="text-xs font-medium uppercase">
                                                 <div className="aspect-square h-full w-full flex items-center justify-center">
@@ -796,7 +791,13 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                     </DialogContent>
                                   </Dialog>
                                 </div>
-                                <p className="text-sm text-muted-foreground flex">{job.location}</p>
+                                {job.department && (
+                                    <div className="text-primary text-sm flex items-center gap-1 mt-1">
+                                     
+                                      <p className="text-sm text-muted-foreground flex"> {job.department}</p>
+                                    </div>
+                                  )}
+                              
 
                               </div>
                               <PositionNote
@@ -827,7 +828,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           <div className="flex flex-col gap-2 min-h-full p-4">
                           <div className="flex items-start ">
                             <div
-                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100  relative transition-all duration-100  cursor-pointer`}
+                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100  cursor-pointer`}
                             >
                               {getRandomNewCandidates(job.id) && (
                                 <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
@@ -837,11 +838,11 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               <span className="text-2xl font-semibold"> {job.candidates.new}</span>
                               <span className="text-xs text-muted-foreground">Nový</span>
                             </div>
-                            <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100  relative transition-all duration-100   cursor-pointer">
+                            <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100   cursor-pointer">
                               <span className="text-2xl font-semibold "> {job.candidates.inProcess}</span>
                               <span className="text-xs ">Ve hře</span>
                             </div>
-                            <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100  relative transition-all duration-100  cursor-pointer">
+                            <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100  cursor-pointer">
                               <span className="text-2xl font-semibold"> {job.candidates.total}</span>
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
@@ -858,7 +859,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                         )}
 
                         <div className={(() => {
-                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 border-l bg-gray-50 border-gray-200 relative ";
+                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 pb-5 border-l bg-gray-50 border-gray-200 relative ";
                           const expired = getExpiredPortals(job);
                           const activeCount = getActivePortals(job).length;
                           // Green when there is at least one active portal
@@ -879,7 +880,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                             <span>{job.performance.views}</span>
                           </div>
                           {job.status !== "Rozpracovaný" && (
-                                                <div className="flex flex-col gap-3 w-full">
+                                                <div className="flex flex-col gap-1 w-full">
                                                 {getActivePortals(job).length > 0 && (() => {
                                                   const activePortals = getActivePortals(job)
                                                   const sameExpires = activePortals.every(p => p.expiresAt === activePortals[0].expiresAt)
@@ -893,9 +894,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                           <span className="text-sm p-0  font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center">
                                                             {`Běží ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
                                                           </span>
-                                                          <span className="text-xs text-gray-700">
-                                                            {`Končí za ${formatRemainingDaysCz(daysLeftHeadline)}`}
-                                                          </span>
+             
                                                         </>
                                                       ) : (
                                                         <span className="text-sm p-0  font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center">
@@ -941,7 +940,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                   const expiredPortals = getExpiredPortals(job)
                                                   if (expiredPortals.length === 0) return null
                                                   return (
-                                                    <div className="flex items-start flex-col gap-1 justify-start p-3 rounded-md">
+                                                    <div className="flex items-start flex-col gap-1 justify-start px-3 py-1 rounded-md">
                                                       {(() => {
                                                         const byDate: Record<string, JobPortal[]> = {}
                                                         expiredPortals.forEach((p) => {
@@ -951,20 +950,37 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                         })
                                                         const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
                                                         const todayMidnight = toMidnight(new Date())
+                                                        const allOlderThan60 = expiredPortals.every(p => {
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
+                                                          return daysAgo > 60;
+                                                        });
                                                         const olderThan60Count = expiredPortals.filter((p) => {
                                                           const end = getEffectiveEndDate(p)
                                                           const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
                                                           return daysAgo > 60
                                                         }).length
-                                                        const allOlderThan90 = expiredPortals.every((p) => {
+                      
+                                                        const allPortals = job.advertisement.portals || []
+                                                        const hasActive = allPortals.some((p) => isPortalActive(p))
+                                                        const anyExpiredOver60 = expiredPortals.some((p) => {
                                                           const end = getEffectiveEndDate(p)
                                                           const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
-                                                          return daysAgo > 90
+                                                          return daysAgo > 60
                                                         })
-                                                        const label = allOlderThan90
-                                                          ? 'Ukončeno před 90 dny'
-                                                          : (sortedKeys.length === 1 ? `Ukončeno ${formatDate(sortedKeys[0])}` : `Ukončeno ${formatDateWithYear(sortedKeys[0])} `)
-                                                        const labelClass = allOlderThan90
+                                                        // Hide entire label row if there is at least one expired > 60 days and some portals are active
+                                                        if (hasActive && anyExpiredOver60) {
+                                                          return null
+                                                        }
+                                                        const allExpiredOlderThan60 = allPortals.length > 0 && allPortals.every((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const isExpired = end.getTime() < todayMidnight.getTime()
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return isExpired && daysAgo > 60
+                                                        })
+                                                        const label = allExpiredOlderThan60
+                                                          ? 'Ukončeno'
+                                                          : `Ukončeno ${formatDate(sortedKeys[0])}`
+                                                        const labelClass = allExpiredOlderThan60
                                                           ? 'text-sm p-0 font-medium text-gray-500 justify-center '
                                                           : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
                                                         return (
