@@ -226,6 +226,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   const [isRepublishModalOpen, setIsRepublishModalOpen] = useState(false)
   const [selectedJobForRepublish, setSelectedJobForRepublish] = useState<JobPosting | null>(null)
   const [showStatus, setShowStatus] = useState<boolean>(true)
+  const [showLogos, setShowLogos] = useState<boolean>(true)
 
   useEffect(() => {
     try {
@@ -238,6 +239,21 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         }
         window.addEventListener("ui:toggleShowStatus", handler)
         return () => window.removeEventListener("ui:toggleShowStatus", handler)
+      }
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("ui.showLogos")
+        setShowLogos(stored !== "false")
+        const handler = () => {
+          const s = window.localStorage.getItem("ui.showLogos")
+          setShowLogos(s !== "false")
+        }
+        window.addEventListener("ui:toggleShowLogos", handler)
+        return () => window.removeEventListener("ui:toggleShowLogos", handler)
       }
     } catch {}
   }, [])
@@ -989,7 +1005,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                               return (
                                                                 <span key={portal.url} className={cls}>
                                                                   <div className="inline-flex flex items-center gap-1">
-                                                                  {/*  {renderPortalIcon(portal, "h-4 w-4")} */}
+                                                                    {showLogos && renderPortalIcon(portal, "h-4 w-4")}
                                                                     {truncatePortalName(portal.name)}
                                                                     {portal.highlighted && portal.highlighted.name && (
                                                                       <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
@@ -1123,7 +1139,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                           {visiblePortals.map((portal) => (
                                                                             <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
                                                                               <span className="inline-flex items-center gap-1">
-                                                                              {/*  {renderPortalIcon(portal, 'h-4 w-4')} */}
+                                                                                {showLogos && renderPortalIcon(portal, 'h-4 w-4')}
                                                                                 {truncatePortalName(portal.name)}
                                                                                 {portal.highlighted && portal.highlighted.name && (
                                                                                   <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>

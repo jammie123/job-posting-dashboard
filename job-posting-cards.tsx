@@ -1,8 +1,8 @@
 import { getJobPostings } from "@/lib/get-job-postings"
 import { JobPostingList } from "@/components/job-posting-list"
 
-export default async function Component() {
-  const { jobPostings } = await getJobPostings()
+export default async function Component({ dataset }: { dataset?: string }) {
+  const { jobPostings } = await getJobPostings(dataset)
   
   // Log v komponentě zobrazující pracovní pozice
   console.log("=== Data v komponentě Component před renderováním ===")

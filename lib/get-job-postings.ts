@@ -1,10 +1,16 @@
 import type { JobPostingsData } from "@/types/job-posting"
-import jobPostingsData from '@/data/mock-jobs-withoutnotes.json'
-//import jobPostingsData from '@/data/mock-jobs.json'
-//import jobPostingsData from '@/data/mock-jobs_bigcompany.json'
 
-export async function getJobPostings(): Promise<JobPostingsData> {
-  // Nyní přímo používáme importovaná data
+export async function getJobPostings(dataset?: string): Promise<JobPostingsData> {
+  // Select dataset based on query param or env NEXT_PUBLIC_DATASET
+  const ds = dataset || process.env.NEXT_PUBLIC_DATASET || 'withoutnotes'
+  let jobPostingsData: any
+  if (ds === 'bigcompany') {
+    jobPostingsData = (await import('@/data/mock-jobs_bigcompany.json')).default
+  } else if (ds === 'mock') {
+    jobPostingsData = (await import('@/data/mock-jobs.json')).default
+  } else {
+    jobPostingsData = (await import('@/data/mock-jobs-withoutnotes.json')).default
+  }
   const jobPostings = jobPostingsData;
   
   // Výpis všech pracovních pozic a jejich atributů do konzole (pouze při vývoji)
