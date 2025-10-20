@@ -1,16 +1,19 @@
 import type { JobPostingsData } from "@/types/job-posting"
 
 export async function getJobPostings(dataset?: string): Promise<JobPostingsData> {
-  // Select dataset based on query param or env NEXT_PUBLIC_DATASET
-  const ds = dataset || process.env.NEXT_PUBLIC_DATASET || 'withoutnotes'
+  // Select dataset based on query param or env NEXT_PUBLIC_DATASET (no cookies here)
+  const ds = (dataset || process.env.NEXT_PUBLIC_DATASET || 'withoutnotes').trim()
   let jobPostingsData: any
   if (ds === 'bigcompany') {
     jobPostingsData = (await import('@/data/mock-jobs_bigcompany.json')).default
   } else if (ds === 'mock') {
     jobPostingsData = (await import('@/data/mock-jobs.json')).default
+  } else if (ds === 'veol') {
+    jobPostingsData = (await import('@/data/mock-veol.json')).default
   } else {
     jobPostingsData = (await import('@/data/mock-jobs-withoutnotes.json')).default
   }
+  
   const jobPostings = jobPostingsData;
   
   // Výpis všech pracovních pozic a jejich atributů do konzole (pouze při vývoji)

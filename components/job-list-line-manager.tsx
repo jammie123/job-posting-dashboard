@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -42,12 +43,14 @@ const getYesterdayDate = (): Date => {
 export function JobListLineManager() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const searchParams = useSearchParams()
+  const dataset = (searchParams?.get('dataset') || (typeof window !== 'undefined' ? window.localStorage.getItem('ui.dataset') || '' : '') || '').trim() || undefined
 
-  // Fetch job postings when component mounts
+  // Fetch job postings when component mounts or dataset changes
   useEffect(() => {
     async function fetchJobPostings() {
       try {
-        const data = await getJobPostings()
+        const data = await getJobPostings(dataset)
         setJobPostings(data.jobPostings)
       } catch (error) {
         console.error("Error fetching job postings:", error)
@@ -57,7 +60,7 @@ export function JobListLineManager() {
     }
 
     fetchJobPostings()
-  }, [])
+  }, [dataset])
 
   // Filter jobs - pouze aktivní pozice
   const filteredJobs = jobPostings.filter((job) => job.status === "Aktivní" || job.status === "Rozpracovaný")

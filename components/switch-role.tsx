@@ -81,6 +81,8 @@ export function SwitchRole({ initialRole = "recruiter" }: SwitchRoleProps) {
       if (typeof window !== 'undefined') {
         const url = new URL(window.location.href)
         url.searchParams.set('dataset', value)
+        // also mirror selection into a cookie for environments relying on cookies
+        document.cookie = `dataset=${value}; path=/; max-age=${60 * 60 * 24 * 365}`
         window.location.assign(url.toString())
       }
     } catch {}
@@ -102,12 +104,13 @@ export function SwitchRole({ initialRole = "recruiter" }: SwitchRoleProps) {
             <span className="text-xs font-normal text-muted-foreground">Dataset</span>
             <select
               className="w-full border rounded h-8 text-sm px-2"
-              defaultValue={typeof document !== 'undefined' ? (document.cookie.split('; ').find(c => c.startsWith('dataset='))?.split('=')[1] || 'withoutnotes') : 'withoutnotes'}
+              defaultValue={typeof window !== 'undefined' ? (new URLSearchParams(window.location.search).get('dataset') || 'withoutnotes') : 'withoutnotes'}
               onChange={(e) => applyDataset(e.target.value)}
             >
               <option value="bigcompany">mock-jobs_bigcompany.json</option>
               <option value="withoutnotes">mock-jobs-withoutnotes.json</option>
               <option value="mock">mock-jobs.json</option>
+              <option value="veol">mock-veol.json</option>
             </select>
           </div>
         </div>
