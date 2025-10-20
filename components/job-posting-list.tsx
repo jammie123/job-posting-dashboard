@@ -11,7 +11,7 @@
  * Pokud ikona v mapování chybí, použije se výchozí JobsIcon jako fallback
  */
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -225,6 +225,22 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   const [viewType, setViewType] = useState<"cards" | "table">("cards")
   const [isRepublishModalOpen, setIsRepublishModalOpen] = useState(false)
   const [selectedJobForRepublish, setSelectedJobForRepublish] = useState<JobPosting | null>(null)
+  const [showStatus, setShowStatus] = useState<boolean>(true)
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("ui.showStatus")
+        setShowStatus(stored !== "false")
+        const handler = () => {
+          const s = window.localStorage.getItem("ui.showStatus")
+          setShowStatus(s !== "false")
+        }
+        window.addEventListener("ui:toggleShowStatus", handler)
+        return () => window.removeEventListener("ui:toggleShowStatus", handler)
+      }
+    } catch {}
+  }, [])
 
   // Helper function to get current recruiter filter value from activeFilters
   const getRecruiterFilter = (): string => {
@@ -761,6 +777,24 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                               </div>
                               */}
 
+                              {showStatus && (
+                                <div className="flex items-center gap-2 ">
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <div
+                                        className={`ml-1 h-[10px] w-[10px] rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                      />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {job.status === "Aktivní"
+                                        ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                        : job.status
+                                      }
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              )}
+
                                 <h3 className="font-semibold flex gap-2 items-baseline leading-tight w-full">
                                   <Link
                                     href={`/job/${job.id}`}
@@ -954,8 +988,8 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                 : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
                                                               return (
                                                                 <span key={portal.url} className={cls}>
-                                                                  <div className="inline-flex flex  items-center gap-1">
-                                                                    {renderPortalIcon(portal, "h-4 w-4")}
+                                                                  <div className="inline-flex flex items-center gap-1">
+                                                                  {/*  {renderPortalIcon(portal, "h-4 w-4")} */}
                                                                     {truncatePortalName(portal.name)}
                                                                     {portal.highlighted && portal.highlighted.name && (
                                                                       <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
@@ -1089,7 +1123,7 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                                                                           {visiblePortals.map((portal) => (
                                                                             <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
                                                                               <span className="inline-flex items-center gap-1">
-                                                                                {renderPortalIcon(portal, 'h-4 w-4')}
+                                                                              {/*  {renderPortalIcon(portal, 'h-4 w-4')} */}
                                                                                 {truncatePortalName(portal.name)}
                                                                                 {portal.highlighted && portal.highlighted.name && (
                                                                                   <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
