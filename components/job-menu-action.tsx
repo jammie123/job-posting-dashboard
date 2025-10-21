@@ -23,6 +23,7 @@ import {
   SquarePen,
   Timer,
   MonitorSmartphone,
+  FolderSearch,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -134,6 +135,10 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
               >
                 <Star className="mr-2 h-4 w-4" />
                 <span>Zvýraznit inzerát</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onAction?.("preview")}>
+                <FolderSearch className="mr-2 h-4 w-4" />
+                <span>Náhled inzerátu</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
