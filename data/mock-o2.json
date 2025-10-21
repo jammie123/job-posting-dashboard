@@ -35,7 +35,7 @@
         {
           "name": "Export pozic",
           "url": "https://example.com/JOB-001/jobs",
-          "icon": "JobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2025-09-01",
           "expiresAt": "2025-11-30",
           "performance": {
@@ -342,7 +342,7 @@
         {
           "name": "Export pozic",
           "url": "https://jobs.cz/741258",
-          "icon": "JobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2023-07-15",
           "expiresAt": "2023-08-15",
           "cancelAt": "2023-08-15",
@@ -390,13 +390,13 @@
       "total": 7
     },
     "advertisement": {
-      "active": true,
+      "active": false,
       "status": "Vystavený",
       "portals": [
         {
           "name": "Export pozic",
           "url": "https://example.com/JOB-010/jobs",
-          "icon": "JobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2025-09-28",
           "expiresAt": "2025-10-20",
           "performance": {
@@ -495,7 +495,7 @@
         {
           "name": "Export pozic",
           "url": "https://example.com/JOB-012/jobs",
-          "icon": "JobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2025-09-12",
           "expiresAt": "2025-11-05",
           "performance": {
@@ -553,13 +553,13 @@
       "total": 15
     },
     "advertisement": {
-      "active": true,
+      "active": false,
       "status": "Vystavený",
       "portals": [
         {
           "name": "Export pozic",
           "url": "https://startupjobs.cz/job/frontend-dev",
-          "icon": "StartupJobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2025-09-01",
           "expiresAt": "2024-09-10",
           "cancelAt": "2025-09-10",
@@ -572,7 +572,7 @@
         {
           "name": "Export pozic",
           "url": "https://prace.cz/jobs/741",
-          "icon": "ProfesiaIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2024-09-18",
           "expiresAt": "2025-12-02",
           "performance": {
@@ -675,7 +675,7 @@
       "total": 5
     },
     "advertisement": {
-      "active": true,
+      "active": false,
       "status": "Vystavený",
       "portals": [
         {
@@ -733,7 +733,7 @@
         {
           "name": "Export pozic",
           "url": "https://jobs.cz/987654",
-          "icon": "JobsIcon",
+          "icon": "ExportIcon",
           "publishedAt": "2025-09-13",
           "expiresAt": "2025-09-30",
           "performance": {
