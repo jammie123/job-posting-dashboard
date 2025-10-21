@@ -56,7 +56,7 @@ export function PerformanceDetailDialog({ portals, trigger, title = "", mode = "
         <TableHeader>
           <TableRow className="border-b">
             <TableHead className="">Portál</TableHead>
-            <TableHead className="min-w-[200px]">Výkon</TableHead>
+            <TableHead className="min-w-[100px]">Zobrazení</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -73,20 +73,9 @@ export function PerformanceDetailDialog({ portals, trigger, title = "", mode = "
                   </div>
                 </div>
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground py-1 w-[200px] max-w-[250px]">
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between">
-                    <span>Zobrazení:</span>
-                    <span className="font-medium">{portal.performance.views}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Kliknutí:</span>
-                    <span className="font-medium">{portal.performance.clicks}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Žádosti:</span>
-                    <span className="font-medium">{portal.performance.applications}</span>
-                  </div>
+              <TableCell className="text-sm text-muted-foreground py-1 w-[100px] max-w-[150px]">
+                <div className="flex justify-center">
+                  <span className="font-normal text-sm">{portal.performance.views}</span>
                 </div>
               </TableCell>
             </TableRow>
