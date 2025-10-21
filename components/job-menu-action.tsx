@@ -53,7 +53,11 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 min-h-[32px] min-w-[32px] p-0 flex-none inline-flex items-center justify-center"
+        >
           <MoreHorizontal className="h-4 w-4" />
           <span className="sr-only">Otevřít menu</span>
         </Button>
