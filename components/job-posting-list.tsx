@@ -47,7 +47,7 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon, Megaphone } from "lucide-react"
+import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon, Megaphone, FolderSearch } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
 // Notes now come from job data (job.note)
@@ -965,6 +965,10 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
                             <span>{job.performance.views}</span>
+                          </div>
+                          <div className="absolute bottom-2 right-16 flex items-center gap-1 text-xs text-muted-foreground opacity-60 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
+                            <FolderSearch className="h-3.5 w-3.5" />
+                            <span>Náhled</span>
                           </div>
                           {job.status !== "Rozpracovaný" && (
                                                 <div className="flex flex-col gap-1 w-full">

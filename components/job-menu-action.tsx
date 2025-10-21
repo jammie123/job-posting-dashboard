@@ -129,16 +129,18 @@ export function JobMenuAction({ onAction, job }: JobMenuActionProps) {
                 <span>Topovat inzerát</span>
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={() => onAction?.("preview")}
+              >
+                <FolderSearch className="mr-2 h-4 w-4" />
+                <span>Náhled inzerátu</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={() => {
                   setIsHighlightModalOpen(true)
                 }}
               >
                 <Star className="mr-2 h-4 w-4" />
                 <span>Zvýraznit inzerát</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onAction?.("preview")}>
-                <FolderSearch className="mr-2 h-4 w-4" />
-                <span>Náhled inzerátu</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={(e) => {
