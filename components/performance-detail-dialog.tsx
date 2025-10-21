@@ -74,7 +74,7 @@ export function PerformanceDetailDialog({ portals, trigger, title = "", mode = "
                 </div>
               </TableCell>
               <TableCell className="text-sm text-muted-foreground py-1 w-[100px] max-w-[150px]">
-                <div className="flex justify-center">
+                <div className="flex justify-end">
                   <span className="font-normal text-sm">{portal.performance.views}</span>
                 </div>
               </TableCell>
@@ -93,7 +93,7 @@ export function PerformanceDetailDialog({ portals, trigger, title = "", mode = "
             <Button variant="secondary" size="sm">Výkon inzerce</Button>
           )}
         </HoverCardTrigger>
-        <HoverCardContent className="w-fit max-w-[400px] p-2">
+        <HoverCardContent className="w-fit max-w-[400px] p-2" align="end" side="left">
           <div className="text-sm font-medium mb-2">{title}</div>
           {content}
         </HoverCardContent>
