@@ -79,6 +79,11 @@ export function SwitchRole({ initialRole = "recruiter" }: SwitchRoleProps) {
   const applyDataset = (value: string) => {
     try {
       if (typeof window !== 'undefined') {
+        // persist selection for client-side fetching
+        try {
+          window.localStorage.setItem('ui.dataset', value)
+          window.dispatchEvent(new Event('ui:datasetChanged'))
+        } catch {}
         const url = new URL(window.location.href)
         url.searchParams.set('dataset', value)
         // also mirror selection into a cookie for environments relying on cookies

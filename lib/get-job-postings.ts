@@ -1,8 +1,18 @@
 import type { JobPostingsData } from "@/types/job-posting"
 
 export async function getJobPostings(dataset?: string): Promise<JobPostingsData> {
-  // Select dataset based on query param or env NEXT_PUBLIC_DATASET (no cookies here)
-  const ds = (dataset || process.env.NEXT_PUBLIC_DATASET || 'withoutnotes').trim()
+  // Select dataset based on provided value, client localStorage, or env NEXT_PUBLIC_DATASET
+  let ds = (dataset || process.env.NEXT_PUBLIC_DATASET || '').trim()
+  if (!ds) {
+    try {
+      if (typeof window !== 'undefined') {
+        ds = (window.localStorage.getItem('ui.dataset') || '').trim()
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }
+  if (!ds) ds = 'withoutnotes'
   let jobPostingsData: any
   if (ds === 'bigcompany') {
     jobPostingsData = (await import('@/data/mock-jobs_bigcompany.json')).default
@@ -12,7 +22,6 @@ export async function getJobPostings(dataset?: string): Promise<JobPostingsData>
     jobPostingsData = (await import('@/data/mock-veol.json')).default
   } else if (ds === 'o2') {
     jobPostingsData = (await import('@/data/mock-o2.json')).default
-  
   } else {
     jobPostingsData = (await import('@/data/mock-jobs-withoutnotes.json')).default
   }
