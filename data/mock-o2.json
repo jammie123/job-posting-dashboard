@@ -33,11 +33,14 @@
       "status": "Vystavený",
       "portals": [
         {
-          "name": "Export pozic",
+          "name": "Práce.cz",
           "url": "https://example.com/JOB-001/jobs",
-          "icon": "ExportIcon",
+          "icon": "PraceIcon",
           "publishedAt": "2025-09-01",
           "expiresAt": "2025-11-30",
+          "highlighted": {
+            "name": "SuperMax"
+          },
           "performance": {
             "views": 432,
             "clicks": 78,

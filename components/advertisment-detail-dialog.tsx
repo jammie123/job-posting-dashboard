@@ -64,20 +64,25 @@ export function AdvertismentDetailDialog({ portals, trigger, title = "", mode = 
         <TableHeader>
           <TableRow className="border-b">
             <TableHead className="">Portál</TableHead>
-            <TableHead className=" min-w-[100px]">Vyprší</TableHead>
+            <TableHead className="min-w-[210px]">Vystaveno do</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {portals.map((portal) => (
             <TableRow key={portal.url} className="border-b last:border-b-0 py-1">
-              <TableCell className="h-[32px] min-w-[250px] py-0">
-                <div className="flex items-center gap-1 py-1">
+              <TableCell className="h-[32px] min-w-[170px] py-0">
+                <div className="flex items-start gap-2 py-1">
                   {renderPortalIcon(portal)}
-                  <div className="truncate py-1" title={portal.name}>{portal.name}</div>
+                  <div className="flex flex-col">
+                    <div className="truncate" title={portal.name}>{portal.name}</div>
+                    {portal.highlighted?.name && (
+                      <span className="text-[11px] text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                    )}
+                  </div>
                 </div>
               </TableCell>
-              <TableCell className="text-sm text-muted-foreground py-1 w-[150px] max-w-[200px]">
-                {portal.expiresAt ? formatDateWithYear(portal.expiresAt) : "-"}
+              <TableCell className="text-sm text-muted-foreground py-1 w-[150px] max-w-[250px]">
+                {portal.publishedAt ? formatDateWithYear(portal.publishedAt) : "-"} - {portal.expiresAt ? formatDateWithYear(portal.expiresAt) : "-"}
               </TableCell>
             </TableRow>
           ))}
