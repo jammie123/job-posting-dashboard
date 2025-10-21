@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -11,7 +10,7 @@ import { getStatusColor } from "@/types/job-posting"
 import { getJobPostings } from "@/lib/get-job-postings"
 import Link from "next/link"
 import type { JobPosting } from "@/types/job-posting"
-import { TopHeader } from "@/components/top-header"
+// TopHeader is used by the page, not this component
 import { CalendarIcon } from "lucide-react"
 
 // Function to get random new candidates (for demonstration)
@@ -43,23 +42,39 @@ const getYesterdayDate = (): Date => {
 export function JobListLineManager() {
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const searchParams = useSearchParams()
-  const dataset = (searchParams?.get('dataset') || (typeof window !== 'undefined' ? window.localStorage.getItem('ui.dataset') || '' : '') || '').trim() || undefined
+  const [dataset, setDataset] = useState<string | undefined>(undefined)
 
-  // Fetch job postings when component mounts or dataset changes
+  // Determine dataset on client to avoid server-side searchParams usage
   useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        const ds = (params.get('dataset') || window.localStorage.getItem('ui.dataset') || '').trim() || undefined
+        setDataset(ds)
+      }
+    } catch {
+      setDataset(undefined)
+    }
+  }, [])
+
+  // Fetch job postings when dataset is ready/changes
+  useEffect(() => {
+    let isMounted = true
     async function fetchJobPostings() {
       try {
         const data = await getJobPostings(dataset)
-        setJobPostings(data.jobPostings)
+        if (isMounted) setJobPostings(data.jobPostings)
       } catch (error) {
         console.error("Error fetching job postings:", error)
       } finally {
-        setIsLoading(false)
+        if (isMounted) setIsLoading(false)
       }
     }
 
     fetchJobPostings()
+    return () => {
+      isMounted = false
+    }
   }, [dataset])
 
   // Filter jobs - pouze aktivní pozice
