@@ -40,6 +40,7 @@ import { JobPostingTable } from "./job-posting-table"
 import { PositionNote } from "@/components/position-note"
 import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-modal"
 import { AdvertismentDetailDialog } from "@/components/advertisment-detail-dialog"
+import { PerformanceDetailDialog } from "@/components/performance-detail-dialog"
 import Link from "next/link"
 
 import { JobMenuAction } from "@/components/job-menu-action"
@@ -962,10 +963,16 @@ const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
                           // All expired but some within 90 days -> soft red gradient
                           return base + "";
                         })()}>
-                          <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-all duration-100 cursor-pointer">
-                            <Eye className="h-3.5 w-3.5" />
-                            <span>{job.performance.views}</span>
-                          </div>
+                          <PerformanceDetailDialog
+                            portals={job.advertisement.portals}
+                            mode="hover"
+                            trigger={
+                              <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-all duration-100 cursor-pointer">
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>{job.performance.views}</span>
+                              </div>
+                            }
+                          />
                           <div className="absolute bottom-2 right-16 flex items-center gap-1 text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-all duration-100 cursor-pointer">
                             <FolderSearch className="h-3.5 w-3.5" />
                             <span>Náhled</span>
