@@ -10,6 +10,9 @@ export async function getJobPostings(dataset?: string): Promise<JobPostingsData>
     jobPostingsData = (await import('@/data/mock-jobs.json')).default
   } else if (ds === 'veol') {
     jobPostingsData = (await import('@/data/mock-veol.json')).default
+  } else if (ds === 'o2') {
+    jobPostingsData = (await import('@/data/mock-o2.json')).default
+  
   } else {
     jobPostingsData = (await import('@/data/mock-jobs-withoutnotes.json')).default
   }

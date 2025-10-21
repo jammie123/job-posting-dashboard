@@ -111,6 +111,7 @@ export function SwitchRole({ initialRole = "recruiter" }: SwitchRoleProps) {
               <option value="withoutnotes">mock-jobs-withoutnotes.json</option>
               <option value="mock">mock-jobs.json</option>
               <option value="veol">mock-veol.json</option>
+              <option value="o2">mock-o2.json</option>
             </select>
           </div>
         </div>
