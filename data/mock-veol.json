@@ -391,7 +391,7 @@
       "total": 7
     },
     "advertisement": {
-      "active": true,
+      "active": false,
       "status": "Vystavený",
       "portals": [
         {
@@ -675,8 +675,8 @@
       "total": 5
     },
     "advertisement": {
-      "active": true,
-      "status": "Vystavený",
+      "active": false,
+      "status": "Nevystavený",
       "portals": [
         {
           "name": "prace.cz",
