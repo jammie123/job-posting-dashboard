@@ -38,7 +38,7 @@
           "url": "https://example.com/JOB-001/jobs",
           "icon": "JobsIcon",
           "publishedAt": "2025-09-01",
-          "expiresAt": "2025-11-30",
+          "expiresAt": "2025-12-30",
           "performance": {
             "views": 432,
             "clicks": 78,
@@ -50,7 +50,7 @@
           "url": "https://example.com/JOB-001/career",
           "icon": "WebpagesIcon",
           "publishedAt": "2025-06-05",
-          "expiresAt": "2025-11-28",
+          "expiresAt": "2025-12-28",
           "performance": {
             "views": 175,
             "clicks": 38,
@@ -98,7 +98,7 @@
           "url": "https://example.com/JOB-003/career",
           "icon": "WebpagesIcon",
           "publishedAt": "2025-09-15",
-          "expiresAt": "2025-10-04",
+          "expiresAt": "2025-12-04",
           "performance": {
             "views": 0,
             "clicks": 0,
@@ -151,7 +151,7 @@
           "url": "https://example.com/JOB-004/career",
           "icon": "WebpagesIcon",
           "publishedAt": "2025-08-22",
-          "expiresAt": "2025-09-09",
+          "expiresAt": "2025-12-09",
           "performance": {
             "views": 180,
             "clicks": 35,
@@ -199,7 +199,7 @@
           "url": "https://example.com/JOB-005/career",
           "icon": "WebpagesIcon",
           "publishedAt": "2025-09-03",
-          "expiresAt": "2025-09-19",
+          "expiresAt": "2025-12-19",
           "performance": {
             "views": 100,
             "clicks": 22,
@@ -252,7 +252,7 @@
           "url": "https://example.com/JOB-006/career",
           "icon": "WebpagesIcon",
           "publishedAt": "2025-05-26",
-          "expiresAt": "2025-06-19",
+          "expiresAt": "2025-12-19",
           "performance": {
             "views": 120,
             "clicks": 25,
@@ -735,7 +735,7 @@
           "url": "https://jobs.cz/987654",
           "icon": "JobsIcon",
           "publishedAt": "2025-09-13",
-          "expiresAt": "2025-09-30",
+          "expiresAt": "2025-12-30",
           "performance": {
             "views": 120,
             "clicks": 30,
