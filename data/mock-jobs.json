@@ -35,8 +35,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/123456",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-15",
-          "expiresAt": "2023-11-15",
+          "publishedAt": "2026-06-20",
+          "expiresAt": "2026-07-20",
           "performance": {
             "views": 432,
             "clicks": 78,
@@ -47,8 +47,8 @@
           "name": "linkedin.com",
           "url": "https://linkedin.com/jobs/789",
           "icon": "LinkedInIcon",
-          "publishedAt": "2023-10-15",
-          "expiresAt": "2023-11-15",
+          "publishedAt": "2026-06-20",
+          "expiresAt": "2026-07-20",
           "performance": {
             "views": 267,
             "clicks": 54,
@@ -92,15 +92,15 @@
       "total": 10
     },
     "advertisement": {
-      "active": false,
-      "status": "Ukončený",
+      "active": true,
+      "status": "Vystavený",
       "portals": [
         {
           "name": "jobs.cz",
           "url": "https://jobs.cz/789012",
           "icon": "JobsIcon",
-          "publishedAt": "2023-09-10",
-          "expiresAt": "2023-10-10",
+          "publishedAt": "2026-06-12",
+          "expiresAt": "2026-07-12",
           "performance": {
             "views": 345,
             "clicks": 62,
@@ -185,8 +185,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/345678",
           "icon": "JobsIcon",
-          "publishedAt": "2023-08-01",
-          "expiresAt": "2023-09-01",
+          "publishedAt": "2026-05-20",
+          "expiresAt": "2026-06-20",
           "performance": {
             "views": 521,
             "clicks": 95,
@@ -197,8 +197,8 @@
           "name": "linkedin.com",
           "url": "https://linkedin.com/jobs/012",
           "icon": "LinkedInIcon",
-          "publishedAt": "2023-08-01",
-          "expiresAt": "2023-09-01",
+          "publishedAt": "2026-05-20",
+          "expiresAt": "2026-06-20",
           "performance": {
             "views": 380,
             "clicks": 75,
@@ -244,8 +244,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/234567",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-25",
-          "expiresAt": "2023-11-25",
+          "publishedAt": "2026-06-28",
+          "expiresAt": "2026-07-28",
           "performance": {
             "views": 245,
             "clicks": 47,
@@ -296,8 +296,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/567890",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-20",
-          "expiresAt": "2023-11-20",
+          "publishedAt": "2026-06-22",
+          "expiresAt": "2026-07-22",
           "performance": {
             "views": 312,
             "clicks": 58,
@@ -348,8 +348,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/654321",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-18",
-          "expiresAt": "2023-11-18",
+          "publishedAt": "2026-06-18",
+          "expiresAt": "2026-07-18",
           "performance": {
             "views": 385,
             "clicks": 85,
@@ -360,8 +360,8 @@
           "name": "linkedin.com",
           "url": "https://linkedin.com/jobs/456",
           "icon": "LinkedInIcon",
-          "publishedAt": "2023-10-18",
-          "expiresAt": "2023-11-18",
+          "publishedAt": "2026-06-18",
+          "expiresAt": "2026-07-18",
           "performance": {
             "views": 310,
             "clicks": 65,
@@ -451,8 +451,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/741258",
           "icon": "JobsIcon",
-          "publishedAt": "2023-07-15",
-          "expiresAt": "2023-08-15",
+          "publishedAt": "2026-05-01",
+          "expiresAt": "2026-06-01",
           "performance": {
             "views": 478,
             "clicks": 89,
@@ -503,8 +503,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/963258",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-28",
-          "expiresAt": "2023-11-28",
+          "publishedAt": "2026-06-30",
+          "expiresAt": "2026-07-30",
           "performance": {
             "views": 156,
             "clicks": 42,
@@ -515,8 +515,8 @@
           "name": "práce.cz",
           "url": "https://prace.cz/jobs/741",
           "icon": "PraceIcon",
-          "publishedAt": "2023-10-28",
-          "expiresAt": "2023-11-28",
+          "publishedAt": "2026-06-30",
+          "expiresAt": "2026-07-30",
           "performance": {
             "views": 98,
             "clicks": 27,
@@ -601,8 +601,8 @@
           "name": "jobs.cz",
           "url": "https://jobs.cz/852147",
           "icon": "JobsIcon",
-          "publishedAt": "2023-10-12",
-          "expiresAt": "2023-11-12",
+          "publishedAt": "2026-06-24",
+          "expiresAt": "2026-07-24",
           "performance": {
             "views": 289,
             "clicks": 53,
@@ -653,8 +653,8 @@
           "name": "startupjobs.cz",
           "url": "https://startupjobs.cz/job/frontend-dev",
           "icon": "StartupJobsIcon",
-          "publishedAt": "2023-08-01",
-          "expiresAt": "2023-09-01",
+          "publishedAt": "2026-05-10",
+          "expiresAt": "2026-06-10",
           "performance": {
             "views": 250,
             "clicks": 90,
@@ -705,8 +705,8 @@
           "name": "prace.cz",
           "url": "https://prace.cz/job/marketing-specialist",
           "icon": "PraceIcon",
-          "publishedAt": "2023-07-10",
-          "expiresAt": "2023-08-10",
+          "publishedAt": "2026-05-25",
+          "expiresAt": "2026-06-25",
           "performance": {
             "views": 180,
             "clicks": 45,
@@ -750,15 +750,15 @@
       "total": 5
     },
     "advertisement": {
-      "active": false,
-      "status": "Neaktivní",
+      "active": true,
+      "status": "Vystavený",
       "portals": [
         {
           "name": "jobs.cz",
           "url": "https://jobs.cz/987654",
           "icon": "JobsIcon",
-          "publishedAt": "2023-06-01",
-          "expiresAt": "2023-07-01",
+          "publishedAt": "2026-06-15",
+          "expiresAt": "2026-07-15",
           "performance": {
             "views": 120,
             "clicks": 30,
@@ -812,5 +812,4 @@
       "applications": 6
     }
   }
-  
-] 
+]
