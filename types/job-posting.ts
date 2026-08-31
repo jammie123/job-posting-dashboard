@@ -4,9 +4,13 @@ export interface JobPortal {
   name: string
   publishedAt: string
   expiresAt: string
+  cancelAt?: string
   url?: string
   icon?: string
   price?: string
+  highlighted?: {
+    name: string
+  }
   performance: {
     views: number
     clicks: number
@@ -26,6 +30,9 @@ export interface JobPosting {
   title: string
   location: string
   department?: string
+  note?: string
+  isBanned?: boolean
+  isFreeTeamio?: boolean
   recruiter: UserInfo
   assignedUsers: UserInfo[]
   candidates: {

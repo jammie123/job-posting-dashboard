@@ -2,7 +2,7 @@ import type React from "react"
 
 export function ProfesiaIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg width="32" height="32" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <rect
         x="1.14185"
         y="0.487041"
@@ -31,7 +31,7 @@ export function ProfesiaIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function PraceZaRohemIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg width="32" height="32" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <rect
         x="0.644531"
         y="0.444336"
@@ -146,7 +146,7 @@ export function PraceZaRohemIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function KarierniStrankyIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg width="32" height="32" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M0.668164 8.44422C0.691787 4.02601 4.29261 0.463486 8.71082 0.487109L32.7105 0.615429C37.1287 0.639052 40.6912 4.23987 40.6676 8.65809L40.5393 32.6577C40.5156 37.076 36.9148 40.6385 32.4966 40.6149L8.49696 40.4865C4.07874 40.4629 0.516222 36.8621 0.539845 32.4439L0.668164 8.44422Z"
         fill="#FFF5E1"
@@ -181,13 +181,13 @@ export function KarierniStrankyIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function ExportPozicIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
-    <svg width="42" height="41" viewBox="0 0 42 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg width="32" height="32" viewBox="0 0 42 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
-        d="M1.09395 8.44422C1.11757 4.02601 4.71839 0.463486 9.1366 0.487109L33.1363 0.615429C37.5545 0.639052 41.117 4.23987 41.0934 8.65809L40.9651 32.6577C40.9414 37.076 37.3406 40.6385 32.9224 40.6149L8.92274 40.4865C4.50452 40.4629 0.942003 36.8621 0.965626 32.4439L1.09395 8.44422Z"
+        d="M1.09395 8.44422C1.11757 4.02601 4.71839 0.463486 9.1366 0.487109L33.1363 0.615429C37.5545 0.639052 41.117 4.23987 41.0934 8.65809L40.9651 32.6577C40.9414 37.076 37.3406 40.6385 32.9224 40.6149L8.92274 40.4865C4.07874 40.4629 0.516222 36.8621 0.539845 32.4439L0.668164 8.44422Z"
         fill="#E8F5E3"
       />
       <path
-        d="M1.09395 8.44422C1.11757 4.02601 4.71839 0.463486 9.1366 0.487109L33.1363 0.615429C37.5545 0.639052 41.117 4.23987 41.0934 8.65809L40.9651 32.6577C40.9414 37.076 37.3406 40.6385 32.9224 40.6149L8.92274 40.4865C4.50452 40.4629 0.942003 36.8621 0.965626 32.4439L1.09395 8.44422Z"
+        d="M1.09395 8.44422C1.11757 4.02601 4.71839 0.463486 9.1366 0.487109L33.1363 0.615429C37.5545 0.639052 41.117 4.23987 41.0934 8.65809L40.9651 32.6577C40.9414 37.076 37.3406 40.6385 32.9224 40.6149L8.92274 40.4865C4.07874 40.4629 0.516222 36.8621 0.539845 32.4439L0.668164 8.44422Z"
         stroke="#C2C8CE"
       />
       <path

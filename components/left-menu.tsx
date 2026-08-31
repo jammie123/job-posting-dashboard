@@ -31,7 +31,7 @@ const menuItems = [
     href: "/statistics",
   },
   {
-    label: "Marketplace",
+    label: "Eshop",
     icon: ShoppingCart,
     href: "/eshop-v2",
   },

@@ -16,7 +16,7 @@ body {
 
 @layer base {
   :root {
-    --background: #ffffff;  /*background.basic */
+    --background: #ffffff;  /*back  ground.basic */
     --foreground: #000000;     /*colors.black */
     --card: #ffffff;      /*background.basic */
     --card-foreground: #000000 ; /*colors.black */

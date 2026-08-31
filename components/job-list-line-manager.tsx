@@ -6,66 +6,95 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip"
-import { getStatusColor, statusMapping } from "@/types/job-posting"
+import { getStatusColor } from "@/types/job-posting"
 import { getJobPostings } from "@/lib/get-job-postings"
+import Link from "next/link"
 import type { JobPosting } from "@/types/job-posting"
+// TopHeader is used by the page, not this component
+import { CalendarIcon } from "lucide-react"
 
 // Function to get random new candidates (for demonstration)
 const getRandomNewCandidates = (jobId: string): number | null => {
   // Use the job ID as a seed to ensure consistent results
   // Only show new candidates for some jobs (based on job ID)
-  if (Number.parseInt(jobId.substring(0, 8), 16) % 3 === 0) {
+  if (Number.parseInt(jobId.substring(2, 5), 16) % 3 === 0) {
     return Math.floor(Math.random() * 20) + 1 // Random number between 1-20
   }
   return null
 }
 
+// Funkce pro formátování data v českém formátu
+const formatDate = (date: Date): string => {
+  return new Intl.DateTimeFormat("cs-CZ", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric"
+  }).format(date)
+}
+
+// Funkce pro získání včerejšího data
+const getYesterdayDate = (): Date => {
+  const yesterday = new Date()
+  yesterday.setDate(yesterday.getDate() - 1)
+  return yesterday
+}
+
 export function JobListLineManager() {
-  const [searchQuery, setSearchQuery] = useState("")
   const [jobPostings, setJobPostings] = useState<JobPosting[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [dataset, setDataset] = useState<string | undefined>(undefined)
 
-  // Fetch job postings when component mounts
+  // Determine dataset on client to avoid server-side searchParams usage
   useEffect(() => {
+    try {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search)
+        const ds = (params.get('dataset') || window.localStorage.getItem('ui.dataset') || '').trim() || undefined
+        setDataset(ds)
+      }
+    } catch {
+      setDataset(undefined)
+    }
+  }, [])
+
+  // Fetch job postings when dataset is ready/changes
+  useEffect(() => {
+    let isMounted = true
     async function fetchJobPostings() {
       try {
-        const data = await getJobPostings()
-        setJobPostings(data.jobPostings)
+        const data = await getJobPostings(dataset)
+        if (isMounted) setJobPostings(data.jobPostings)
       } catch (error) {
         console.error("Error fetching job postings:", error)
       } finally {
-        setIsLoading(false)
+        if (isMounted) setIsLoading(false)
       }
     }
 
     fetchJobPostings()
-  }, [])
+    return () => {
+      isMounted = false
+    }
+  }, [dataset])
 
-  // Filter jobs based on search query and only include active and inactive positions
-  const filteredJobs = jobPostings
-    .filter((job) => {
-      // Only include active (zveřejněné) and inactive (nezveřejněné) positions
-      if (job.status !== "active" && job.status !== "inactive") {
-        return false
-      }
-
-      // Apply search filter if any
-      if (searchQuery && !job.title.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false
-      }
-
-      return true
-    })
-    // Limit to a random number between 1 and 10 positions
-    .slice(0, Math.floor(Math.random() * 10) + 1)
+  // Filter jobs - pouze aktivní pozice
+  const filteredJobs = jobPostings.filter((job) => job.status === "Aktivní" || job.status === "Rozpracovaný")
 
   return (
     <TooltipProvider>
       <div className="flex flex-col w-full">
-        <div className="bg-white border-b border-gray-200 p-6">
-          <h1 className="text-2xl font-semibold mb-2">Nábory pro liniové manažery</h1>
-          <p className="text-gray-500">Přehled náborů, které spadají pod vaši zodpovědnost</p>
-        </div>
+        {/* Simplified header with just TopHeader and title */}
+        <header className="mb-6 flex flex-col flex-gap gap-0 justify-between bg-background drop-shadow-sm">
+        
+          <div className="flex items-center justify-between px-6 py-6">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Nábory 
+              <span className="ml-2 text-lg font-normal text-muted-foreground">
+                ({filteredJobs.length})
+              </span>
+            </h1>
+          </div>
+        </header>
 
         <div className="container mx-auto px-4 py-6">
           {isLoading ? (
@@ -74,7 +103,7 @@ export function JobListLineManager() {
             </div>
           ) : (
             <div className="space-y-2 mt-1">
-              {filteredJobs.map((job, index) => (
+              {filteredJobs.map((job) => (
                 <Card key={job.id} className="w-full overflow-hidden">
                   <CardContent className="flex flex-col justify-between items-start p-4">
                     <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
@@ -82,17 +111,33 @@ export function JobListLineManager() {
                         <div className="flex items-center gap-12">
                           <div className="flex items-start gap-3">
                             <div className="min-w-[320px] space-y-1">
-                              <div className="flex items-center gap-2">
-                                <h3 className="font-semibold leading-none tracking-tight">{job.title}</h3>
+                              <div className="flex items-baseline gap-2">
                                 <Tooltip>
                                   <TooltipTrigger>
-                                    <div className={`h-3 w-3 rounded-full ${getStatusColor(job.status)}`} />
+                                    <div
+                                      className={`ml-1 h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                    />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    {Object.entries(statusMapping).find(([key, value]) => value === job.status)?.[0] ||
-                                      job.status.charAt(0).toUpperCase() + job.status.slice(1)}
+                                    {job.status === "Aktivní" 
+                                      ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                      : job.status
+                                    }
                                   </TooltipContent>
                                 </Tooltip>
+                                <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
+                                  <Link
+                                    href={`/job/${job.id}`}
+                                    className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
+                                  >
+                                    {job.title}
+                                  </Link>
+                                  {job.department && (
+                                    <div className="text-primary text-sm mt-1">
+                                      ({job.department})
+                                    </div>
+                                  )}
+                                </h3>
                               </div>
                               <div className="flex gap-4 items-center">
                                 <div className="flex items-center gap-4">
@@ -106,28 +151,28 @@ export function JobListLineManager() {
                                                 <div className="aspect-square h-full w-full flex items-center justify-center">
                                                   {job.recruiter.name
                                                     .split(" ")
-                                                    .map((part) => part[0])
+                                                    .map((part: string) => part[0])
                                                     .join("")}
                                                 </div>
                                               </AvatarFallback>
                                             </Avatar>
                                             <span className="text-sm text-muted-foreground">{job.recruiter.name}</span>
-                                            {job.recruiter.additionalRecruiters && (
+                                            {job.assignedUsers.length > 1 && (
                                               <Badge variant="secondary" className="px-1">
-                                                +{job.recruiter.additionalRecruiters}
+                                                +{job.assignedUsers.length - 1}
                                               </Badge>
                                             )}
                                           </div>
                                         </DialogTrigger>
                                       </TooltipTrigger>
-                                      <TooltipContent>Zobrazit náboráže a kolegy</TooltipContent>
+                                      <TooltipContent>Zobrazit náboráře a kolegy</TooltipContent>
                                     </Tooltip>
                                     <DialogContent className="sm:max-w-[425px]">
                                       <DialogHeader>
                                         <DialogTitle>Náboráři a zapojený uživatelé</DialogTitle>
                                       </DialogHeader>
                                       <div className="grid gap-4 py-4">
-                                        {job.recruiter.assignedUsers.map((user) => (
+                                        {job.assignedUsers.map((user) => (
                                           <div
                                             key={user.id}
                                             className="flex items-center gap-4 p-4 rounded-lg border bg-card text-card-foreground shadow-sm"
@@ -136,7 +181,7 @@ export function JobListLineManager() {
                                               <AvatarFallback className="text-sm font-medium uppercase">
                                                 {user.name
                                                   .split(" ")
-                                                  .map((part) => part[0])
+                                                  .map((part: string) => part[0])
                                                   .join("")}
                                               </AvatarFallback>
                                             </Avatar>
@@ -156,27 +201,38 @@ export function JobListLineManager() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                          <div
-                            className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
-                          >
-                            {getRandomNewCandidates(job.id) && (
-                              <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
-                                +{getRandomNewCandidates(job.id)}
-                              </div>
-                            )}
-                            <span className="text-lg font-semibold"> {job.candidates.unreviewed}</span>
-                            <span className="text-xs text-muted-foreground">K ohodnocení</span>
+                        {job.status === "Rozpracovaný" ? (
+                          <div className="flex items-center">
+                            <div className="flex items-center px-4 py-2 rounded-md bg-gray-50">
+                              <CalendarIcon className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm text-gray-600">
+                                Poslední aktualizace: 1.4.2024
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold"> {job.candidates.inProgress}</span>
-                            <span className="text-xs">Ve hře</span>
+                        ) : (
+                          <div className="flex items-center gap-6">
+                            <div
+                              className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                            >
+                              {getRandomNewCandidates(job.id) && (
+                                <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
+                                  +{getRandomNewCandidates(job.id)}
+                                </div>
+                              )}
+                              <span className="text-lg font-semibold">{job.candidates.new}</span>
+                              <span className="text-xs text-muted-foreground">K ohodnocení</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                              <span className="text-lg font-semibold">{job.candidates.inProcess}</span>
+                              <span className="text-xs">Ve hře</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
+                              <span className="text-lg font-semibold">{job.candidates.total}</span>
+                              <span className="text-xs text-muted-foreground">Celkem</span>
+                            </div>
                           </div>
-                          <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold"> {job.candidates.total}</span>
-                            <span className="text-xs text-muted-foreground">Celkem</span>
-                          </div>
-                        </div>
+                        )}
                       </div>
                     </div>
                   </CardContent>

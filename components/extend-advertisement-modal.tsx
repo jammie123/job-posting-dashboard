@@ -4,7 +4,18 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons/index"
+import { 
+  JobsIcon, 
+  PraceIcon,
+  PraceZaRohemIcon,
+  JobspraceIcon,
+  CarreerIcon, 
+  IntranetIcon, 
+  AtmoskopIcon, 
+  WebpagesIcon, 
+  ExportIcon, 
+  ProfesiaIcon 
+} from "@/components/icons"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { JobPortal } from "@/types/job-posting"
 
@@ -21,6 +32,10 @@ const iconMapping = {
   PraceIcon: PraceIcon,
   CarreerIcon: CarreerIcon,
   IntranetIcon: IntranetIcon,
+  AtmoskopIcon: AtmoskopIcon,
+  WebpagesIcon: WebpagesIcon,
+  ExportIcon: ExportIcon,
+  ProfesiaIcon: ProfesiaIcon,
 }
 
 export function ExtendAdvertisementModal({
@@ -32,6 +47,16 @@ export function ExtendAdvertisementModal({
 }: ExtendAdvertisementModalProps) {
   const [selectedPortals, setSelectedPortals] = React.useState<string[]>([])
 
+  // Když se modální okno otevře, nastavíme všechny portály jako vybrané
+  // Když se zavře, resetujeme vybrané portály
+  React.useEffect(() => {
+    if (open) {
+      setSelectedPortals(portals.filter(p => p.url).map(p => p.url as string));
+    } else {
+      setSelectedPortals([]);
+    }
+  }, [open, portals]);
+
   const togglePortal = (url: string) => {
     setSelectedPortals((prev) => (prev.includes(url) ? prev.filter((p) => p !== url) : [...prev, url]))
   }
@@ -42,6 +67,15 @@ export function ExtendAdvertisementModal({
       month: "numeric",
       year: "numeric",
     }).format(new Date(dateString))
+  }
+
+  // Funkce pro získání aktuálního data ve formátovaném tvaru
+  const getCurrentFormattedDate = () => {
+    return new Intl.DateTimeFormat("cs-CZ", {
+      day: "numeric",
+      month: "numeric",
+      year: "numeric",
+    }).format(new Date())
   }
 
   // Calculate extended date (30 days from expiry date)
@@ -81,11 +115,14 @@ export function ExtendAdvertisementModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="sm:max-w-[800px] w-[95vw]">
+      <DialogContent className="sm:max-w-[900px] w-[95vw]">
         <DialogHeader>
           <DialogTitle>Prodloužit vystavení inzerátů</DialogTitle>
         </DialogHeader>
         <div className="py-4 overflow-x-auto">
+          <p className="mb-4 text-sm text-muted-foreground">
+            Datum prodloužení: <strong>{getCurrentFormattedDate()}</strong>
+          </p>
           <Table>
             <TableHeader>
               <TableRow>
@@ -103,10 +140,9 @@ export function ExtendAdvertisementModal({
                 </TableHead>
                 <TableHead className="w-[40px]"></TableHead>
                 <TableHead>Portál</TableHead>
-                <TableHead>Stav inzerátu</TableHead>
-                <TableHead>Od</TableHead>
-                <TableHead>Do</TableHead>
-                <TableHead>Doba</TableHead>
+                <TableHead>Aktuální platnost do</TableHead>
+                <TableHead>Doba prodloužení</TableHead>
+                <TableHead>Nová platnost do</TableHead>
                 <TableHead>Cena</TableHead>
               </TableRow>
             </TableHeader>
@@ -121,19 +157,18 @@ export function ExtendAdvertisementModal({
                   </TableCell>
                   <TableCell>{renderIcon(portal.icon)}</TableCell>
                   <TableCell>{portal.name}</TableCell>
-                  <TableCell>Aktivní</TableCell>
                   <TableCell>{portal.expiresAt ? formatDate(portal.expiresAt) : '-'}</TableCell>
-                  <TableCell>{portal.expiresAt ? calculateExtendedDate(portal.expiresAt) : '-'}</TableCell>
                   <TableCell>
                     {portal.expiresAt 
                       ? calculateDays(portal.expiresAt, calculateExtendedDateRaw(portal.expiresAt))
                       : '-'}
                   </TableCell>
+                 <TableCell>{portal.expiresAt ? calculateExtendedDate(portal.expiresAt) : '-'}</TableCell>
                   <TableCell>{portal.price || "1 200 Kč"}</TableCell>
                 </TableRow>
               ))}
               <TableRow>
-                <TableCell colSpan={8} className="text-center p-4">
+                <TableCell colSpan={7} className="text-center p-4">
                   <Button variant="outline" className="w-full h-auto">
                     <div className="flex flex-col items-center p-4">
                       <span>Přidat další inzerát</span>

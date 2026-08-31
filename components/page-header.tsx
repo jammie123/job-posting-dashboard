@@ -23,7 +23,7 @@ export function PageHeader({ title, activeView = "Aktivní", onViewChange, count
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         <div className="flex">
           <Button asChild className="rounded-r-none border-r border-primary-blue/80">
-            <Link href="/new-position">
+            <Link href="/new-position-v5">
               <Plus className="mr-2 h-4 w-4" />
               Nový nábor
             </Link>
@@ -36,7 +36,7 @@ export function PageHeader({ title, activeView = "Aktivní", onViewChange, count
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link href="/new-position">Nový nábor</Link>
+                <Link href="/new-position-v5">Nový nábor</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/new-position-simple">Nová brigáda</Link>
@@ -46,6 +46,15 @@ export function PageHeader({ title, activeView = "Aktivní", onViewChange, count
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/new-position-v3">Verze 3</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/new-position-v4">Verze 4</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/new-position-v5">Verze 5</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/new-position-v6">Verze 6</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -60,4 +69,3 @@ export function PageHeader({ title, activeView = "Aktivní", onViewChange, count
     </header>
   )
 }
-

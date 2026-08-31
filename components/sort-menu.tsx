@@ -12,7 +12,7 @@ interface SortMenuProps {
   currentSort?: SortOption
 }
 
-export function SortMenu({ onSortChange, currentSort = "created-desc" }: SortMenuProps) {
+export function SortMenu({ onSortChange, currentSort = "expires-desc" }: SortMenuProps) {
   const [open, setOpen] = useState(false)
 
   const handleSelect = (option: SortOption) => {

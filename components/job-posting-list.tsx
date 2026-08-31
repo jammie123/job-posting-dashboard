@@ -1,10 +1,32 @@
 "use client"
 
-import { useState } from "react"
+/*
+ * DŮLEŽITÉ: Import a mapování ikon pro portály
+ * ============================================
+ * Pro správné zobrazení ikon portálů je potřeba:
+ * 1. Importovat všechny požadované ikony z components/icons
+ * 2. Přidat je do objektu iconMapping níže
+ * 3. Zajistit, že každý záznam portálu v mock-jobs.json má hodnotu "icon" odpovídající klíči v iconMapping
+ *
+ * Pokud ikona v mapování chybí, použije se výchozí JobsIcon jako fallback
+ */
+
+import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { JobsIcon, PraceIcon, CarreerIcon, IntranetIcon } from "@/components/icons"
+import {
+  JobsIcon,
+  PraceIcon,
+  PraceZaRohemIcon,
+  JobspraceIcon,
+  CarreerIcon,
+  IntranetIcon,
+  AtmoskopIcon,
+  WebpagesIcon,
+  ExportIcon,
+  ProfesiaIcon,
+} from "@/components/icons"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Button } from "@/components/ui/button"
 import { JobFilters, type ActiveFilter } from "@/components/job-filters"
@@ -14,9 +36,11 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { PostingActions } from "@/components/posting-actions"
 import { PageHeader } from "@/components/page-header"
 import { Checkbox } from "@/components/ui/checkbox"
-import { JobPostingTable } from "@/components/job-posting-table"
+import { JobPostingTable } from "./job-posting-table"
 import { PositionNote } from "@/components/position-note"
 import { RepublishAdvertsimentModal } from "@/components/republish-advertisment-modal"
+import { AdvertismentDetailDialog } from "@/components/advertisment-detail-dialog"
+import { PerformanceDetailDialog } from "@/components/performance-detail-dialog"
 import Link from "next/link"
 
 import { JobMenuAction } from "@/components/job-menu-action"
@@ -24,23 +48,25 @@ import type { SortOption } from "@/components/sort-menu"
 
 import type { JobPosting, JobPortal, JobStatus } from "@/types/job-posting"
 import { getStatusColor, statusMapping } from "@/types/job-posting"
-import { Eye } from "lucide-react"
+import { Eye, CalendarIcon, Search, ChartBar, MonitorSmartphoneIcon, Megaphone, FolderSearch } from "lucide-react"
 import { JobViews, JobViewConfig, views } from "@/components/job-views"
 
-// Sample notes
-const sampleNotes = [
-  "Kandidát má dobré zkušenosti s React a TypeScript. Hledáme někoho, kdo může nastoupit co nejdříve.",
-  "Potřebujeme najít někoho s lepšími znalostmi Javy. Tento kandidát by mohl být vhodný pro seniorní pozici.",
-  "Pozice vyžaduje cestování, což může být problém pro některé kandidáty. Kandidát požaduje vyšší plat, než můžeme nabídnout.",
-]
+// Notes now come from job data (job.note)
+
 
 // Ikony pro portály
 const iconMapping = {
   JobsIcon,
   PraceIcon,
+  JobspraceIcon,
+  PraceZaRohemIcon,
   CarreerIcon,
   IntranetIcon,
   LinkedInIcon: PraceIcon, // Fallback
+  AtmoskopIcon,
+  WebpagesIcon,
+  ExportIcon,
+  ProfesiaIcon,
 }
 
 const formatDate = (dateString: string) => {
@@ -73,6 +99,80 @@ const getDaysUntilExpiry = (expiresAt: string): number => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 }
 
+// CZ humanized remaining days
+const formatRemainingDaysCz = (days: number): string => {
+  if (days === 1) return "za den"
+  if (days === 2) return "za dva dny"
+  if (days === 3 || days === 4) return `za ${days} dny`
+  return `za ${days} dní`
+}
+
+// Truncate helper for portal labels
+const truncatePortalName = (name: string, max: number = 16): string => {
+  if (!name) return ""
+  return name.length > max ? name.substring(0, max) + "..." : name
+}
+
+// Humanized past difference (for expired labels)
+const diffDate = (dateString: string): string => {
+  const end = parseDateToMidnight(dateString)
+  const today = toMidnight(new Date())
+  const diffDays = Math.max(0, Math.ceil((today.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+  if (diffDays <= 1) return "před 1 dnem"
+  if (diffDays < 5) return `před ${diffDays} dny`
+  if (diffDays < 30) return `před ${diffDays} dny`
+  const months = Math.floor(diffDays / 30)
+  if (months === 1) return "před měsícem"
+  if (months < 12) return `před ${months} měsíci`
+  const years = Math.floor(months / 12)
+  if (years === 1) return "před rokem"
+  return `před ${years} lety`
+}
+
+// Date helpers for per-portal status evaluation
+const toMidnight = (date: Date) => {
+  const d = new Date(date)
+  d.setHours(0, 0, 0, 0)
+  return d
+}
+
+const parseDateToMidnight = (dateString: string): Date => {
+  const d = new Date(dateString)
+  return toMidnight(d)
+}
+
+const isSameDay = (a: Date, b: Date): boolean => {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+const getEffectiveEndDate = (portal: JobPortal): Date => {
+  const expires = parseDateToMidnight(portal.expiresAt)
+  const cancel = portal.cancelAt ? parseDateToMidnight(portal.cancelAt) : null
+  if (cancel) {
+    return cancel.getTime() < expires.getTime() ? cancel : expires
+  }
+  return expires
+}
+
+const isPortalActive = (portal: JobPortal): boolean => {
+  const today = toMidnight(new Date())
+  const start = parseDateToMidnight(portal.publishedAt)
+  const end = getEffectiveEndDate(portal)
+  return start.getTime() <= today.getTime() && today.getTime() <= end.getTime()
+}
+
+const isPortalExpired = (portal: JobPortal): boolean => {
+  const today = toMidnight(new Date())
+  const end = getEffectiveEndDate(portal)
+  return end.getTime() < today.getTime()
+}
+
+const isPortalExpiredYesterday = (portal: JobPortal): boolean => {
+  const yesterday = toMidnight(new Date())
+  yesterday.setDate(yesterday.getDate() - 1)
+  return isSameDay(getEffectiveEndDate(portal), yesterday)
+}
+
 // Random data pro demonstraci
 const getRandomNewCandidates = (jobId: string): number | null => {
   if (Number.parseInt(jobId.substring(2, 5), 16) % 3 === 0) {
@@ -89,23 +189,23 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   // Log v komponentě JobPostingList
   console.log("=== Data v komponentě JobPostingList ===");
   console.log(`Počet pracovních pozic přijatých v komponentě: ${jobPostings?.length || 0}`);
-  
+
   if (jobPostings && jobPostings.length > 0) {
     console.log("První pozice:", jobPostings[0]);
-    
+
     // Výpis stavů
     const statuses = [...new Set(jobPostings.map(job => job.status))];
     console.log("Unikátní stavy:", statuses);
-    
+
     // Výpis lokací
     const locations = [...new Set(jobPostings.map(job => job.location))];
     console.log("Unikátní lokace:", locations);
-    
+
     // Výpis recruiterů
     const recruiters = [...new Set(jobPostings.map(job => job.recruiter.name))];
     console.log("Unikátní recruiteři:", recruiters);
   }
-  
+
   const [searchQuery, setSearchQuery] = useState("")
   const [activeFilters, setActiveFilters] = useState<ActiveFilter[]>([
     {
@@ -120,12 +220,44 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     }
   ])
   const [activeView, setActiveView] = useState("Aktivní")
-  const [currentSort, setCurrentSort] = useState<SortOption>("created-desc")
+  const [currentSort, setCurrentSort] = useState<SortOption>("expires-desc")
   const [bulkActionEnabled, setBulkActionEnabled] = useState(false)
   const [selectedJobs, setSelectedJobs] = useState<string[]>([])
   const [viewType, setViewType] = useState<"cards" | "table">("cards")
   const [isRepublishModalOpen, setIsRepublishModalOpen] = useState(false)
   const [selectedJobForRepublish, setSelectedJobForRepublish] = useState<JobPosting | null>(null)
+  const [showStatus, setShowStatus] = useState<boolean>(true)
+  const [showLogos, setShowLogos] = useState<boolean>(true)
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("ui.showStatus")
+        setShowStatus(stored !== "false")
+        const handler = () => {
+          const s = window.localStorage.getItem("ui.showStatus")
+          setShowStatus(s !== "false")
+        }
+        window.addEventListener("ui:toggleShowStatus", handler)
+        return () => window.removeEventListener("ui:toggleShowStatus", handler)
+      }
+    } catch {}
+  }, [])
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("ui.showLogos")
+        setShowLogos(stored !== "false")
+        const handler = () => {
+          const s = window.localStorage.getItem("ui.showLogos")
+          setShowLogos(s !== "false")
+        }
+        window.addEventListener("ui:toggleShowLogos", handler)
+        return () => window.removeEventListener("ui:toggleShowLogos", handler)
+      }
+    } catch {}
+  }, [])
 
   // Helper function to get current recruiter filter value from activeFilters
   const getRecruiterFilter = (): string => {
@@ -136,10 +268,10 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   // Nový handler pro změnu pohledu, který nastaví odpovídající filtry
   const handleViewChange = (view: string) => {
     console.log(`=== Změna pohledu na: "${view}" ===`);
-    
+
     // Nejprve nastavíme aktivní pohled pro UI
     setActiveView(view);
-    
+
     // Načtení vlastních pohledů
     let customViews: JobViewConfig[] = [];
     try {
@@ -150,30 +282,30 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     } catch (error) {
       console.error('Chyba při načítání vlastních pohledů:', error);
     }
-    
+
     // Získáme konfiguraci pohledu - nejprve hledáme mezi výchozími pohledy, poté mezi vlastními
-    const viewConfig = views.find((v: JobViewConfig) => v.value === view) || 
-                      customViews.find((v: JobViewConfig) => v.value === view);
-    
+    const viewConfig = views.find((v: JobViewConfig) => v.value === view) ||
+      customViews.find((v: JobViewConfig) => v.value === view);
+
     if (!viewConfig) {
       console.warn(`Pohled "${view}" nebyl nalezen v konfiguraci!`);
       return;
     }
-    
+
     console.log(`Konfigurace pohledu:`, viewConfig.filters);
-    
+
     // Při přepnutí na jakýkoliv pohled vyčistíme vyhledávání, ale zachováme filtr náboráře
     setSearchQuery("");
-    
+
     // Vytvoříme nové pole filtrů podle konfigurace pohledu
     let newFilters: ActiveFilter[] = [];
-    
+
     // Zachováme existující filtr náboráře, pokud existuje
     const existingRecruiterFilter = activeFilters.find(f => f.id === "recruiter");
     if (existingRecruiterFilter) {
       newFilters.push(existingRecruiterFilter);
     }
-    
+
     // Pro každý pohled nastavíme odpovídající filtry
     if (viewConfig.filters) {
       // Procházíme všechny filtry definované v konfiguraci pohledu
@@ -185,7 +317,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
             value: value as string
           });
           console.log(`Nastavuji filtr status: ${value}`);
-        } 
+        }
         else if (key === "advertisement.status" && value) {
           if (Array.isArray(value)) {
             newFilters.push({
@@ -223,7 +355,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         else if (key === "title" && value) {
           newFilters.push({
             id: "title",
-            label: "Název pozice", 
+            label: "Název pozice",
             value: value as string
           });
           console.log(`Nastavuji filtr názvu: ${value}`);
@@ -234,7 +366,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     } else {
       console.log("Odstraňuji filtry stavu - zobrazuji všechny pozice");
     }
-    
+
     // Aktualizujeme filtry
     setActiveFilters(newFilters);
   };
@@ -244,7 +376,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     console.log("=== Aplikované filtry ===");
     if (filters.length === 0) {
       console.log("Žádné aktivní filtry");
-      
+
       // Když nejsou žádné filtry, nastavíme pohled na "Aktivní"
       if (activeView !== "Aktivní") {
         setActiveView("Aktivní");
@@ -252,12 +384,12 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
       }
     } else {
       filters.forEach((filter, index) => {
-        const valueStr = Array.isArray(filter.value) 
-          ? `[${filter.value.join(", ")}]` 
+        const valueStr = Array.isArray(filter.value)
+          ? `[${filter.value.join(", ")}]`
           : filter.value;
         console.log(`Filtr #${index + 1}: ${filter.id} = ${valueStr}`);
       });
-      
+
       // Kontrola, zda je mezi filtry status, a pokud ano, aktualizujeme pohled
       const statusFilter = filters.find(f => f.id === "status");
       if (statusFilter && statusFilter.value) {
@@ -295,7 +427,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     });
     console.log(filterGroups);
     console.log("========================");
-    
+
     setActiveFilters(filters);
   };
 
@@ -308,13 +440,13 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   // Handler pro změnu náboráře s logováním
   const handleRecruiterChange = (recruiter: string) => {
     console.log(`=== Filtrování podle náboráře: "${recruiter}" ===`);
-    
+
     // Když se změní náborář, aktualizujeme aktivní filtry
     let newFilters = [...activeFilters];
-    
+
     // Najdeme, jestli už existuje filtr recruiter
     const recruiterFilterIndex = newFilters.findIndex(f => f.id === "recruiter");
-    
+
     if (recruiter) {
       // Pokud je vybrán náborář, přidáme nebo aktualizujeme filtr
       if (recruiterFilterIndex >= 0) {
@@ -337,30 +469,28 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         newFilters = newFilters.filter(f => f.id !== "recruiter");
       }
     }
-    
+
     // Nastavíme aktualizované filtry
     setActiveFilters(newFilters);
   };
 
   // Helper funkce pro určení stavu inzerátu
   const getAdvertisementStatus = (job: JobPosting): string => {
-    if (job.advertisement.active) {
-      return "Vystavený";
-    } else if (job.advertisement.portals.length > 0) {
-      return "Ukončený";
-    } else {
-      return "Nevystavený";
-    }
+    const portals = job.advertisement.portals || []
+    const hasActivePortal = portals.some((p) => isPortalActive(p))
+    if (hasActivePortal) return "Vystavený"
+    if (portals.length > 0) return "Ukončený"
+    return "Nevystavený"
   }
 
   const filteredJobs = jobPostings.filter((job) => {
     // Nejdříve zalogujeme, jaké filtry budou aplikovány na tento job
     console.log(`Filtrování pozice ${job.id} (${job.title}):`);
-    
+
     // Už nekontrolujeme activeView přímo, protože jsme jej převedli na filtry
     // Ale pro účely logování stále kontrolujeme a vypisujeme pohled
     console.log(`- Aktivní pohled: '${activeView}'`);
-    
+
     // Pak aplikovat textové vyhledávání
     if (searchQuery) {
       const matchesQuery = job.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -369,7 +499,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
     }
 
     // Odebírám separátní kontrolu recruiterFilter, protože nyní je součástí activeFilters
-    
+
     // Aplikovat všechny aktivní filtry
     const passesAllFilters = activeFilters.every((filter) => {
       if (!filter.value) {
@@ -384,17 +514,17 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           passes = job.status === filter.value;
           console.log(`- Filtr 'status': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} statusu '${job.status}'`);
           break;
-          
+
         case "recruiter":
           passes = job.recruiter.name === filter.value;
           console.log(`- Filtr 'recruiter': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} náboráři '${job.recruiter.name}'`);
           break;
-          
+
         case "location":
           passes = job.location === filter.value;
           console.log(`- Filtr 'location': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} lokalitě '${job.location}'`);
           break;
-          
+
         case "adStatus":
           const adStatus = getAdvertisementStatus(job);
           if (Array.isArray(filter.value)) {
@@ -407,25 +537,25 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
             console.log(`- Filtr 'adStatus': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} stavu inzerátu '${adStatus}'`);
           }
           break;
-          
+
         case "portal":
           passes = job.advertisement.portals.some((portal) => portal.name === filter.value);
           const portals = job.advertisement.portals.map(p => p.name).join(', ');
           console.log(`- Filtr 'portal': '${filter.value}' - ${passes ? 'odpovídá' : 'neodpovídá'} (dostupné portály: ${portals || 'žádné'})`);
           break;
-          
+
         default:
           console.log(`- Neznámý filtr '${filter.id}' - pozice prochází`);
           passes = true;
       }
-      
+
       return passes;
     });
 
     // Zalogujeme výsledek filtrování
     console.log(`Výsledek filtrování pro pozici ${job.id}: ${passesAllFilters ? 'ZOBRAZIT' : 'SKRÝT'}`);
     console.log('------------------------');
-    
+
     return passesAllFilters;
   })
 
@@ -449,19 +579,75 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
         const bExpiresAt = b.advertisement.portals[0]?.expiresAt || ""
         return new Date(aExpiresAt).getTime() - new Date(bExpiresAt).getTime()
       case "expires-desc":
-        const aExpiryDate = a.advertisement.portals[0]?.expiresAt || ""
-        const bExpiryDate = b.advertisement.portals[0]?.expiresAt || ""
-        return new Date(bExpiryDate).getTime() - new Date(aExpiryDate).getTime()
+        const today = toMidnight(new Date())
+        const getLatestEnd = (job: JobPosting) => {
+          const portals = job.advertisement.portals || []
+          if (portals.length === 0) return new Date(0)
+          let latest = new Date(0)
+          portals.forEach((p) => {
+            const end = getEffectiveEndDate(p)
+            if (end.getTime() > latest.getTime()) latest = end
+          })
+          return latest
+        }
+        const hasActive = (job: JobPosting) => (job.advertisement.portals || []).some(p => isPortalActive(p))
+        const allExpired = (job: JobPosting) => (job.advertisement.portals || []).every(p => isPortalExpired(p))
+        const mostRecentExpiredDays = (job: JobPosting) => {
+          const portals = (job.advertisement.portals || []).filter(p => isPortalExpired(p))
+          if (portals.length === 0) return Number.POSITIVE_INFINITY
+          let maxEnd = new Date(0)
+          portals.forEach(p => {
+            const end = getEffectiveEndDate(p)
+            if (end.getTime() > maxEnd.getTime()) maxEnd = end
+          })
+          return Math.max(0, Math.ceil((today.getTime() - maxEnd.getTime()) / (1000 * 60 * 60 * 24)))
+        }
+        const category = (job: JobPosting) => {
+          if (hasActive(job)) return 0 // active first
+          if (allExpired(job)) {
+            const days = mostRecentExpiredDays(job)
+            if (days <= 60) return 1 // fully expired, recent (<60d)
+            return 2 // fully expired, older (>60d)
+          }
+          return 3 // fallback (no portals or mixed), last
+        }
+        const catA = category(a)
+        const catB = category(b)
+        if (catA !== catB) return catA - catB
+        // within the same category, order by latest end date descending ("datum ukončení nejpozději")
+        const aLatest = getLatestEnd(a).getTime()
+        const bLatest = getLatestEnd(b).getTime()
+        return bLatest - aLatest
       default:
         return 0
     }
   })
 
-  const renderPortalIcon = (portal: JobPortal) => {
-    const Icon = portal.icon && iconMapping[portal.icon as keyof typeof iconMapping] 
-      ? iconMapping[portal.icon as keyof typeof iconMapping] 
-      : JobsIcon
-    return <Icon className="h-7 w-7 text-muted-foreground hover:text-foreground" />
+const renderPortalIcon = (portal: JobPortal, sizeClass: string = "h-8 w-8") => {
+    console.log(`Rendering portal icon for ${portal.name}`, portal);
+
+    if (!portal.icon) {
+      console.warn(`Portál ${portal.name} nemá definovanou ikonu. Použije se výchozí JobsIcon.`);
+      return <JobsIcon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
+    }
+
+    const iconExists = Object.keys(iconMapping).includes(portal.icon);
+    if (!iconExists) {
+      console.warn(`Ikona "${portal.icon}" pro portál ${portal.name} není v mapování. Použije se výchozí JobsIcon.`);
+      return <JobsIcon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
+    }
+
+    const Icon = iconMapping[portal.icon as keyof typeof iconMapping];
+
+    // Kontrola existence atributu highlighted
+    if (portal.highlighted) {
+      console.log(`Portal ${portal.name} is highlighted:`, portal.highlighted);
+      // Pokud má portál atribut highlighted, aplikujeme větší velikost a zlatý okraj
+      return <Icon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
+    }
+
+    // Standardní ikona bez zvýraznění
+    return <Icon className={`${sizeClass} text-muted-foreground hover:text-foreground rounded-full`} />;
   }
 
   const handleBulkActionToggle = (enabled: boolean) => {
@@ -489,24 +675,35 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
   const statusCounts = {
     "Aktivní": jobPostings.filter((job) => job.status === "Aktivní").length,
     "Zveřejněný": jobPostings.filter((job) => job.status === "Aktivní" && getAdvertisementStatus(job) === "Vystavený").length,
-    "Nezveřejněný": jobPostings.filter((job) => job.status === "Aktivní" && 
+    "Nezveřejněný": jobPostings.filter((job) => job.status === "Aktivní" &&
       (getAdvertisementStatus(job) === "Ukončený" || getAdvertisementStatus(job) === "Nevystavený")).length,
     "Rozpracovaný": jobPostings.filter((job) => job.status === "Rozpracovaný").length,
     "Archivní": jobPostings.filter((job) => job.status === "Archivní").length,
   }
 
-  // Rozdělení portálů na aktivní a neaktivní
+  // Rozdělení portálů na aktivní a ukončené na základě dat
   const getActivePortals = (job: JobPosting) => {
-    return job.advertisement.active 
-      ? job.advertisement.portals
-      : []
+    return (job.advertisement.portals || []).filter((p) => isPortalActive(p))
   }
-  
+
   const getExpiredPortals = (job: JobPosting) => {
-    return !job.advertisement.active && job.advertisement.portals.length > 0
-      ? job.advertisement.portals
-      : []
+    return (job.advertisement.portals || []).filter((p) => isPortalExpired(p))
   }
+
+  const getExpiredYesterdayPortals = (job: JobPosting) => {
+    return (job.advertisement.portals || []).filter((p) => isPortalExpiredYesterday(p))
+  }
+
+  // Funkce pro ořezání dlouhého textu
+  const truncateText = (text: string, maxLength: number = 20) => {
+    if (text.length <= maxLength) return text;
+    return `${text.substring(0, maxLength)}...`;
+  }
+
+  // Tato funkce získá celá data o vybraných inzerátech
+  const getSelectedJobsData = () => {
+    return sortedJobs.filter(job => selectedJobs.includes(job.id));
+  };
 
   return (
     <>
@@ -518,7 +715,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           counts={statusCounts}
           activeFilters={activeFilters}
         />
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 max-w-[1500px]">
           <JobFilters
             searchValue={searchQuery}
             onSearchChange={handleSearchChange}
@@ -541,6 +738,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
             viewType={viewType}
             onViewChange={(view) => setViewType(view)}
             activeView={activeView}
+            selectedJobs={getSelectedJobsData()}
           />
 
           {viewType === "table" ? (
@@ -557,12 +755,12 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
           ) : (
             <div className="space-y-2 mt-1">
               {sortedJobs.map((job, index) => (
-                <Card key={job.id} className="w-full overflow-hidden">
-                  <CardContent className="flex flex-col justify-between items-start p-4">
-                    <div className="flex flex-row items-start gap-1 flex-1 justify-between w-full">
-                      <div className="flex items-start gap-4 w-full justify-between">
-                        <div className="flex items-center gap-12">
-                          <div className="flex items-start gap-3">
+                <Card key={job.id} className="w-full overflow-hidden group p-0 ">
+                  <CardContent className="flex flex-col justify-between items-start p-0 w-full relative">
+                    <div className="flex flex-row items-stretch gap-1 flex-1 justify-between w-full">
+                      <div className="flex items-stretch gap-4 justify-between w-full ">
+                        <div className="flex items-start w-[350px] p-4 ">
+                          <div className="flex items-start gap-2 min-h-full">
                             {bulkActionEnabled ? (
                               <Checkbox
                                 checked={selectedJobs.includes(job.id)}
@@ -573,35 +771,55 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                 aria-label={`Vybrat pozici ${job.title}`}
                               />
                             ) : (
-                              <JobMenuAction job={job} />
+                              
+                              <JobMenuAction job={job}  />
                             )}
-                            <div className="min-w-[320px] space-y-1">
+                            <div className="min-w-[350px] space-y-1 mt-1">
                               <div className="flex items-baseline gap-2 ">
+                              {/*
+                              <div className="flex items-center gap-2 ">
                                 <Tooltip>
                                   <TooltipTrigger>
                                     <div
-                                      className={`ml-1 h-3 w-3 rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                      className={`ml-1 h-[10px] w-[10px] rounded-full ${getStatusColor(job.status, job.advertisement)}`}
                                     />
                                   </TooltipTrigger>
                                   <TooltipContent>
-                                    {job.status === "Aktivní" 
+                                    {job.status === "Aktivní"
                                       ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
                                       : job.status
                                     }
                                   </TooltipContent>
                                 </Tooltip>
-                                <h3 className="font-semibold flex gap-2 items-baseline leading-none tracking-tight">
+                              </div>
+                              */}
+
+                              {showStatus && (
+                                <div className="flex items-center gap-2 ">
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <div
+                                        className={`ml-1 h-[10px] w-[10px] rounded-full ${getStatusColor(job.status, job.advertisement)}`}
+                                      />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {job.status === "Aktivní"
+                                        ? `${job.status} - ${job.advertisement.active ? "Vystavený" : "Nevystavený"}`
+                                        : job.status
+                                      }
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </div>
+                              )}
+
+                                <h3 className="font-semibold flex gap-2 items-baseline leading-tight w-full">
                                   <Link
                                     href={`/job/${job.id}`}
                                     className="text-link-primary hover:text-link-primary hover:underline cursor-pointer"
                                   >
                                     {job.title}
                                   </Link>
-                                  {job.department && (
-                                    <div className="text-primary text-sm mt-1">
-                                      ({job.department})
-                                    </div>
-                                  )}
+                                 
                                 </h3>
 
                               </div>
@@ -611,7 +829,7 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     <Tooltip delayDuration={300}>
                                       <TooltipTrigger>
                                         <DialogTrigger asChild>
-                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80">
+                                          <div className="flex items-center gap-2 cursor-pointer hover:opacity-80  mt-1">
                                             <Avatar className="h-6 w-6">
                                               <AvatarFallback className="text-xs font-medium uppercase">
                                                 <div className="aspect-square h-full w-full flex items-center justify-center">
@@ -661,251 +879,339 @@ export function JobPostingList({ jobPostings }: JobPostingListProps) {
                                     </DialogContent>
                                   </Dialog>
                                 </div>
-                                <p className="text-sm text-muted-foreground flex">{job.location}</p>
+                                {job.department && (
+                                    <div className="text-primary text-sm flex items-center gap-1 mt-1">
+                                     
+                                      <p className="text-sm text-muted-foreground flex"> {job.department}</p>
+                                    </div>
+                                  )}
+                              
+
                               </div>
+                              <PositionNote
+                        recruiterName={job.recruiter.name}
+                        text={job.note}
+                        hasNote={Boolean(job.note)}
+                      />
+
                             </div>
+
                           </div>
 
-                          <div className="flex items-center gap-2"></div>
+                       
+                          
                         </div>
+                        
 
-                          <div className="flex items-center gap-6">
+                        {job.status === "Rozpracovaný" ? (
+                          <div className="flex items-center">
+                            <div className="flex items-center px-4 py-2 rounded-md bg-gray-50">
+                              <CalendarIcon className="h-4 w-4 mr-2 text-gray-500" />
+                              <span className="text-sm text-gray-600">
+                                Poslední aktualizace: 1.4.2024
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-2 min-h-full p-4">
+                          <div className="flex items-start ">
                             <div
-                              className={`flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer`}
+                              className={`flex flex-col w-[90px] items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100  cursor-pointer`}
                             >
                               {getRandomNewCandidates(job.id) && (
                                 <div className="absolute -right-1 rounded-full bg-[#E61F60] text-white text-xs px-1.5 py-0.5 min-w-[20px] text-center">
                                   +{getRandomNewCandidates(job.id)}
                                 </div>
                               )}
-                            <span className="text-lg font-semibold"> {job.candidates.new}</span>
-                            <span className="text-xs text-muted-foreground">Nový</span>
+                              <span className="text-2xl font-semibold"> {job.candidates.new}</span>
+                              <span className="text-xs text-muted-foreground">Nový</span>
                             </div>
-                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                            <span className="text-lg font-semibold "> {job.candidates.inProcess}</span>
+                            <div className="flex flex-col  w-[100px] border-l items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100   cursor-pointer">
+                              <span className="text-2xl font-semibold "> {job.candidates.inProcess}</span>
                               <span className="text-xs ">Ve hře</span>
                             </div>
-                            <div className="flex flex-col items-center gap-0 hover:bg-gray-100 rounded-lg p-2 relative transition-all duration-100 hover:-translate-y-1 hover:shadow-md cursor-pointer">
-                              <span className="text-lg font-semibold"> {job.candidates.total}</span>
+                            <div className="flex flex-col w-[100px] border-l border-gray-200 items-center gap-1 hover:bg-gray-100 py-1 relative transition-all duration-100  cursor-pointer">
+                              <span className="text-2xl font-semibold"> {job.candidates.total}</span>
                               <span className="text-xs text-muted-foreground">Celkem</span>
                             </div>
                           </div>
-                        <div className="w-60 shrink-0">
-                          <PositionNote
-                            recruiterName={job.recruiter.name}
-                            createdAt={index < 3 ? new Date(Date.now() - (index + 1) * 24 * 60 * 60 * 1000) : undefined}
-                            text={index < 3 ? sampleNotes[index] : undefined}
-                            hasNote={index < 3}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                      <div className="pt-2 flex items-center gap-6 px-[48px]">
-                      {getActivePortals(job).length > 0 && (
-                          <div className="flex items-center gap-3">
-                          <span className="text-sm text-muted-foreground">
-                            {formatDate(getActivePortals(job)[0].publishedAt)} - {formatDate(getActivePortals(job)[0].expiresAt)}
-                          </span>
-                            <div className="flex items-center gap-4">
-                              <div className="flex -space-x-1">
-                              {getActivePortals(job).map((portal) => (
-                                <Tooltip key={portal.url}>
-                                  <TooltipTrigger asChild>
-                                  <a
-                                    href={portal.url}
-                                    className="relative flex h-7 w-7 items-center justify-center rounded-full border bg-background hover:z-10 hover:border-border p-0"
-                                  >
-                                    {renderPortalIcon(portal)}
-                                  </a>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <div className="flex flex-col gap-1">
-                                      <span className="font-medium">{portal.name}</span>
-                                      <span className="text-xs text-muted-foreground">
-                                        {formatDateWithYear(portal.publishedAt)} - {formatDateWithYear(portal.expiresAt)}
-                                      </span>
-                                    </div>
-                                  </TooltipContent>
-                                </Tooltip>
-                                ))}
-                              </div>
-                              <div className="flex items-center gap-3">
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    <div className="flex items-center gap-1.5">
-                                      <Eye className="h-4 w-4 text-muted-foreground" />
-                                      <span className="text-sm text-muted-foreground">
-                                      {job.performance.views}
-                                      </span>
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>Celkem shlédnutí</TooltipContent>
-                                </Tooltip>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                      {getActivePortals(job).filter((portal) => isExpiringSoon(portal.expiresAt)).length > 0 && (
-                          <div className="flex items-center gap-3">
-                          <HoverCard>
-                              <HoverCardTrigger>
-                                <div className="flex items-center gap-2 rounded-full bg-amber-100 px-2 py-0.5">
-                                  <span className="text-xs font-medium text-amber-800">
-                                  {`Zkončí za ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "")} ${getDaysUntilExpiry(getActivePortals(job).find((portal) => isExpiringSoon(portal.expiresAt))?.expiresAt || "") === 1 ? "den" : "dny"}`}
-                                  </span>
-                                  <div className="flex -space-x-1">
-                                  {getActivePortals(job)
-                                      .filter((portal) => isExpiringSoon(portal.expiresAt))
-                                      .map((portal) => (
-                                        <div
-                                          key={portal.url}
-                                          className="relative flex h-7 w-7 items-center justify-center rounded-full border border-amber-300 bg-white"
-                                          title={portal.name}
-                                        >
-                                          {renderPortalIcon(portal)}
-                                        </div>
-                                      ))}
-                                  </div>
-                                </div>
-                              </HoverCardTrigger>
-                              <HoverCardContent className="w-[240px] p-0 z-[9999]">
-                                <table className="w-full">
-                                  <thead>
-                                    <tr className="border-b">
-                                      <th className="p-2 text-left text-xs font-medium">Portál</th>
-                                      <th className="p-2 text-left text-xs font-medium">Končí</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                  {getActivePortals(job)
-                                      .filter((portal) => isExpiringSoon(portal.expiresAt))
-                                      .map((portal) => (
-                                        <tr key={portal.url} className="border-b last:border-0">
-                                          <td className="p-2 text-xs">{portal.name}</td>
-                                          <td className="p-2 text-xs">{formatDateWithYear(portal.expiresAt)}</td>
-                                        </tr>
-                                      ))}
-                                  </tbody>
-                                </table>
-                                <div className="border-t p-2">
-                                  <Button className="w-full" size="sm">
-                                    Prodloužit inzerci
-                                  </Button>
-                                </div>
-                              </HoverCardContent>
-                            </HoverCard>
-                          </div>
-                        )}
-                      {getExpiredPortals(job).length > 0 && (
-                          <div className="flex items-center gap-3">
-                          <HoverCard>
-                              <HoverCardTrigger>
-                                <div className="flex items-center gap-2 rounded-full bg-[#FFECEC] px-2 py-0.5">
-                                  <span className="text-xs font-medium text-[#9B0000]">
-                                    {(() => {
-                                    const expiryDates = getExpiredPortals(job).map((p) => p.expiresAt)
-                                      const allSameDate = expiryDates.every((date) => date === expiryDates[0])
-
-                                      if (allSameDate && expiryDates.length > 0) {
-                                        return `Ukončený od ${formatDate(expiryDates[0])}`
-                                      }
-
-                                    return `${getExpiredPortals(job).length} ukončený ${
-                                      getExpiredPortals(job).length === 1 ? "inzerát" : "inzeráty"
-                                      }`
-                                    })()}
-                                  </span>
-                                  <div className="flex -space-x-1">
-                                  {getExpiredPortals(job).slice(0, 3).map((portal) => (
-                                      <div
-                                        key={portal.url}
-                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white"
-                                        title={portal.name}
-                                      >
-                                        {renderPortalIcon(portal)}
-                                      </div>
-                                    ))}
-                                  {getExpiredPortals(job).length > 3 && (
-                                      <div
-                                        className="relative flex h-7 w-7 items-center justify-center rounded-full border border-[#9B0000]/10 bg-white text-xs font-medium"
-                                        title="More portals"
-                                      >
-                                      +{getExpiredPortals(job).length - 3}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              </HoverCardTrigger>
-                              <HoverCardContent className="w-[280px] p-0">
-                                <div className="p-2 border-b">
-                                  <h4 className="font-medium text-sm">
-                                  Ukončené portály ({getExpiredPortals(job).length})
-                                  </h4>
-                                </div>
-                                <div className="max-h-[200px] overflow-y-auto">
-                                  <table className="w-full">
-                                    <thead className="sticky top-0 bg-white">
-                                      <tr className="border-b">
-                                        <th className="p-2 text-left text-xs font-medium">Portál</th>
-                                        <th className="p-2 text-left text-xs font-medium">Ukončeno</th>
-                                        <th className="p-2 text-left text-xs font-medium">Zobrazení</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>
-                                    {getExpiredPortals(job).map((portal) => (
-                                        <tr key={portal.url} className="border-b last:border-0">
-                                          <td className="p-2 text-xs">
-                                            <div className="flex items-center gap-2">
-                                              <div className="h-5 w-5">{renderPortalIcon(portal)}</div>
-                                              {portal.name}
-                                            </div>
-                                          </td>
-                                          <td className="p-2 text-xs">{formatDate(portal.expiresAt)}</td>
-                                          <td className="p-2 text-xs">{portal.performance?.views || 0}</td>
-                                        </tr>
-                                      ))}
-                                    </tbody>
-                                  </table>
-                                </div>
-                                <div className="border-t p-2">
-                                  <Button
-                                    className="w-full"
-                                    size="sm"
-                                    onClick={() => {
-                                      setSelectedJobForRepublish(job)
-                                      setIsRepublishModalOpen(true)
-                                    }}
-                                  >
-                                    Znovu vystavit inzerát
-                                  </Button>
-                                </div>
-                              </HoverCardContent>
-                            </HoverCard>
-                          </div>
-                        )}
-                      {job.advertisement.portals.length === 0 && (
-                            <div className="flex items-center">
-                              <div className="rounded-full bg-gray-100 px-3 py-1">
-                                <span className="text-sm text-gray-500">Zatím nevystavený žádný inzerát</span>
+                          {job.isBanned && (
+                            <div className="w-full pt-2 mt-2">
+                               <div className="flex items-center justify-center gap-2 text-sm text-gray-700 opacity-70 group-hover:opacity-100 transition-all duration-100 cursor-pointer">
+                                <Megaphone className="h-4 w-4 text-amber-500" />
+                                <span className="text-sm text-amber-500">Zviditelněte svou pozici</span>
                               </div>
                             </div>
                           )}
+                          </div>
+                        )}
+
+                        <div className={(() => {
+                          const base = "w-[450px] pl-4 flex justify-start items-start shrink-0 p-3 pb-5 border-l bg-gray-50 border-gray-200 relative ";
+                          const expired = getExpiredPortals(job);
+                          const activeCount = getActivePortals(job).length;
+                          // Green when there is at least one active portal
+                          if (activeCount >= 1) return base + "";
+                          // No active and no expired -> neutral gray
+                          if (expired.length === 0) return base + "bg-gray-50/80";
+                          const today = toMidnight(new Date());
+                          const allOlderThan60 = expired.every(p => {
+                            const daysAgo = Math.max(0, Math.ceil((today.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
+                            return daysAgo > 60;
+                          });
+                          if (allOlderThan60) return base + "bg-gray-50";
+                          // All expired but some within 90 days -> soft red gradient
+                          return base + "";
+                        })()}>
+                          <PerformanceDetailDialog
+                            portals={job.advertisement.portals}
+                            mode="hover"
+                            trigger={
+                              <div className="absolute bottom-2 right-2 flex items-center gap-1 text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-all duration-100 cursor-pointer">
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>{job.performance.views}</span>
+                              </div>
+                            }
+                          />
+                          <div className="absolute bottom-2 right-16 flex items-center gap-1 text-xs text-muted-foreground opacity-60 hover:opacity-100 transition-all duration-100 cursor-pointer">
+                            <FolderSearch className="h-3.5 w-3.5" />
+                            <span>Náhled</span>
+                          </div>
+                          {job.status !== "Rozpracovaný" && (
+                                                <div className="flex flex-col gap-1 w-full">
+                                                {getActivePortals(job).length > 0 && (() => {
+                                                  const activePortals = getActivePortals(job)
+                                                  const sameExpires = activePortals.every(p => p.expiresAt === activePortals[0].expiresAt)
+                                                  const minPublished = new Date(Math.min(...activePortals.map(p => new Date(p.publishedAt).getTime())))
+                                                  const maxExpires = new Date(Math.max(...activePortals.map(p => new Date(p.expiresAt).getTime())))
+                                                  const daysLeftHeadline = getDaysUntilExpiry(activePortals[0].expiresAt)
+                                                  return (
+                                                    <div className="flex items-start flex-col justify-start gap-1 p-3 ">
+                                                      {sameExpires ? (
+                                                        <>
+                                                          <span className="text-sm p-0  font-medium text-amber-700 dark:bg-green-900/50 dark:text-green-100  justify-center">
+                                                            {`Brzy skončí ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                          </span>
+                                                          <span className="text-xs p-0  font-normal text-amber-700 dark:bg-green-900/50 dark:text-green-100  justify-center">
+                                                            {`Končí ${formatRemainingDaysCz(daysLeftHeadline)}`}
+                                                          </span>
+             
+                                                        </>
+                                                      ) : (
+                                                        <span className="text-sm p-0  font-medium text-green-800 dark:bg-green-900/50 dark:text-green-100  justify-center">
+                                                           {`Běží ${formatDate(minPublished.toISOString())} - ${formatDate(maxExpires.toISOString())}`}
+                                                        </span>
+                                                      )}
+                                                      <AdvertismentDetailDialog
+                                                        portals={job.advertisement.portals}
+                                                        mode="hover"
+                                                        trigger={
+                                                          <div className="flex flex-wrap gap-1 w-full">
+                                                            {activePortals.map((portal) => {
+                                                              const daysLeft = getDaysUntilExpiry(portal.expiresAt)
+                                                              const isSoon = daysLeft > 0 && daysLeft <= 7
+                                                              const cls = isSoon
+                                                                ? "text-xs rounded border border-amber-300 bg-amber-50 px-2 py-0.5 text-amber-800 flex"
+                                                                : "text-xs rounded border border-gray-200 bg-white px-2 py-0.5 text-gray-800 flex"
+                                                              return (
+                                                                <span key={portal.url} className={cls}>
+                                                                  <div className="inline-flex flex items-center gap-1">
+                                                                    {showLogos && renderPortalIcon(portal, "h-4 w-4")}
+                                                                    {truncatePortalName(portal.name)}
+                                                                    {portal.highlighted && portal.highlighted.name && (
+                                                                      <span className="ml-1 font-medium text-purple-700">{`+ ${portal.highlighted.name} `}</span>
+                                                                    )}
+                                                                  </div>
+                                                                  {!sameExpires && isSoon && ` (končí ${formatRemainingDaysCz(daysLeft)})`}
+                                                                </span>
+                                                              )
+                                                            })}
+                                                          </div>
+                                                        }
+                                                      />
+                                                    </div>
+                                                  )
+                                                })()}
+                  
+                                                
+                  
+                                                {(() => null)()}
+
+                                                {(() => {
+                                                  const expiredPortals = getExpiredPortals(job)
+                                                  if (expiredPortals.length === 0) return null
+                                                  return (
+                                                    <div className="flex items-start flex-col gap-1 justify-start px-3 py-1 rounded-md">
+                                                      {(() => {
+                                                        const byDate: Record<string, JobPortal[]> = {}
+                                                        expiredPortals.forEach((p) => {
+                                                          const key = getEffectiveEndDate(p).toISOString().slice(0, 10)
+                                                          if (!byDate[key]) byDate[key] = []
+                                                          byDate[key].push(p)
+                                                        })
+                                                        const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
+                                                        const todayMidnight = toMidnight(new Date())
+                                                        const allOlderThan60 = expiredPortals.every(p => {
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - getEffectiveEndDate(p).getTime()) / (1000 * 60 * 60 * 24)));
+                                                          return daysAgo > 60;
+                                                        });
+                                                        const olderThan60Count = expiredPortals.filter((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 60
+                                                        }).length
+                      
+                                                        const allPortals = job.advertisement.portals || []
+                                                        const hasActive = allPortals.some((p) => isPortalActive(p))
+                                                        const anyExpiredOver60 = expiredPortals.some((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 60
+                                                        })
+                                                        // Hide entire label row if there is at least one expired > 60 days and some portals are active
+                                                        if (hasActive && anyExpiredOver60) {
+                                                          return null
+                                                        }
+                                                        const allExpiredOlderThan60 = allPortals.length > 0 && allPortals.every((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const isExpired = end.getTime() < todayMidnight.getTime()
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return isExpired && daysAgo > 60
+                                                        })
+                                                        const label = allExpiredOlderThan60
+                                                          ? 'Ukončeno'
+                                                          : `Ukončeno ${formatDate(sortedKeys[0])}`
+                                                        const labelClass = allExpiredOlderThan60
+                                                          ? 'text-sm p-0 font-medium text-gray-500 justify-center '
+                                                          : 'text-sm p-0 font-medium text-red-800 dark:bg-red-900/50 dark:text-red-100 justify-center'
+                                                        return (
+                                                          <div className="flex items-start justify-between flex-row w-full mb-0 gap-2">
+                                                            <span className={labelClass}>
+                                                              {label}
+                                                            </span>
+                                                            <div className="flex items-center gap-2">
+
+                                                              {job.isFreeTeamio && (
+                                                                <span
+                                                                  
+                                                                  className="text-xs bg-red-100/30 border border-red-100 font-medium text-red-800"
+                                                                >
+                                                                  Archivování za 90 dní
+                                                                </span>
+                                                              )}
+                                                            </div>
+                                                          </div>
+                                                        )
+                                                      })()}
+                                                      {(() => {
+                                                        const byDate: Record<string, JobPortal[]> = {}
+                                                        expiredPortals.forEach((p) => {
+                                                          const key = getEffectiveEndDate(p).toISOString().slice(0, 10)
+                                                          if (!byDate[key]) byDate[key] = []
+                                                          byDate[key].push(p)
+                                                        })
+                                                        const sortedKeys = Object.keys(byDate).sort((a, b) => (a > b ? -1 : 1))
+                                                        const todayMidnight = toMidnight(new Date())
+                                                        const olderThan60CountInner = expiredPortals.filter((p) => {
+                                                          const end = getEffectiveEndDate(p)
+                                                          const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                          return daysAgo > 60
+                                                        }).length
+                                                        return (
+                                                          <AdvertismentDetailDialog
+                                                            portals={expiredPortals}
+                                                            mode="hover"
+                                                            trigger={
+                                                              <div className="flex w-full gap-2 items-start flex-col">
+
+                                                                {sortedKeys.map((dateKey, idx) => (
+                                                                  <>
+                                                                    {(() => {
+                                                                      const groupEnd = parseDateToMidnight(dateKey)
+                                                                      const daysAgoGroup = Math.max(0, Math.ceil((todayMidnight.getTime() - groupEnd.getTime()) / (1000 * 60 * 60 * 24)))
+                                                                      if (idx > 0 && daysAgoGroup <= 60) {
+                                                                        return (
+                                                                          <span key={`sep-${dateKey}`} className="text-[10px] text-gray-500 px-1">
+                                                                            {formatDateWithYear(dateKey)}
+                                                                          </span>
+                                                                        )
+                                                                      }
+                                                                      return null
+                                                                    })()}
+                                                                    {(() => {
+                                                                      const visiblePortals = byDate[dateKey].filter((portal) => {
+                                                                        const end = getEffectiveEndDate(portal)
+                                                                        const daysAgo = Math.max(0, Math.ceil((todayMidnight.getTime() - end.getTime()) / (1000 * 60 * 60 * 24)))
+                                                                        return daysAgo <= 60
+                                                                      })
+                                                                      if (visiblePortals.length === 0) return null
+                                                                      return (
+                                                                        <div className="flex w-full gap-2 items-center flex-wrap">
+                                                                          {visiblePortals.map((portal) => (
+                                                                            <span key={`${dateKey}|${portal.url}`} className="text-xs rounded border border-gray-300 bg-gray-100 px-2 py-0.5 text-gray-600 flex w-fit">
+                                                                              <span className="inline-flex items-center gap-1">
+                                                                                {showLogos && renderPortalIcon(portal, 'h-4 w-4')}
+                                                                                {truncatePortalName(portal.name)}
+                                                                                {portal.highlighted && portal.highlighted.name && (
+                                                                                  <span className="ml-1 text-purple-700">{`+ ${portal.highlighted.name}`}</span>
+                                                                                )}
+                                                                              </span>
+                                                                            </span>
+                                                                          ))}
+                                                                        </div>
+                                                                      )
+                                                                    })()}
+                                                                  </>
+                                                                ))}
+                                                                                                                                {olderThan60CountInner > 0 && (
+                                                                  <span className="text-[11px]  text-gray-600 mt-1">
+                                                                    {`${olderThan60CountInner} ukončených míst více než 60 dní`}
+                                                                  </span>
+                                                                )}
+                                                              </div>
+                                                            }
+                                                          />
+                                                        )
+                                                      })()}
+                                                    </div>
+                                                  )
+                                                })()}
+
+                                              </div>
+                                              
+
+
+                          )}
+                        </div>
+
                       </div>
+                      
+
+                    </div>
+                    
+
                   </CardContent>
                 </Card>
               ))}
             </div>
+
+
           )}
+
         </div>
+
       </div>
       {selectedJobForRepublish && (
         <RepublishAdvertsimentModal
           portals={getExpiredPortals(selectedJobForRepublish)}
           open={isRepublishModalOpen}
           onOpenChange={setIsRepublishModalOpen}
-          onConfirm={(selectedPortals) => {
+          jobId={selectedJobForRepublish.id}
+          onConfirm={(selectedPortals, updatedPortals) => {
             console.log("Republishing portals:", selectedPortals)
+            if (updatedPortals) {
+              console.log("Updated portals data:", updatedPortals)
+            }
             setIsRepublishModalOpen(false)
           }}
         />
